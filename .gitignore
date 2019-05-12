@@ -38,3 +38,9 @@ plot/*.tex
 *.exe
 *.out
 *.app
+
+# IDE
+.vscode/
+
+# Benchmark data
+data/
