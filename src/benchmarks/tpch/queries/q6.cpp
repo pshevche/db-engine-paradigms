@@ -17,7 +17,7 @@ typedef Relation (*CompiledTyperQuery)(Database&, size_t, size_t);
 
 // Returns a pointer to a function from the shared library that executes TPC-H
 // Q6 with Typer.
-CompiledTyperQuery compileTyperQ6() {
+std::unique_ptr<hybrid::SharedLibrary> compileTyperQ6() {
    hybrid::CompilationEngine ce;
    const char* libPath = ce.compileQ6();
    if (!libPath) {
@@ -25,47 +25,84 @@ CompiledTyperQuery compileTyperQ6() {
       std::exit(1);
    }
    std::cout << "Library successfully compiled!" << std::endl;
-   std::unique_ptr<hybrid::SharedLibrary> lib =
-       hybrid::SharedLibrary::load(libPath);
-   if (!lib) {
-      std::cerr << "Could not load shared library: " << libPath << std::endl;
-      std::exit(1);
-   }
-   std::cout << "Library successfully loaded!" << std::endl;
-   const std::string& funcName = "_Z17compiled_typer_q6RN7runtime8DatabaseEmm";
-   return (lib->getFunction<CompiledTyperQuery>(funcName));
+   return hybrid::SharedLibrary::load(libPath);
 }
 
 // Execute hybrid of Typer and Tectorwise
 Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
+   using namespace vectorwise;
    using namespace std::chrono_literals;
    auto future = std::async(std::launch::async, compileTyperQ6);
 
+   // merge results
+   Relation result;
+   result.insert("revenue", std::make_unique<algebra::Numeric>(12, 4));
+
+   // load queried tables
    auto& rel = db["lineitem"];
+   auto l_shipdate_col = rel["l_shipdate"].data<types::Date>();
+   auto l_quantity_col = rel["l_quantity"].data<types::Numeric<12, 2>>();
+   auto l_extendedprice_col =
+       rel["l_extendedprice"].data<types::Numeric<12, 2>>();
+   auto l_discount_col = rel["l_discount"].data<types::Numeric<12, 2>>();
+
+   // init Tectorwise
+   GlobalPool pool;
+   vectorwise::SharedStateManager shared;
+   Q6Builder queryBuilder(db, shared, vectorSize);
+   queryBuilder.previous = this_worker->allocator.setSource(&pool);
+   auto query = queryBuilder.getQuery();
+   std::unique_ptr<vectorwise::FixedAggr> topAggr(
+       static_cast<vectorwise::FixedAggr*>(query->rootOp.release()));
+   size_t found = 0;
+   size_t pos = 0;
+
    size_t processedTuples = 0;
 
    // execute tectorwise
    while (processedTuples < rel.nrTuples) {
       auto compilationStatus = future.wait_for(0ms);
       if (compilationStatus == std::future_status::ready) { break; }
+      pos = topAggr->child->next();
+      if (pos == EndOfStream) { break; }
+      found = topAggr->aggregates.evaluate(pos);
+      // update result
+      if (found) {
+         auto& revenue =
+             result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
+         revenue.reset(1);
+         auto agg = types::Numeric<12, 4>(query->aggregator);
+         revenue.push_back(agg);
+         result.nrTuples = found;
+      }
       processedTuples += vectorSize;
    }
 
    // complete with typer
-   if (processedTuples < 1000000000) {
-      CompiledTyperQuery typer_q6 = future.get();
+   if (processedTuples < rel.nrTuples) {
+      std::unique_ptr<hybrid::SharedLibrary> typerLib = future.get();
+      if (!typerLib) {
+         std::cerr << "Could not load shared Typer library!" << std::endl;
+         std::exit(1);
+      }
+      std::cout << "Library successfully loaded!" << std::endl;
+      const std::string& funcName =
+          "_Z17compiled_typer_q6RN7runtime8DatabaseEmm";
+      CompiledTyperQuery typer_q6 =
+          typerLib->getFunction<CompiledTyperQuery>(funcName);
       if (!typer_q6) {
          std::cerr << "Could not find function for running Q6 in Typer!"
                    << std::endl;
          std::exit(1);
       }
-      std::cout << "Library's function successfully loaded!" << std::endl;
-      Relation result = typer_q6(db, nrThreads, 0);
-      return result;
+      std::cout << "Compiled query successfully loaded!" << std::endl;
+      Relation typer_result = typer_q6(db, nrThreads, processedTuples);
+      return typer_result;
    }
 
-   Relation dummy;
-   return dummy;
+   auto& revenue =
+       result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
+   return result;
 }
 
 using namespace std;
