@@ -145,6 +145,18 @@ target_include_directories(common PUBLIC
     $<INSTALL_INTERFACE:include>
     PRIVATE src)
 
+set(HYBRID_MODULES
+  src/hybrid/compilation_engine.cpp
+  src/hybrid/shared_library.cpp
+  )
+add_library(hybrid
+  ${HYBRID_MODULES}
+  )
+target_include_directories(hybrid PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    PRIVATE src)
+target_link_libraries(hybrid ${CMAKE_DL_LIBS})
 
 set(HYPER_TRANSLATORS
   src/hyper/codegen/operators/Map.cpp
@@ -209,7 +221,18 @@ target_include_directories(tpch PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
     PRIVATE src)
-target_link_libraries(tpch benchmark_config pthread hyper ${TBB_LIBRARIES} vectorwise common)
+target_link_libraries(tpch benchmark_config pthread hybrid hyper ${TBB_LIBRARIES} vectorwise common)
+
+add_executable(run_hybrid
+  ${HYPER_TRANSLATORS}
+  ${HYBRID_MODULES}
+  src/hybrid/run.cpp
+  )
+target_include_directories(run_hybrid PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    PRIVATE src)
+target_link_libraries(run_hybrid tpch hybrid hyper vectorwise common ${JEVENTSLIB} )
 
 add_executable(run_tpch
   ${HYPER_TRANSLATORS}

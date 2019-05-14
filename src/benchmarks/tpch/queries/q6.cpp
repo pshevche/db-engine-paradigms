@@ -1,14 +1,45 @@
 #include "benchmarks/tpch/Queries.hpp"
 #include "common/runtime/Types.hpp"
+#include "hybrid/compilation_engine.hpp"
+#include "hybrid/shared_library.hpp"
 #include "tbb/tbb.h"
 #include "vectorwise/Operations.hpp"
 #include "vectorwise/Operators.hpp"
 #include "vectorwise/Primitives.hpp"
 #include "vectorwise/QueryBuilder.hpp"
 #include "vectorwise/VectorAllocator.hpp"
+#include <dlfcn.h>
 #include <iostream>
 
 using namespace runtime;
+typedef void (*hello_world_func)();
+Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
+   Relation result;
+   hybrid::CompilationEngine ce;
+   const char* libPath = ce.compileHelloWorld();
+   if (!libPath) {
+      std::cerr << "Compilation failed!" << std::endl;
+      std::exit(1);
+   }
+   std::cout << "Library successfully compiled!" << std::endl;
+   std::unique_ptr<hybrid::SharedLibrary> lib =
+       hybrid::SharedLibrary::load(libPath);
+   if (!lib) {
+      std::cerr << "Could not load shared library: " << libPath << std::endl;
+      std::exit(1);
+   }
+   std::cout << "Library successfully loaded!" << std::endl;
+   const std::string& funcName = "_Z11hello_worldv";
+   hello_world_func fn = lib->getFunction<hello_world_func>(funcName);
+   if (!fn) {
+      std::cerr << "Could not find function: " << funcName << std::endl;
+      std::exit(1);
+   }
+   std::cout << "Library's function successfully loaded!" << std::endl;
+   fn();
+   return result;
+}
+
 using namespace std;
 NOVECTORIZE Relation q6_hyper(Database& db, size_t /*nrThreads*/) {
    Relation result;
@@ -76,33 +107,38 @@ unique_ptr<Q6Builder::Q6> Q6Builder::getQuery() {
    assert(db["lineitem"]["l_extendedprice"].type->rt_size() == sizeof(int64_t));
 
    auto lineitem = Scan("lineitem");
-   Select((Expression()                                       //
-              .addOp(conf.sel_less_int32_t_col_int32_t_val(), //
-                     Buffer(sel_a, sizeof(pos_t)),            //
-                     Column(lineitem, "l_shipdate"),          //
-                     Value(&consts.c2)))
-              .addOp(conf.selsel_greater_equal_int32_t_col_int32_t_val(), //
-                     Buffer(sel_a, sizeof(pos_t)),                        //
-                     Buffer(sel_b, sizeof(pos_t)),                        //
-                     Column(lineitem, "l_shipdate"),                      //
-                     Value(&consts.c1))
-             .addOp(conf.selsel_less_int64_t_col_int64_t_val(), //
-             // .addOp(primitives::selsel_less_int64_t_col_int64_t_val_bf, //
-                     Buffer(sel_b, sizeof(pos_t)),               //
-                     Buffer(sel_a, sizeof(pos_t)),               //
-                     Column(lineitem, "l_quantity"),             //
-                     Value(&consts.c5))
-              .addOp(conf.selsel_greater_equal_int64_t_col_int64_t_val(), //
-              //.addOp(primitives::selsel_greater_equal_int64_t_col_int64_t_val_bf, //
-                     Buffer(sel_a, sizeof(pos_t)),                        //
-                     Buffer(sel_b, sizeof(pos_t)),                        //
-                     Column(lineitem, "l_discount"),                      //
-                     Value(&consts.c3))
-              .addOp(conf.selsel_less_equal_int64_t_col_int64_t_val(), //
-                     Buffer(sel_b, sizeof(pos_t)),                     //
-                     Buffer(sel_a, sizeof(pos_t)),                     //
-                     Column(lineitem, "l_discount"),                   //
-                     Value(&consts.c4)));
+   Select(
+       (Expression()                                        //
+            .addOp(conf.sel_less_int32_t_col_int32_t_val(), //
+                   Buffer(sel_a, sizeof(pos_t)),            //
+                   Column(lineitem, "l_shipdate"),          //
+                   Value(&consts.c2)))
+           .addOp(conf.selsel_greater_equal_int32_t_col_int32_t_val(), //
+                  Buffer(sel_a, sizeof(pos_t)),                        //
+                  Buffer(sel_b, sizeof(pos_t)),                        //
+                  Column(lineitem, "l_shipdate"),                      //
+                  Value(&consts.c1))
+           .addOp(
+               conf.selsel_less_int64_t_col_int64_t_val(), //
+                                                           // .addOp(primitives::selsel_less_int64_t_col_int64_t_val_bf,
+                                                           // //
+               Buffer(sel_b, sizeof(pos_t)),   //
+               Buffer(sel_a, sizeof(pos_t)),   //
+               Column(lineitem, "l_quantity"), //
+               Value(&consts.c5))
+           .addOp(
+               conf.selsel_greater_equal_int64_t_col_int64_t_val(), //
+                                                                    //.addOp(primitives::selsel_greater_equal_int64_t_col_int64_t_val_bf,
+                                                                    ////
+               Buffer(sel_a, sizeof(pos_t)),   //
+               Buffer(sel_b, sizeof(pos_t)),   //
+               Column(lineitem, "l_discount"), //
+               Value(&consts.c3))
+           .addOp(conf.selsel_less_equal_int64_t_col_int64_t_val(), //
+                  Buffer(sel_b, sizeof(pos_t)),                     //
+                  Buffer(sel_a, sizeof(pos_t)),                     //
+                  Column(lineitem, "l_discount"),                   //
+                  Value(&consts.c4)));
    Project().addExpression(
        Expression() //
            .addOp(primitives::proj_sel_both_multiplies_int64_t_col_int64_t_col,
