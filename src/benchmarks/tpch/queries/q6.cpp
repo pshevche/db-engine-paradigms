@@ -8,15 +8,18 @@
 #include "vectorwise/Primitives.hpp"
 #include "vectorwise/QueryBuilder.hpp"
 #include "vectorwise/VectorAllocator.hpp"
-#include <dlfcn.h>
+#include <chrono>
+#include <future>
 #include <iostream>
 
 using namespace runtime;
-typedef void (*hello_world_func)();
-Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
-   Relation result;
+typedef Relation (*CompiledTyperQuery)(Database&, size_t, size_t);
+
+// Returns a pointer to a function from the shared library that executes TPC-H
+// Q6 with Typer.
+CompiledTyperQuery compileTyperQ6() {
    hybrid::CompilationEngine ce;
-   const char* libPath = ce.compileHelloWorld();
+   const char* libPath = ce.compileQ6();
    if (!libPath) {
       std::cerr << "Compilation failed!" << std::endl;
       std::exit(1);
@@ -29,15 +32,40 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
       std::exit(1);
    }
    std::cout << "Library successfully loaded!" << std::endl;
-   const std::string& funcName = "_Z11hello_worldv";
-   hello_world_func fn = lib->getFunction<hello_world_func>(funcName);
-   if (!fn) {
-      std::cerr << "Could not find function: " << funcName << std::endl;
-      std::exit(1);
+   const std::string& funcName = "_Z17compiled_typer_q6RN7runtime8DatabaseEmm";
+   return (lib->getFunction<CompiledTyperQuery>(funcName));
+}
+
+// Execute hybrid of Typer and Tectorwise
+Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
+   using namespace std::chrono_literals;
+   auto future = std::async(std::launch::async, compileTyperQ6);
+
+   auto& rel = db["lineitem"];
+   size_t processedTuples = 0;
+
+   // execute tectorwise
+   while (processedTuples < rel.nrTuples) {
+      auto compilationStatus = future.wait_for(0ms);
+      if (compilationStatus == std::future_status::ready) { break; }
+      processedTuples += vectorSize;
    }
-   std::cout << "Library's function successfully loaded!" << std::endl;
-   fn();
-   return result;
+
+   // complete with typer
+   if (processedTuples < 1000000000) {
+      CompiledTyperQuery typer_q6 = future.get();
+      if (!typer_q6) {
+         std::cerr << "Could not find function for running Q6 in Typer!"
+                   << std::endl;
+         std::exit(1);
+      }
+      std::cout << "Library's function successfully loaded!" << std::endl;
+      Relation result = typer_q6(db, nrThreads, 0);
+      return result;
+   }
+
+   Relation dummy;
+   return dummy;
 }
 
 using namespace std;
