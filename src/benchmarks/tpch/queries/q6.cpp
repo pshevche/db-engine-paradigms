@@ -34,7 +34,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    using namespace std::chrono_literals;
    auto future = std::async(std::launch::async, compileTyperQ6);
 
-   // merge results
+   // final result
    Relation result;
    result.insert("revenue", std::make_unique<algebra::Numeric>(12, 4));
 
@@ -57,35 +57,35 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    size_t found = 0;
    size_t pos = 0;
 
-   size_t processedTuples = 0;
-
    // execute tectorwise
+   size_t processedTuples = 0;
    while (processedTuples < rel.nrTuples) {
       auto compilationStatus = future.wait_for(0ms);
       if (compilationStatus == std::future_status::ready) { break; }
       pos = topAggr->child->next();
       if (pos == EndOfStream) { break; }
       found = topAggr->aggregates.evaluate(pos);
-      // update result
-      if (found) {
-         auto& revenue =
-             result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
-         revenue.reset(1);
-         auto agg = types::Numeric<12, 4>(query->aggregator);
-         revenue.push_back(agg);
-         result.nrTuples = found;
-      }
       processedTuples += vectorSize;
    }
 
-   // complete with typer
+   // store TW results
+   auto& revenue =
+       result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
+   revenue.reset(1);
+   auto agg = types::Numeric<12, 4>(query->aggregator);
+   revenue.push_back(agg);
+   result.nrTuples = 1;
+
+   // process remaining tuples with typer
    if (processedTuples < rel.nrTuples) {
+      // load library
       std::unique_ptr<hybrid::SharedLibrary> typerLib = future.get();
       if (!typerLib) {
          std::cerr << "Could not load shared Typer library!" << std::endl;
          std::exit(1);
       }
       std::cout << "Library successfully loaded!" << std::endl;
+      // get compiled function
       const std::string& funcName =
           "_Z17compiled_typer_q6RN7runtime8DatabaseEmm";
       CompiledTyperQuery typer_q6 =
@@ -96,12 +96,17 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
          std::exit(1);
       }
       std::cout << "Compiled query successfully loaded!" << std::endl;
+      // compute typer result
       Relation typer_result = typer_q6(db, nrThreads, processedTuples);
-      return typer_result;
+
+      // merge results
+      auto& typerRevenue =
+          typer_result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
+      for (size_t i = 0; i < revenue.size(); ++i) {
+         revenue[i] += typerRevenue[i];
+      }
    }
 
-   auto& revenue =
-       result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
    return result;
 }
 
