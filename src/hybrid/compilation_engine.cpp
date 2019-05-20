@@ -1,8 +1,52 @@
 #include "hybrid/compilation_engine.hpp"
+#include <boost/filesystem/operations.hpp>
 #include <fstream>
 #include <sstream>
 
 namespace hybrid {
+
+const char* CompilationEngine::precompileHeader() {
+   std::string path_to_minimal_api_header = "include/hybrid/minimal_api.hpp";
+   std::string path_to_precompiled_header = path_to_minimal_api_header + ".gch";
+
+   bool rebuild_precompiled_header = false;
+
+   if (!boost::filesystem::exists(path_to_precompiled_header)) {
+      rebuild_precompiled_header = true;
+   } else {
+      std::time_t last_access_pch =
+          boost::filesystem::last_write_time(path_to_precompiled_header);
+      std::time_t last_access_header =
+          boost::filesystem::last_write_time(path_to_minimal_api_header);
+      /* pre-compiled header outdated? */
+      if (last_access_header > last_access_pch) {
+         std::cout << "Pre-compiled header '" << path_to_precompiled_header
+                   << "' is outdated!" << std::endl;
+         rebuild_precompiled_header = true;
+      }
+   }
+
+   if (rebuild_precompiled_header) {
+      std::cout
+          << "Precompiled Header not found! Building Precompiled Header now..."
+          << std::endl;
+      std::stringstream precompile_header;
+
+      precompile_header << "g++ -g -O3 -fpic " << path_to_minimal_api_header
+                        << " -I "
+                        << "include/ -o " << path_to_precompiled_header
+                        << std::endl;
+      auto ret = system(precompile_header.str().c_str());
+      if (ret != 0) {
+         std::cout << "Compilation of precompiled header failed!" << std::endl;
+         return nullptr;
+      } else {
+         std::cout << "Compilation of precompiled header successful!"
+                   << std::endl;
+      }
+   }
+   return path_to_precompiled_header.c_str();
+}
 
 const char* CompilationEngine::compileQ6() {
    // generate code

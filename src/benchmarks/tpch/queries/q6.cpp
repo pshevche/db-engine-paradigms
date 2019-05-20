@@ -24,8 +24,8 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
    std::thread compilationThread([&typerLib] {
       auto start = std::chrono::steady_clock::now();
-      hybrid::CompilationEngine ce;
-      const char* libPath = ce.compileQ6();
+      hybrid::CompilationEngine::precompileHeader();
+      const char* libPath = hybrid::CompilationEngine::compileQ6();
       if (!libPath) {
          std::cerr << "Compilation failed!" << std::endl;
          std::exit(1);
@@ -45,11 +45,6 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
 
    // load queried tables
    auto& rel = db["lineitem"];
-   auto l_shipdate_col = rel["l_shipdate"].data<types::Date>();
-   auto l_quantity_col = rel["l_quantity"].data<types::Numeric<12, 2>>();
-   auto l_extendedprice_col =
-       rel["l_extendedprice"].data<types::Numeric<12, 2>>();
-   auto l_discount_col = rel["l_discount"].data<types::Numeric<12, 2>>();
 
    // init Tectorwise
    GlobalPool pool;
@@ -59,7 +54,6 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    auto query = queryBuilder.getQuery();
    std::unique_ptr<vectorwise::FixedAggr> topAggr(
        static_cast<vectorwise::FixedAggr*>(query->rootOp.release()));
-   size_t found = 0;
    size_t pos = 0;
 
    // execute tectorwise
@@ -68,7 +62,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    while (processedTuples < rel.nrTuples && !typerLib) {
       pos = topAggr->child->next();
       if (pos == EndOfStream) { break; }
-      found = topAggr->aggregates.evaluate(pos);
+      topAggr->aggregates.evaluate(pos);
       processedTuples += vectorSize;
       //   add delay to test typer
       //   std::this_thread::sleep_for(1ms);

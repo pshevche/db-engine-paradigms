@@ -7,7 +7,8 @@ namespace hybrid {
 class CompilationEngine {
  public:
    // compile hyper code for TPC-H Q6
-   const char* compileQ6();
+   static const char* precompileHeader();
+   static const char* compileQ6();
 };
 
 } // namespace hybrid
