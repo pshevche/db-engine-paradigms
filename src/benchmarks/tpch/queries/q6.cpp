@@ -24,8 +24,9 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
    std::thread compilationThread([&typerLib] {
       auto start = std::chrono::steady_clock::now();
-      hybrid::CompilationEngine::precompileHeader();
-      const char* libPath = hybrid::CompilationEngine::compileQ6();
+      hybrid::CompilationEngine::instance().precompileHeader();
+      const char* libPath =
+          hybrid::CompilationEngine::instance().compileQ6CPP();
       if (!libPath) {
          std::cerr << "Compilation failed!" << std::endl;
          std::exit(1);
