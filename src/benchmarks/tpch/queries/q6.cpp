@@ -15,24 +15,29 @@
 using namespace runtime;
 typedef Relation (*CompiledTyperQuery)(Database&, size_t, size_t);
 
-// Returns a pointer to a function from the shared library that executes TPC-H
-// Q6 with Typer.
-std::unique_ptr<hybrid::SharedLibrary> compileTyperQ6() {
-   hybrid::CompilationEngine ce;
-   const char* libPath = ce.compileQ6();
-   if (!libPath) {
-      std::cerr << "Compilation failed!" << std::endl;
-      std::exit(1);
-   }
-   std::cout << "Library successfully compiled!" << std::endl;
-   return hybrid::SharedLibrary::load(libPath);
-}
-
 // Execute hybrid of Typer and Tectorwise
 Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    using namespace vectorwise;
    using namespace std::chrono_literals;
-   auto future = std::async(std::launch::async, compileTyperQ6);
+
+   // start compiling typer
+   std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
+   std::thread compilationThread([&typerLib] {
+      auto start = std::chrono::steady_clock::now();
+      hybrid::CompilationEngine ce;
+      const char* libPath = ce.compileQ6();
+      if (!libPath) {
+         std::cerr << "Compilation failed!" << std::endl;
+         std::exit(1);
+      }
+      typerLib = hybrid::SharedLibrary::load(libPath);
+      auto end = std::chrono::steady_clock::now();
+      std::cout << "Compilation took "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                         start)
+                       .count()
+                << " milliseconds." << std::endl;
+   });
 
    // final result
    Relation result;
@@ -58,15 +63,24 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    size_t pos = 0;
 
    // execute tectorwise
+   auto start = std::chrono::steady_clock::now();
    size_t processedTuples = 0;
-   while (processedTuples < rel.nrTuples) {
-      auto compilationStatus = future.wait_for(0ms);
-      if (compilationStatus == std::future_status::ready) { break; }
+   while (processedTuples < rel.nrTuples && !typerLib) {
       pos = topAggr->child->next();
       if (pos == EndOfStream) { break; }
       found = topAggr->aggregates.evaluate(pos);
       processedTuples += vectorSize;
+      //   add delay to test typer
+      //   std::this_thread::sleep_for(1ms);
    }
+   std::cout << "TW processed " << processedTuples << " tuples out of "
+             << rel.nrTuples << std::endl;
+   auto end = std::chrono::steady_clock::now();
+   std::cout << "TW took "
+             << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                      start)
+                    .count()
+             << " milliseconds." << std::endl;
 
    // store TW results
    auto& revenue =
@@ -77,25 +91,24 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    result.nrTuples = 1;
 
    // process remaining tuples with typer
+   compilationThread.join();
+   start = std::chrono::steady_clock::now();
    if (processedTuples < rel.nrTuples) {
       // load library
-      std::unique_ptr<hybrid::SharedLibrary> typerLib = future.get();
       if (!typerLib) {
          std::cerr << "Could not load shared Typer library!" << std::endl;
          std::exit(1);
       }
-      std::cout << "Library successfully loaded!" << std::endl;
       // get compiled function
       const std::string& funcName =
           "_Z17compiled_typer_q6RN7runtime8DatabaseEmm";
       CompiledTyperQuery typer_q6 =
-          typerLib->getFunction<CompiledTyperQuery>(funcName);
+          typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
       if (!typer_q6) {
          std::cerr << "Could not find function for running Q6 in Typer!"
                    << std::endl;
          std::exit(1);
       }
-      std::cout << "Compiled query successfully loaded!" << std::endl;
       // compute typer result
       Relation typer_result = typer_q6(db, nrThreads, processedTuples);
 
@@ -106,7 +119,14 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
          revenue[i] += typerRevenue[i];
       }
    }
+   end = std::chrono::steady_clock::now();
+   std::cout << "Typer took "
+             << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                      start)
+                    .count()
+             << " milliseconds." << std::endl;
 
+   delete typerLib;
    return result;
 }
 

@@ -6,7 +6,7 @@ namespace hybrid {
 class SharedLibrary {
  public:
    // load a shared library
-   static std::unique_ptr<SharedLibrary> load(const char* libPath);
+   static SharedLibrary* load(const char* libPath);
    SharedLibrary(void* soLib);
    // get a symbol from the library
    void* getSymbol(const std::string& symbolName);

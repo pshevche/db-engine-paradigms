@@ -4,11 +4,11 @@
 
 namespace hybrid {
 
-std::unique_ptr<SharedLibrary> SharedLibrary::load(const char* libPath) {
+SharedLibrary* SharedLibrary::load(const char* libPath) {
    auto soLib = dlopen(libPath, RTLD_NOW);
    auto error = dlerror();
    if (error) { return nullptr; }
-   return std::make_unique<SharedLibrary>(soLib);
+   return new SharedLibrary(soLib);
 }
 
 SharedLibrary::SharedLibrary(void* soLib) : mSharedLib(soLib) {}
