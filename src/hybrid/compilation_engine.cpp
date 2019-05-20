@@ -39,7 +39,7 @@ const char* CompilationEngine::precompileHeader() {
           << std::endl;
       std::stringstream precompile_header;
 
-      precompile_header << "clang -g -O3 -fpic " << path_to_minimal_api_header
+      precompile_header << "clang++ -g -O3 -fpic " << path_to_minimal_api_header
                         << " -I "
                         << "include/ -o " << path_to_precompiled_header
                         << std::endl;
@@ -116,7 +116,7 @@ const char* CompilationEngine::compileQ6CPP() {
    std::string path_to_minimal_api_header = "include/hybrid/minimal_api.hpp";
    const char* libName = "src/hybrid/libtyperq6.so";
    std::stringstream compile_cmd;
-   compile_cmd << "clang -Wno-parentheses-equality -g -O3 -include "
+   compile_cmd << "clang++ -Wno-parentheses-equality -g -O3 -include "
                << path_to_minimal_api_header << " -I include/ -c -fpic ";
    compile_cmd << cppName << " -o " << cppName << ".o";
    int ret = system(compile_cmd.str().c_str());
@@ -127,7 +127,7 @@ const char* CompilationEngine::compileQ6CPP() {
 
    // link library
    std::stringstream linking_command;
-   linking_command << "clang -shared " << cppName << ".o -o " << libName
+   linking_command << "clang++ -shared " << cppName << ".o -o " << libName
                    << std::endl;
    ret = system(linking_command.str().c_str());
    if (ret != 0) {
@@ -198,7 +198,7 @@ const char* CompilationEngine::compileQ6LL() {
    std::string path_to_minimal_api_header = "include/hybrid/minimal_api.hpp";
    const char* libName = "src/hybrid/libtyperq6.so";
    std::stringstream compile_cmd;
-   compile_cmd << "clang -Wno-parentheses-equality -O3 -include "
+   compile_cmd << "clang++ -Wno-parentheses-equality -O3 -include "
                << path_to_minimal_api_header
                << " -I include/ -emit-llvm -S -c -fpic ";
    compile_cmd << filename << ".cpp -o " << filename << ".ll";
@@ -210,7 +210,7 @@ const char* CompilationEngine::compileQ6LL() {
 
    // link library
    std::stringstream linking_command;
-   linking_command << "clang -O3 -fpic -shared " << filename << ".ll -o "
+   linking_command << "clang++ -O3 -fpic -shared " << filename << ".ll -o "
                    << libName << std::endl;
    ret = system(linking_command.str().c_str());
    if (ret != 0) {
