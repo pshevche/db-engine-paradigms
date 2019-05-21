@@ -20,7 +20,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    using namespace vectorwise;
    using namespace std::chrono_literals;
 
-   // start compiling typer
+   // 1. START COMPILING Q6 IN TYPER
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
    std::thread compilationThread([&typerLib] {
       auto start = std::chrono::steady_clock::now();
@@ -42,58 +42,67 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
 
    // final result
    Relation result;
-   result.insert("revenue", std::make_unique<algebra::Numeric>(12, 4));
 
-   // load queried tables
-   auto& rel = db["lineitem"];
-
-   // init Tectorwise
-   GlobalPool pool;
-   vectorwise::SharedStateManager shared;
-   Q6Builder queryBuilder(db, shared, vectorSize);
-   queryBuilder.previous = this_worker->allocator.setSource(&pool);
-   auto query = queryBuilder.getQuery();
-   std::unique_ptr<vectorwise::FixedAggr> topAggr(
-       static_cast<vectorwise::FixedAggr*>(query->rootOp.release()));
-   size_t pos = 0;
-
-   // execute tectorwise
+   // 2. WHILE Q6 IS COMPILING, START TECTORWISE
    auto start = std::chrono::steady_clock::now();
-   size_t processedTuples = 0;
-   while (processedTuples < rel.nrTuples && !typerLib) {
-      pos = topAggr->child->next();
-      if (pos == EndOfStream) { break; }
-      topAggr->aggregates.evaluate(pos);
-      processedTuples += vectorSize;
-      //   add delay to test typer
-      //   std::this_thread::sleep_for(1ms);
-   }
-   std::cout << "TW processed " << processedTuples << " tuples out of "
-             << rel.nrTuples << std::endl;
+   vectorwise::SharedStateManager shared;
+   WorkerGroup workers(nrThreads - 1);
+   GlobalPool pool;
+   std::atomic<int64_t> aggr(0);
+   std::atomic<size_t> processedTuples(0);
+   workers.run([&] {
+      // init the Q6 query
+      Q6Builder queryBuilder(db, shared, vectorSize);
+      queryBuilder.previous = this_worker->allocator.setSource(&pool);
+      auto query = queryBuilder.getQuery();
+
+      // get top operator
+      std::unique_ptr<vectorwise::FixedAggr> topAggr(
+          static_cast<vectorwise::FixedAggr*>(query->rootOp.release()));
+
+      // while children provide tuples, compute the aggregate
+      size_t pos = topAggr->child->next();
+      while (pos != EndOfStream && !typerLib) {
+         topAggr->aggregates.evaluate(pos);
+         processedTuples.fetch_add(vectorSize);
+         pos = topAggr->child->next();
+         // add delay to debug typer
+         //  std::this_thread::sleep_for(1ms);
+      }
+
+      // store result from this thread
+      aggr.fetch_add(query->aggregator);
+
+      // invoke leader to update result relation
+      auto leader = barrier();
+      if (leader) {
+         result.insert("revenue", std::make_unique<algebra::Numeric>(12, 4));
+         auto& sum = result["revenue"].template typedAccessForChange<int64_t>();
+         sum.reset(1);
+         auto a = aggr.load();
+         sum.push_back(a);
+         result.nrTuples = 1;
+      }
+   });
    auto end = std::chrono::steady_clock::now();
    std::cout << "TW took "
              << std::chrono::duration_cast<std::chrono::milliseconds>(end -
                                                                       start)
                     .count()
-             << " milliseconds." << std::endl;
+             << " milliseconds to process " << processedTuples.load()
+             << " tuples." << std::endl;
 
-   // store TW results
-   auto& revenue =
-       result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
-   revenue.reset(1);
-   auto agg = types::Numeric<12, 4>(query->aggregator);
-   revenue.push_back(agg);
-   result.nrTuples = 1;
-
-   // process remaining tuples with typer
+   // 3. PROCESS REMAINING TUPLES WITH TYPER
    compilationThread.join();
    start = std::chrono::steady_clock::now();
-   if (processedTuples < rel.nrTuples) {
+   size_t nrTuples = db["lineitem"].nrTuples;
+   if (processedTuples.load() < nrTuples) {
       // load library
       if (!typerLib) {
          std::cerr << "Could not load shared Typer library!" << std::endl;
          std::exit(1);
       }
+
       // get compiled function
       const std::string& funcName =
           "_Z17compiled_typer_q6RN7runtime8DatabaseEmm";
@@ -104,10 +113,13 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
                    << std::endl;
          std::exit(1);
       }
+
       // compute typer result
-      Relation typer_result = typer_q6(db, nrThreads, processedTuples);
+      Relation typer_result = typer_q6(db, nrThreads, processedTuples.load());
 
       // merge results
+      auto& revenue =
+          result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
       auto& typerRevenue =
           typer_result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
       for (size_t i = 0; i < revenue.size(); ++i) {
@@ -119,8 +131,11 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
              << std::chrono::duration_cast<std::chrono::milliseconds>(end -
                                                                       start)
                     .count()
-             << " milliseconds." << std::endl;
+             << " milliseconds to process "
+             << (long)nrTuples - (long)processedTuples.load() << " tuples."
+             << std::endl;
 
+   // close shared library
    delete typerLib;
    return result;
 }
