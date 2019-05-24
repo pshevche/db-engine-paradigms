@@ -1,16 +1,18 @@
 #pragma once
-#include <iostream>
+#include <string>
 
 namespace hybrid {
 
-// handles all compilation related issues
+// Singleton to handle all compilation related issues
 class CompilationEngine {
  public:
    static CompilationEngine& instance();
-   // compile hyper code for TPC-H Q6
-   const char* precompileHeader();
-   const char* compileQ6CPP();
-   const char* compileQ6LL();
+   // compile .pch file to speed up future compilations
+   const std::string precompileAPIHeader();
+   // compile .cpp query code into either .o or .ll files
+   const std::string compileQueryCPP(const std::string& filename, bool toLLVM);
+   // link .o or .ll file into a shared library
+   const std::string linkQueryLib(const std::string& filename, bool fromLLVM);
 
  private:
    CompilationEngine();

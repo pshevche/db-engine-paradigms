@@ -1,6 +1,7 @@
 #include "benchmarks/tpch/Queries.hpp"
 #include "common/runtime/Types.hpp"
 #include "hybrid/compilation_engine.hpp"
+#include "hybrid/hybrid_exception.hpp"
 #include "hybrid/shared_library.hpp"
 #include "tbb/tbb.h"
 #include "vectorwise/Operations.hpp"
@@ -16,28 +17,31 @@ using namespace runtime;
 typedef Relation (*CompiledTyperQuery)(Database&, size_t, size_t);
 
 // Execute hybrid of Typer and Tectorwise
-Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
+Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
+                   const std::string& path_to_lib_src, bool fromLLVM) {
    using namespace vectorwise;
    using namespace std::chrono_literals;
 
    // 1. START COMPILING Q6 IN TYPER
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
-   std::thread compilationThread([&typerLib] {
-      auto start = std::chrono::steady_clock::now();
-      hybrid::CompilationEngine::instance().precompileHeader();
-      const char* libPath =
-          hybrid::CompilationEngine::instance().compileQ6CPP();
-      if (!libPath) {
-         std::cerr << "Compilation failed!" << std::endl;
-         std::exit(1);
+   std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM] {
+      try {
+         auto start = std::chrono::steady_clock::now();
+         // link library
+         const std::string& path_to_lib =
+             hybrid::CompilationEngine::instance().linkQueryLib(path_to_lib_src,
+                                                                fromLLVM);
+         // open library
+         typerLib = hybrid::SharedLibrary::load(path_to_lib);
+         auto end = std::chrono::steady_clock::now();
+         std::cout << "Compilation took "
+                   << std::chrono::duration_cast<std::chrono::milliseconds>(
+                          end - start)
+                          .count()
+                   << " milliseconds." << std::endl;
+      } catch (hybrid::HybridException& exc) {
+         std::cerr << exc.what() << std::endl;
       }
-      typerLib = hybrid::SharedLibrary::load(libPath);
-      auto end = std::chrono::steady_clock::now();
-      std::cout << "Compilation took "
-                << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                         start)
-                       .count()
-                << " milliseconds." << std::endl;
    });
 
    // final result
@@ -46,7 +50,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize) {
    // 2. WHILE Q6 IS COMPILING, START TECTORWISE
    auto start = std::chrono::steady_clock::now();
    vectorwise::SharedStateManager shared;
-   WorkerGroup workers(nrThreads - 1);
+   WorkerGroup workers(nrThreads);
    GlobalPool pool;
    std::atomic<int64_t> aggr(0);
    std::atomic<size_t> processedTuples(0);

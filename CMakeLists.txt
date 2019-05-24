@@ -161,7 +161,9 @@ target_include_directories(common PUBLIC
     PRIVATE src)
 
 set(HYBRID_MODULES
+  src/hybrid/code_generator.cpp
   src/hybrid/compilation_engine.cpp
+  src/hybrid/hybrid_exception.cpp
   src/hybrid/shared_library.cpp
   )
 add_library(hybrid

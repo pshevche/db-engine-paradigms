@@ -4,8 +4,8 @@
 
 namespace hybrid {
 
-SharedLibrary* SharedLibrary::load(const char* libPath) {
-   auto soLib = dlopen(libPath, RTLD_NOW);
+SharedLibrary* SharedLibrary::load(const std::string& libPath) {
+   auto soLib = dlopen(libPath.c_str(), RTLD_NOW);
    auto error = dlerror();
    if (error) { return nullptr; }
    return new SharedLibrary(soLib);

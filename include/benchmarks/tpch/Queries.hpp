@@ -163,10 +163,9 @@ runtime::Relation
 q6_vectorwise(runtime::Database& db,
               size_t nrThreads = std::thread::hardware_concurrency(),
               size_t vectorSize = 1024);
-runtime::Relation
-q6_hybrid(runtime::Database& db,
-          size_t nrThreads = std::thread::hardware_concurrency(),
-          size_t vectorSize = 1024);
+runtime::Relation q6_hybrid(runtime::Database& db, size_t nrThreads,
+                            size_t vectorSize,
+                            const std::string& path_to_lib_src, bool fromLLVM);
 
 struct Q9Builder : public Query, private vectorwise::QueryBuilder {
    enum {

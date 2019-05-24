@@ -14,6 +14,10 @@
 #include "profile.hpp"
 #include "tbb/tbb.h"
 
+#include "hybrid/code_generator.hpp"
+#include "hybrid/compilation_engine.hpp"
+#include "hybrid/hybrid_exception.hpp"
+
 using namespace runtime;
 
 static void escape(void* p) { asm volatile("" : : "g"(p) : "memory"); }
@@ -72,6 +76,10 @@ int main(int argc, char* argv[]) {
    }
 
    tbb::task_scheduler_init scheduler(nrThreads);
+
+   // precompile header for all evaluations
+   hybrid::CompilationEngine::instance().precompileAPIHeader();
+
    if (q.count("6h")) {
       e.timeAndProfile("q6 hyper     ", tpch["lineitem"].nrTuples,
                        [&]() {
@@ -94,13 +102,28 @@ int main(int argc, char* argv[]) {
    }
 
    if (q.count("6hv")) {
-      e.timeAndProfile("q6 hybrid    ", tpch["lineitem"].nrTuples,
-                       [&]() {
-                          if (clearCaches) clearOsCaches();
-                          auto result = q6_hybrid(tpch, nrThreads, vectorSize);
-                          escape(&result);
-                       },
-                       repetitions);
+      try {
+         // generate Typer code for Q6
+         const std::string& path_to_cpp =
+             hybrid::CodeGenerator::instance().generateTyperQ6();
+
+         // compile LLVM
+         const std::string& path_to_ll =
+             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                   true);
+
+         // run experiments
+         e.timeAndProfile("q6 hybrid    ", tpch["lineitem"].nrTuples,
+                          [&]() {
+                             if (clearCaches) clearOsCaches();
+                             auto result = q6_hybrid(
+                                 tpch, nrThreads, vectorSize, path_to_ll, true);
+                             escape(&result);
+                          },
+                          repetitions);
+      } catch (hybrid::HybridException& exc) {
+         std::cerr << exc.what() << std::endl;
+      }
    }
 
    scheduler.terminate();
