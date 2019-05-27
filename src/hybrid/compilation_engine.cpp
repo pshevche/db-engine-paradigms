@@ -73,7 +73,7 @@ CompilationEngine::compileQueryCPP(const std::string& filename, bool toLLVM) {
    if (!toLLVM) {
       path_to_target = filename + ".o";
       compile_cmd << "clang++ -march=native -mtune=native -std=c++14 "
-                     "-Wno-psabi -Wall -Wextra "
+                     "-Wabi -Wall -Wextra "
                      "-fno-omit-frame-pointer -Wno-unknown-pragmas "
                      "-Wno-parentheses-equality -g -O3 -include "
                   << path_to_minimal_api_header << " -I include/ -c -fpic ";
@@ -81,7 +81,7 @@ CompilationEngine::compileQueryCPP(const std::string& filename, bool toLLVM) {
    } else {
       path_to_target = filename + ".ll";
       compile_cmd << "clang++ -march=native -mtune=native -std=c++14 "
-                     "-Wno-psabi -Wall -Wextra "
+                     "-Wabi -Wall -Wextra "
                      "-fno-omit-frame-pointer -Wno-unknown-pragmas "
                      "-Wno-parentheses-equality -g -O3 -include "
                   << path_to_minimal_api_header
