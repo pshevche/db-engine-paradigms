@@ -38,6 +38,10 @@ struct Q1Builder : public Query, private vectorwise::QueryBuilder {
    std::unique_ptr<Q1> getQuery();
 };
 
+std::unique_ptr<runtime::Query> q1_hybrid(runtime::Database& db,
+                                          size_t nrThreads, size_t vectorSize,
+                                          const std::string& path_to_lib_src,
+                                          bool fromLLVM);
 std::unique_ptr<runtime::Query>
 q1_hyper(runtime::Database& db,
          size_t nrThreads = std::thread::hardware_concurrency());

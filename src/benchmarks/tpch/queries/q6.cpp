@@ -32,7 +32,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
              hybrid::CompilationEngine::instance().linkQueryLib(path_to_lib_src,
                                                                 fromLLVM);
          // open library
-         typerLib = hybrid::SharedLibrary::load(path_to_lib);
+         typerLib = hybrid::SharedLibrary::load(path_to_lib + ".so");
          auto end = std::chrono::steady_clock::now();
          std::cout << "Compilation took "
                    << std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -103,8 +103,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
    if (processedTuples.load() < nrTuples) {
       // load library
       if (!typerLib) {
-         std::cerr << "Could not load shared Typer library!" << std::endl;
-         std::exit(1);
+         throw hybrid::HybridException("Could not load shared Typer library!");
       }
 
       // get compiled function
@@ -113,9 +112,8 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
       CompiledTyperQuery typer_q6 =
           typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
       if (!typer_q6) {
-         std::cerr << "Could not find function for running Q6 in Typer!"
-                   << std::endl;
-         std::exit(1);
+         throw hybrid::HybridException(
+             "Could not find function for running Q6 in Typer!");
       }
 
       // compute typer result

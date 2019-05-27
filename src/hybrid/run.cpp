@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
    bool clearCaches = false;
    if (argc > 3) nrThreads = atoi(argv[3]);
 
-   std::unordered_set<std::string> q = {"6hv", "6v", "6h"};
+   std::unordered_set<std::string> q = {"1hv"};
 
    if (auto v = std::getenv("vectorSize")) vectorSize = atoi(v);
    if (auto v = std::getenv("SIMDhash")) conf.useSimdHash = atoi(v);
@@ -80,6 +80,55 @@ int main(int argc, char* argv[]) {
    // precompile header for all evaluations
    hybrid::CompilationEngine::instance().precompileAPIHeader();
 
+   // Q1
+   if (q.count("1h")) {
+      e.timeAndProfile("q1 hyper     ", nrTuples(tpch, {"lineitem"}),
+                       [&]() {
+                          if (clearCaches) clearOsCaches();
+                          auto result = q1_hyper(tpch, nrThreads);
+                          escape(&result);
+                       },
+                       repetitions);
+   }
+
+   if (q.count("1v")) {
+      e.timeAndProfile("q1 vectorwise", nrTuples(tpch, {"lineitem"}),
+                       [&]() {
+                          if (clearCaches) clearOsCaches();
+                          auto result =
+                              q1_vectorwise(tpch, nrThreads, vectorSize);
+                          escape(&result);
+                       },
+                       repetitions);
+   }
+
+   if (q.count("1hv")) {
+      try {
+         // generate Typer code for Q1
+         const std::string& path_to_cpp =
+             hybrid::CodeGenerator::instance().generateTyperQ1();
+
+         // compile LLVM
+         const std::string& path_to_ll =
+             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                   false);
+
+         // run experiments
+         e.timeAndProfile("q1 hybrid    ", nrTuples(tpch, {"lineitem"}),
+                          [&]() {
+                             if (clearCaches) clearOsCaches();
+                             auto result =
+                                 q1_hybrid(tpch, nrThreads, vectorSize,
+                                           path_to_ll, false);
+                             escape(&result);
+                          },
+                          repetitions);
+      } catch (hybrid::HybridException& exc) {
+         std::cerr << exc.what() << std::endl;
+      }
+   }
+
+   // Q6
    if (q.count("6h")) {
       e.timeAndProfile("q6 hyper     ", tpch["lineitem"].nrTuples,
                        [&]() {
