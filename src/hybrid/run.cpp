@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
    bool clearCaches = false;
    if (argc > 3) nrThreads = atoi(argv[3]);
 
-   std::unordered_set<std::string> q = {"1hv"};
+   std::unordered_set<std::string> q = {"1hv", "1h", "1v"};
 
    if (auto v = std::getenv("vectorSize")) vectorSize = atoi(v);
    if (auto v = std::getenv("SIMDhash")) conf.useSimdHash = atoi(v);
@@ -108,10 +108,11 @@ int main(int argc, char* argv[]) {
          const std::string& path_to_cpp =
              hybrid::CodeGenerator::instance().generateTyperQ1();
 
-         // compile LLVM
+         // compile obj
+         bool useLLVM = false;
          const std::string& path_to_ll =
              hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
-                                                                   false);
+                                                                   useLLVM);
 
          // run experiments
          e.timeAndProfile("q1 hybrid    ", nrTuples(tpch, {"lineitem"}),
@@ -119,7 +120,7 @@ int main(int argc, char* argv[]) {
                              if (clearCaches) clearOsCaches();
                              auto result =
                                  q1_hybrid(tpch, nrThreads, vectorSize,
-                                           path_to_ll, false);
+                                           path_to_ll, useLLVM);
                              escape(&result);
                           },
                           repetitions);
