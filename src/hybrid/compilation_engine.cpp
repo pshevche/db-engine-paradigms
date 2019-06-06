@@ -48,7 +48,7 @@ const std::string CompilationEngine::precompileAPIHeader() {
       precompile_header << "g++ -march=native -mtune=native -std=c++14 "
                            "-Wall -Wextra "
                            "-fno-omit-frame-pointer -Wno-unknown-pragmas "
-                           "-Wno-parentheses-equality -g -O3 -fpic "
+                           "-g -O3 -fpic "
                         << path_to_minimal_api_header << " -I "
                         << "include/ -o " << path_to_precompiled_header
                         << std::endl;
@@ -85,7 +85,7 @@ CompilationEngine::compileQueryCPP(const std::string& filename, bool toLLVM) {
       compile_cmd << "g++ -march=native -mtune=native -std=c++14 "
                      "-Wno-psabi -Wall -Wextra "
                      "-fno-omit-frame-pointer -Wno-unknown-pragmas "
-                     "-Wno-parentheses-equality -g -O3 -include "
+                     "-g -O3 -include "
                   << path_to_minimal_api_header << " -I include/ -c -fpic ";
       //   compile_cmd << "clang++ -march=native -mtune=native -std=c++14 "
       //                  "-Wabi -Wall -Wextra "

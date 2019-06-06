@@ -108,6 +108,10 @@ size_t ResultWriter::next() {
    return found;
 }
 
+runtime::BlockRelation::Block& ResultWriter::getCurrentBlock() {
+   return currentBlock;
+}
+
 pos_t Hashjoin::joinAll() {
    size_t found = 0;
    // perform continuation
@@ -739,11 +743,11 @@ pos_t Hashjoin::joinBoncz() {
          cont.nextProbe = cont.numProbes;
          contCon.followupWrite = followupWrite;
          return found;
-      } else if(found + followupWrite >= batchSize){
+      } else if (found + followupWrite >= batchSize) {
          contCon.followupWrite = followupWrite;
          assert(found);
          return found;
-     }
+      }
    }
    cont.nextProbe = cont.numProbes;
    contCon.followupWrite = followupWrite;

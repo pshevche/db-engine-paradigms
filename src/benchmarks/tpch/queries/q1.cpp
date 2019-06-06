@@ -48,6 +48,12 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
    using namespace vectorwise;
    using namespace std::chrono_literals;
 
+   // 0. INFO ABOUT QUERY
+   const std::string groupAttributes[2] = {"l_returnflag", "l_linestatus"};
+   const std::string otherAttributes[5] = {"sum_qty", "sum_base_price",
+                                           "sum_disc_price", "sum_charge",
+                                           "count_order"};
+
    // 1. START COMPILING Q1 IN TYPER
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
    std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM] {
@@ -73,7 +79,57 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
    // 2. WHILE Q1 IS COMPILING, START TECTORWISE
    auto start = std::chrono::steady_clock::now();
    std::atomic<size_t> processedTuples(0);
-   // TODO: execute Tectorwise
+   WorkerGroup workers(nrThreads);
+   vectorwise::SharedStateManager shared;
+
+   std::unique_ptr<runtime::Query> result;
+   workers.run([&]() {
+      Q1Builder builder(db, shared, vectorSize);
+      auto query = builder.getQuery();
+      std::unique_ptr<ResultWriter> topOp(
+          static_cast<ResultWriter*>(query->rootOp.release()));
+      // organize results in the relation
+      for (pos_t pos = topOp->child->next(); pos != EndOfStream;
+           pos = topOp->child->next()) {
+         // assure that enough space is available in current block to fit result
+         // of all buffers
+         auto currentBlock = topOp->getCurrentBlock();
+         if (currentBlock.spaceRemaining() < pos)
+            currentBlock = topOp->shared.result->result->createBlock(pos);
+         auto blockSize = currentBlock.size();
+         for (const auto& input : topOp->inputs)
+            // copy data from intermediate buffers into result relation
+            std::memcpy(addBytes(currentBlock.data(input.attribute),
+                                 input.elementSize * blockSize),
+                        input.data, pos * input.elementSize);
+         // update result relation size
+         currentBlock.addedElements(pos);
+         processedTuples.fetch_add(vectorSize);
+      }
+
+      // sync results
+      auto leader = barrier();
+      if (leader)
+         result = move(dynamic_cast<ResultWriter*>(topOp.get())->shared.result);
+   });
+
+   // display some results for debugging
+   for (auto twIter = result->result->begin(); twIter != result->result->end();
+        ++twIter) {
+      auto twBlock = *twIter;
+      char* tw_groupattr1 = reinterpret_cast<char*>(
+          twBlock.data(result->result->getAttribute(groupAttributes[0])));
+      char* tw_groupattr2 = reinterpret_cast<char*>(
+          twBlock.data(result->result->getAttribute(groupAttributes[1])));
+      // if a match is found, combine aggregation results
+      long* tw_sum_qty = reinterpret_cast<long*>(
+          twBlock.data(result->result->getAttribute(otherAttributes[0])));
+      for (unsigned i = 0; i < twBlock.size(); ++i) {
+         std::cout << tw_groupattr1[i] << " | " << tw_groupattr2[i] << " | "
+                   << tw_sum_qty[i] << std::endl;
+      }
+   }
+
    auto end = std::chrono::steady_clock::now();
    std::cout << "TW took "
              << std::chrono::duration_cast<std::chrono::milliseconds>(end -
@@ -103,11 +159,90 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
       }
 
       // compute typer result
-      std::unique_ptr<runtime::Query> typer_result =
-          typer_q1(db, nrThreads, processedTuples.load());
+      //   std::unique_ptr<runtime::Query> typer_result =
+      //       typer_q1(db, nrThreads, processedTuples.load());
+      std::unique_ptr<runtime::Query> typer_result = typer_q1(db, nrThreads, 0);
 
-      // TODO: merge results
+      // display some results for debugging
+      for (auto typerIter = typer_result->result->begin();
+           typerIter != typer_result->result->end(); ++typerIter) {
+         auto typerBlock = *typerIter;
+         char* typer_groupattr1 = reinterpret_cast<char*>(typerBlock.data(
+             typer_result->result->getAttribute(groupAttributes[0])));
+         char* typer_groupattr2 = reinterpret_cast<char*>(typerBlock.data(
+             typer_result->result->getAttribute(groupAttributes[1])));
+         // if a match is found, combine aggregation results
+         long* typer_sum_qty = reinterpret_cast<long*>(typerBlock.data(
+             typer_result->result->getAttribute(otherAttributes[0])));
+         for (unsigned i = 0; i < typerBlock.size(); ++i) {
+            std::cout << typer_groupattr1[i] << " | " << typer_groupattr2[i]
+                      << " | " << typer_sum_qty[i] << std::endl;
+         }
+      }
+
+      // merge results
+      const std::string groupAttr1 = groupAttributes[0];
+      const std::string groupAttr2 = groupAttributes[1];
+      // for each block of the TW result
+      for (auto twIter = result->result->begin();
+           twIter != result->result->end(); ++twIter) {
+         auto twBlock = *twIter;
+         // for each tuple in the block
+         for (unsigned i = 0; i < twBlock.size(); ++i) {
+            // get values of the grouping attr in TW result
+            char tw_groupattr1 = reinterpret_cast<char*>(
+                twBlock.data(result->result->getAttribute(groupAttr1)))[i];
+            char tw_groupattr2 = reinterpret_cast<char*>(
+                twBlock.data(result->result->getAttribute(groupAttr2)))[i];
+            // and find a matching tuple in the blocks of the Typer result
+            for (auto typerIter = typer_result->result->begin();
+                 typerIter != typer_result->result->end(); ++typerIter) {
+               auto typerBlock = *typerIter;
+               for (unsigned j = 0; j < typerBlock.size(); ++j) {
+                  // get values of the grouping attr in Typer result
+                  char typer_groupattr1 =
+                      reinterpret_cast<char*>(typerBlock.data(
+                          typer_result->result->getAttribute(groupAttr1)))[j];
+                  char typer_groupattr2 =
+                      reinterpret_cast<char*>(typerBlock.data(
+                          typer_result->result->getAttribute(groupAttr2)))[j];
+
+                  // if a match is found
+                  if (tw_groupattr1 == typer_groupattr1 &&
+                      tw_groupattr2 == typer_groupattr2) {
+                     // aggregate over all remaining attributes
+                     for (unsigned k = 0; k < 5; ++k) {
+                        long* tw_attr = reinterpret_cast<long*>(twBlock.data(
+                            result->result->getAttribute(otherAttributes[k])));
+                        long* typer_attr = reinterpret_cast<long*>(
+                            typerBlock.data(typer_result->result->getAttribute(
+                                otherAttributes[k])));
+                        tw_attr[i] += typer_attr[j];
+                     }
+                  }
+               }
+            }
+         }
+      }
    }
+
+   // display some results for debugging
+   for (auto twIter = result->result->begin(); twIter != result->result->end();
+        ++twIter) {
+      auto twBlock = *twIter;
+      char* tw_groupattr1 = reinterpret_cast<char*>(
+          twBlock.data(result->result->getAttribute(groupAttributes[0])));
+      char* tw_groupattr2 = reinterpret_cast<char*>(
+          twBlock.data(result->result->getAttribute(groupAttributes[1])));
+      // if a match is found, combine aggregation results
+      long* tw_sum_qty = reinterpret_cast<long*>(
+          twBlock.data(result->result->getAttribute(otherAttributes[0])));
+      for (unsigned i = 0; i < twBlock.size(); ++i) {
+         std::cout << tw_groupattr1[i] << " | " << tw_groupattr2[i] << " | "
+                   << tw_sum_qty[i] << std::endl;
+      }
+   }
+
    end = std::chrono::steady_clock::now();
    std::cout << "Typer took "
              << std::chrono::duration_cast<std::chrono::milliseconds>(end -
@@ -120,7 +255,7 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
    // close shared library
    delete typerLib;
 
-   return nullptr;
+   return result;
 }
 
 NOVECTORIZE std::unique_ptr<runtime::Query> q1_hyper(Database& db,
