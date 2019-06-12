@@ -18,9 +18,7 @@ const std::string CompilationEngine::precompileAPIHeader() {
    const std::string path_to_minimal_api_header =
        "include/hybrid/minimal_api.hpp";
    const std::string path_to_precompiled_header =
-       path_to_minimal_api_header + ".gch";
-   //    const std::string path_to_precompiled_header =
-   //    path_to_minimal_api_header + ".pch";
+       path_to_minimal_api_header + ".pch";
 
    bool rebuild_precompiled_header = false;
 
@@ -45,21 +43,13 @@ const std::string CompilationEngine::precompileAPIHeader() {
           << std::endl;
       std::stringstream precompile_header;
 
-      precompile_header << "g++ -march=native -mtune=native -std=c++14 "
+      precompile_header << "clang++ -march=native -mtune=native -std=c++14 "
                            "-Wall -Wextra "
                            "-fno-omit-frame-pointer -Wno-unknown-pragmas "
-                           "-g -O3 -fpic "
+                           "-Wno-parentheses-equality -g -O3 -fpic "
                         << path_to_minimal_api_header << " -I "
                         << "include/ -o " << path_to_precompiled_header
                         << std::endl;
-      //   precompile_header << "clang++ -march=native -mtune=native -std=c++14
-      //   "
-      //                        "-Wall -Wextra "
-      //                        "-fno-omit-frame-pointer -Wno-unknown-pragmas "
-      //                        "-Wno-parentheses-equality -g -O3 -fpic "
-      //                     << path_to_minimal_api_header << " -I "
-      //                     << "include/ -o " << path_to_precompiled_header
-      //                     << std::endl;
       auto ret = system(precompile_header.str().c_str());
       if (ret) {
          throw HybridException("Compilation of precompiled header failed!");
@@ -82,17 +72,11 @@ CompilationEngine::compileQueryCPP(const std::string& filename, bool toLLVM) {
    std::stringstream compile_cmd;
    if (!toLLVM) {
       path_to_target = filename + ".o";
-      compile_cmd << "g++ -march=native -mtune=native -std=c++14 "
-                     "-Wno-psabi -Wall -Wextra "
+      compile_cmd << "clang++ -march=native -mtune=native -std=c++14 "
+                     "-Wabi -Wall -Wextra "
                      "-fno-omit-frame-pointer -Wno-unknown-pragmas "
-                     "-g -O3 -include "
-                  << path_to_minimal_api_header << " -I include/ -c -fpic ";
-      //   compile_cmd << "clang++ -march=native -mtune=native -std=c++14 "
-      //                  "-Wabi -Wall -Wextra "
-      //                  "-fno-omit-frame-pointer -Wno-unknown-pragmas "
-      //                  "-Wno-parentheses-equality -g -O3 -include "
-      //               << path_to_minimal_api_header << " -I include/ -c -fpic
-      //               ";
+                     "-Wno-parentheses-equality -g -O3 -include "
+                  << path_to_minimal_api_header << " -I include/ -c -fpic";
       compile_cmd << path_to_cpp << " -o " << path_to_target;
    } else {
       path_to_target = filename + ".ll";

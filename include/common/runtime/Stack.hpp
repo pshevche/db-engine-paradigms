@@ -13,7 +13,7 @@ template <typename T> class Stack {
  public:
    static const size_t initialSize = 1024;
    Stack();
-   Stack(const Stack&) = delete;
+   Stack(const Stack&) {}
    Stack(Stack&&) = default;
    /// construct element at top of stack
    template <typename... C> void emplace_back(C&&...);
