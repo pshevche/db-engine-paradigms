@@ -290,6 +290,8 @@ class HashGroup : public UnaryOperator {
 
    HashGroup(Shared& shared);
    ~HashGroup();
+   runtime::Hashmap& getHashTable();
+   size_t getMaxFill();
 
    std::unique_ptr<runtime::HashmapSmall<pos_t, pos_t>> groupHt;
 

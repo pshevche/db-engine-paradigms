@@ -86,31 +86,135 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
    workers.run([&]() {
       Q1Builder builder(db, shared, vectorSize);
       auto query = builder.getQuery();
-      std::unique_ptr<ResultWriter> topOp(
+      std::unique_ptr<ResultWriter> printOp(
           static_cast<ResultWriter*>(query->rootOp.release()));
-      // organize results in the relation
-      for (pos_t pos = topOp->child->next(); pos != EndOfStream;
-           pos = topOp->child->next()) {
-         // assure that enough space is available in current block to fit result
-         // of all buffers
-         auto currentBlock = topOp->getCurrentBlock();
-         if (currentBlock.spaceRemaining() < pos)
-            currentBlock = topOp->shared.result->result->createBlock(pos);
-         auto blockSize = currentBlock.size();
-         for (const auto& input : topOp->inputs)
-            // copy data from intermediate buffers into result relation
-            std::memcpy(addBytes(currentBlock.data(input.attribute),
-                                 input.elementSize * blockSize),
-                        input.data, pos * input.elementSize);
-         // update result relation size
-         currentBlock.addedElements(pos);
-         processedTuples.fetch_add(vectorSize);
+      std::unique_ptr<HashGroup> groupOp(
+          static_cast<HashGroup*>(printOp->child.release()));
+
+      // GROUPING
+      runtime::Hashmap& ht = groupOp->getHashTable();
+      size_t maxFill = groupOp->getMaxFill();
+      using header_t = runtime::Hashmap::EntryHeader;
+      if (!groupOp->cont.consumed) {
+         /// ------ phase 1: local preaggregation
+         /// aggregate all incoming tuples into local hashtable
+         size_t groups = 0;
+         auto& spill = groupOp->shared.spillStorage.local();
+         auto entry_size = groupOp->preAggregation.ht_entry_size;
+
+         auto flushAndClear = [&]() INTERPRET_SEPARATE {
+            assert(offsetof(header_t, next) + sizeof(header_t::next) ==
+                   offsetof(header_t, hash));
+            // flush ht entries into spillStorage
+            for (auto& alloc : groupOp->preAggregation.allocations) {
+               for (auto entry = reinterpret_cast<header_t*>(alloc.first),
+                         end = addBytes(entry, alloc.second * entry_size);
+                    entry < end; entry = addBytes(entry, entry_size))
+                  spill.push_back(&entry->hash, entry->hash);
+            }
+            groupOp->preAggregation.allocations.clear();
+            groupOp->preAggregation.clearHashtable(ht);
+         };
+
+         for (pos_t n = groupOp->child->next(); n != EndOfStream && !typerLib;
+              n = groupOp->child->next()) {
+            groupOp->groupHash.evaluate(n);
+            groupOp->preAggregation.findGroups(n, ht);
+            auto groupsCreated =
+                groupOp->preAggregation.createMissingGroups(ht, false);
+            groupOp->updateGroups.evaluate(n);
+            groups += groupsCreated;
+            if (groups >= maxFill) flushAndClear();
+            processedTuples.fetch_add(vectorSize);
+            // std::this_thread::sleep_for(1ms);
+         }
+         flushAndClear(); // flush remaining entries into spillStorage
+         barrier();       // Wait until all workers have finished phase 1
+
+         groupOp->cont.consumed = true;
+         groupOp->cont.partition = groupOp->shared.partition.fetch_add(1);
+         groupOp->cont.partitionNeedsAggregation = true;
       }
+
+      /// ------ phase 2: global aggregation
+      // get a partition
+      for (; groupOp->cont.partition < groupOp->nrPartitions;) {
+         if (groupOp->cont.partitionNeedsAggregation) {
+            auto partNr = groupOp->cont.partition;
+            // for all thread local partitions
+            for (auto& threadPartitions :
+                 groupOp->shared.spillStorage.threadData) {
+               // aggregate data from thread local partition
+               auto& partition =
+                   threadPartitions.second.getPartitions()[partNr];
+               for (auto chunk = partition.first; chunk; chunk = chunk->next) {
+                  auto elementSize = threadPartitions.second.entrySize;
+                  auto nPart = partition.size(chunk, elementSize);
+                  for (size_t n = std::min(nPart, vectorSize), pos = 0; n;
+                       nPart -= n, pos += n, n = std::min(nPart, vectorSize)) {
+
+                     // communicate data position of current chunk to primitives
+                     // for group lookup and creation
+                     auto data =
+                         addBytes(chunk->data<void>(), pos * elementSize);
+                     groupOp->globalAggregation.rowData = data;
+                     groupOp->findGroupsFromPartition(data, n);
+                     auto cGroups = [&]() INTERPRET_SEPARATE {
+                        groupOp->globalAggregation.createMissingGroups(ht,
+                                                                       true);
+                     };
+                     cGroups();
+                     groupOp->updateGroupsFromPartition.evaluate(n);
+                  }
+               }
+            }
+            groupOp->cont.partitionNeedsAggregation = false;
+            groupOp->cont.iter = groupOp->globalAggregation.allocations.begin();
+         }
+         // send aggregation result to parent operator
+         // TODO: refill result instead of sending all allocations separately
+         if (groupOp->cont.iter !=
+             groupOp->globalAggregation.allocations.end()) {
+            auto& block = *(groupOp->cont.iter);
+            // write current block start to htMatches so the the gather
+            // primitives can read the offset from there
+            *(groupOp->globalAggregation.htMatches) =
+                reinterpret_cast<header_t*>(block.first);
+            auto n = block.second;
+            groupOp->gatherGroups.evaluate(n);
+            groupOp->cont.iter++;
+
+            // RESULT WRITER
+            // assure that enough space is available in current block to fit
+            // result of all buffers
+            auto currentBlock = printOp->getCurrentBlock();
+            if (currentBlock.spaceRemaining() < n)
+               currentBlock = printOp->shared.result->result->createBlock(n);
+            auto blockSize = currentBlock.size();
+            for (const auto& input : printOp->inputs)
+               // copy data from intermediate buffers into result relation
+               std::memcpy(addBytes(currentBlock.data(input.attribute),
+                                    input.elementSize * blockSize),
+                           input.data, n * input.elementSize);
+            // update result relation size
+            currentBlock.addedElements(n);
+            // RESULT WRITER
+         } else {
+            auto htClear = [&]() INTERPRET_SEPARATE {
+               groupOp->globalAggregation.clearHashtable(ht);
+            };
+            htClear();
+            groupOp->cont.partitionNeedsAggregation = true;
+            groupOp->cont.partition = groupOp->shared.partition.fetch_add(1);
+         }
+      }
+      // GROUPING
 
       // sync results
       auto leader = barrier();
       if (leader)
-         result = move(dynamic_cast<ResultWriter*>(topOp.get())->shared.result);
+         result =
+             move(dynamic_cast<ResultWriter*>(printOp.get())->shared.result);
    });
 
    // display some results for debugging
@@ -159,9 +263,8 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
       }
 
       // compute typer result
-      //   std::unique_ptr<runtime::Query> typer_result =
-      //       typer_q1(db, nrThreads, processedTuples.load());
-      std::unique_ptr<runtime::Query> typer_result = typer_q1(db, nrThreads, 0);
+      std::unique_ptr<runtime::Query> typer_result =
+          typer_q1(db, nrThreads, processedTuples.load());
 
       // display some results for debugging
       for (auto typerIter = typer_result->result->begin();

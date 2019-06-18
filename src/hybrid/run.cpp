@@ -108,7 +108,7 @@ int main(int argc, char* argv[]) {
          const std::string& path_to_cpp =
              hybrid::CodeGenerator::instance().generateTyperQ1();
 
-         // compile obj
+         // compile llvm
          bool useLLVM = true;
          const std::string& path_to_ll =
              hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,

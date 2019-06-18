@@ -823,6 +823,9 @@ HashGroup::~HashGroup() {
    // for (auto& alloc : globalAggregation.allocations) free(alloc.first);
 }
 
+runtime::Hashmap& HashGroup::getHashTable() { return this->ht; }
+size_t HashGroup::getMaxFill() { return this->maxFill; }
+
 pos_t HashGroup::findGroupsFromPartition(void* data, size_t n) {
    globalAggregation.groupHashes = reinterpret_cast<hash_t*>(data);
    return globalAggregation.findGroups(n, ht);
