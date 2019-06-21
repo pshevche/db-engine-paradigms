@@ -79,10 +79,10 @@ class GroupBy {
          cb(*group);
       }
 
-     template<typename KEY>
-      inline V& getGroup(KEY&& key) {
-       return *groups.findOrCreate(std::forward<KEY>(key), groups.hash(std::forward<KEY>(key)), parent.init,
-                                     entries, [&]() {
+      template <typename KEY> inline V& getGroup(KEY&& key) {
+         return *groups.findOrCreate(std::forward<KEY>(key),
+                                     groups.hash(std::forward<KEY>(key)),
+                                     parent.init, entries, [&]() {
                                         if (groups.size() >= maxFill) {
                                            spill();
                                            groups.clear();
@@ -112,7 +112,6 @@ class GroupBy {
    /// Spill all
    void spillAll() {
       tbb::parallel_for(entries.range(), [&](const auto& e) {
-
          bool exists;
          auto& deque = partitionedDeques.local(exists);
          if (!exists) deque.postConstruct(nrThreads * 4, sizeof(group_t));
@@ -171,10 +170,55 @@ class GroupBy {
          if (!localEntries.empty()) consume(localEntries);
       });
    }
+
+   /// Iterate over all groups of tuples consumed by Locals::consume
+   template <typename C>
+   inline void mergeWithTectorwise(
+       std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&
+           twHashTables,
+       C consume) {
+
+      spillAll();
+
+      // aggregate from spill partitions
+      auto nrPartitions = partitionedDeques.begin()->getPartitions().size();
+
+      tbb::parallel_for(0ul, nrPartitions, [&](auto partitionNr) {
+         bool exists = false;
+         auto& ht = groups.local(exists);
+         size_t maxFill;
+         if (!exists)
+            maxFill = ht.setSize(1024);
+         else
+            maxFill = ht.capacity * 0.7;
+         auto& localEntries = entries.local();
+         ht.clear();
+         localEntries.clear();
+         // aggregate values from all deques for partitionNr
+         for (auto& deque : partitionedDeques) {
+            auto& partition = deque.getPartitions()[partitionNr];
+            for (auto chunk = partition.first; chunk; chunk = chunk->next) {
+               for (auto value = chunk->template data<group_t>(),
+                         end = value + partition.size(chunk, sizeof(group_t));
+                    value < end; value++) {
+                  auto group = ht.findOrCreate(
+                      value->k, value->h.hash, init, localEntries, [&]() {
+                         if (ht.size() >= maxFill) {
+                            maxFill = this->grow(ht, localEntries);
+                         }
+                      });
+                  update(*group, value->v);
+               }
+            }
+         }
+
+         // push aggregated groups into following pipeline
+         if (!localEntries.empty()) consume(localEntries);
+      });
+   }
 };
 
 template <typename K, typename V, typename HASH, typename UPDATE>
-GroupBy<K, V, HASH, UPDATE> make_GroupBy(UPDATE u, V i,
-                                               size_t nrThreads) {
+GroupBy<K, V, HASH, UPDATE> make_GroupBy(UPDATE u, V i, size_t nrThreads) {
    return std::move(GroupBy<K, V, HASH, UPDATE>(u, i, nrThreads));
 }

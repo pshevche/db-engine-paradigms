@@ -22,7 +22,8 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "using namespace types;\n";
    f << "std::unique_ptr<runtime::Query> compiled_typer_q1(Database& db, "
         "size_t nrThreads, size_t "
-        "firstTuple) {\n";
+        "firstTuple, std::unordered_map<std::thread::id, "
+        "runtime::PartitionedDeque<1024>>& twHashTables) {\n";
    f << "types::Date c1 = types::Date::castString(\"1998-09-02\");";
    f << "types::Numeric<12, 2> one = types::Numeric<12, "
         "2>::castString(\"1.00\");";
@@ -84,7 +85,7 @@ const std::string CodeGenerator::generateTyperQ1() {
         "sizeof(Numeric<12, 2>));";
    f << "auto count_orderAttr = result->addAttribute(\"count_order\", "
         "sizeof(int64_t));";
-   f << "groupOp.forallGroups(";
+   f << "groupOp.mergeWithTectorwise(twHashTables,";
    f << "[&](runtime::Stack<decltype(groupOp)::group_t>& /*auto&*/ entries) {";
    f << "auto n = entries.size();";
    f << "auto block = result->createBlock(n);";
