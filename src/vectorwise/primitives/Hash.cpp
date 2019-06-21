@@ -11,9 +11,9 @@ namespace vectorwise {
 namespace primitives {
 
 #if HASH_SIZE == 32
-#define DEFAULT_HASH runtime::CRC32Hash
+#define DEFAULT_HASH runtime::MurMurHash3
 #else
-#define DEFAULT_HASH runtime::CRC32Hash
+#define DEFAULT_HASH runtime::MurMurHash
 #endif
 #define MK_HASH(type) F2 hash_##type##_col = (F2)&hash<type, DEFAULT_HASH>;
 #define MK_HASH_SEL(type)                                                      \

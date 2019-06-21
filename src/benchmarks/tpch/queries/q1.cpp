@@ -39,6 +39,18 @@ using vectorwise::primitives::hash_t;
 //    l_returnflag,
 //    l_linestatus
 
+typedef struct {
+   long idk1;
+   long idk2;
+   char returnflag[1];
+   char linestatus[1];
+   long sum_disc_price;
+   long sum_charge;
+   long sum_qty;
+   long sum_base_price;
+   long count_order;
+} Q1Tuple;
+
 typedef std::unique_ptr<runtime::Query> (*CompiledTyperQuery)(Database&, size_t,
                                                               size_t);
 std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
@@ -176,29 +188,30 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
          if (groupOp->cont.iter !=
              groupOp->globalAggregation.allocations.end()) {
             auto& block = *(groupOp->cont.iter);
+            auto n = block.second;
+
             // write current block start to htMatches so the the gather
             // primitives can read the offset from there
             *(groupOp->globalAggregation.htMatches) =
                 reinterpret_cast<header_t*>(block.first);
-            auto n = block.second;
             groupOp->gatherGroups.evaluate(n);
             groupOp->cont.iter++;
 
-            // RESULT WRITER
-            // assure that enough space is available in current block to fit
-            // result of all buffers
-            auto currentBlock = printOp->getCurrentBlock();
-            if (currentBlock.spaceRemaining() < n)
-               currentBlock = printOp->shared.result->result->createBlock(n);
-            auto blockSize = currentBlock.size();
-            for (const auto& input : printOp->inputs)
-               // copy data from intermediate buffers into result relation
-               std::memcpy(addBytes(currentBlock.data(input.attribute),
-                                    input.elementSize * blockSize),
-                           input.data, n * input.elementSize);
-            // update result relation size
-            currentBlock.addedElements(n);
-            // RESULT WRITER
+            // INSERT TW'S GROUPS INTO TYPER'S HASHTABLE
+            for (unsigned i = 0; i < n; ++i) {
+               Q1Tuple* t = reinterpret_cast<Q1Tuple*>(block.first) + i;
+               auto key = std::make_tuple(types::Char<1>::build(t->returnflag),
+                                          types::Char<1>::build(t->linestatus));
+               auto value =
+                   std::make_tuple(types::Numeric<12, 2>(t->sum_qty),
+                                   types::Numeric<12, 2>(t->sum_base_price),
+                                   types::Numeric<12, 4>(t->sum_disc_price),
+                                   types::Numeric<12, 6>(t->sum_charge),
+                                   (int64_t)(t->count_order));
+
+               // insert this (key, value) into typer's hashtable
+            }
+            // INSERT TW'S GROUPS INTO TYPER'S HASHTABLE
          } else {
             auto htClear = [&]() INTERPRET_SEPARATE {
                groupOp->globalAggregation.clearHashtable(ht);
@@ -265,85 +278,6 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
       // compute typer result
       std::unique_ptr<runtime::Query> typer_result =
           typer_q1(db, nrThreads, processedTuples.load());
-
-      // display some results for debugging
-      for (auto typerIter = typer_result->result->begin();
-           typerIter != typer_result->result->end(); ++typerIter) {
-         auto typerBlock = *typerIter;
-         char* typer_groupattr1 = reinterpret_cast<char*>(typerBlock.data(
-             typer_result->result->getAttribute(groupAttributes[0])));
-         char* typer_groupattr2 = reinterpret_cast<char*>(typerBlock.data(
-             typer_result->result->getAttribute(groupAttributes[1])));
-         // if a match is found, combine aggregation results
-         long* typer_sum_qty = reinterpret_cast<long*>(typerBlock.data(
-             typer_result->result->getAttribute(otherAttributes[0])));
-         for (unsigned i = 0; i < typerBlock.size(); ++i) {
-            std::cout << typer_groupattr1[i] << " | " << typer_groupattr2[i]
-                      << " | " << typer_sum_qty[i] << std::endl;
-         }
-      }
-
-      // merge results
-      const std::string groupAttr1 = groupAttributes[0];
-      const std::string groupAttr2 = groupAttributes[1];
-      // for each block of the TW result
-      for (auto twIter = result->result->begin();
-           twIter != result->result->end(); ++twIter) {
-         auto twBlock = *twIter;
-         // for each tuple in the block
-         for (unsigned i = 0; i < twBlock.size(); ++i) {
-            // get values of the grouping attr in TW result
-            char tw_groupattr1 = reinterpret_cast<char*>(
-                twBlock.data(result->result->getAttribute(groupAttr1)))[i];
-            char tw_groupattr2 = reinterpret_cast<char*>(
-                twBlock.data(result->result->getAttribute(groupAttr2)))[i];
-            // and find a matching tuple in the blocks of the Typer result
-            for (auto typerIter = typer_result->result->begin();
-                 typerIter != typer_result->result->end(); ++typerIter) {
-               auto typerBlock = *typerIter;
-               for (unsigned j = 0; j < typerBlock.size(); ++j) {
-                  // get values of the grouping attr in Typer result
-                  char typer_groupattr1 =
-                      reinterpret_cast<char*>(typerBlock.data(
-                          typer_result->result->getAttribute(groupAttr1)))[j];
-                  char typer_groupattr2 =
-                      reinterpret_cast<char*>(typerBlock.data(
-                          typer_result->result->getAttribute(groupAttr2)))[j];
-
-                  // if a match is found
-                  if (tw_groupattr1 == typer_groupattr1 &&
-                      tw_groupattr2 == typer_groupattr2) {
-                     // aggregate over all remaining attributes
-                     for (unsigned k = 0; k < 5; ++k) {
-                        long* tw_attr = reinterpret_cast<long*>(twBlock.data(
-                            result->result->getAttribute(otherAttributes[k])));
-                        long* typer_attr = reinterpret_cast<long*>(
-                            typerBlock.data(typer_result->result->getAttribute(
-                                otherAttributes[k])));
-                        tw_attr[i] += typer_attr[j];
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   // display some results for debugging
-   for (auto twIter = result->result->begin(); twIter != result->result->end();
-        ++twIter) {
-      auto twBlock = *twIter;
-      char* tw_groupattr1 = reinterpret_cast<char*>(
-          twBlock.data(result->result->getAttribute(groupAttributes[0])));
-      char* tw_groupattr2 = reinterpret_cast<char*>(
-          twBlock.data(result->result->getAttribute(groupAttributes[1])));
-      // if a match is found, combine aggregation results
-      long* tw_sum_qty = reinterpret_cast<long*>(
-          twBlock.data(result->result->getAttribute(otherAttributes[0])));
-      for (unsigned i = 0; i < twBlock.size(); ++i) {
-         std::cout << tw_groupattr1[i] << " | " << tw_groupattr2[i] << " | "
-                   << tw_sum_qty[i] << std::endl;
-      }
    }
 
    end = std::chrono::steady_clock::now();
