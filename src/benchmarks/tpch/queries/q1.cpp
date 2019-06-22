@@ -217,28 +217,27 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
    compilationThread.join();
    start = std::chrono::steady_clock::now();
    size_t nrTuples = db["lineitem"].nrTuples;
-   if (processedTuples.load() < nrTuples) {
-      // load library
-      if (!typerLib) {
-         throw hybrid::HybridException("Could not load shared Typer library!");
-      }
-
-      // get compiled function
-      const std::string& funcName =
-          "_Z17compiled_typer_q1RN7runtime8DatabaseEmmSt6vectorISt5tupleIJS3_"
-          "IJN5types4CharILj1EEES6_EES3_IJNS4_7NumericILj12ELj2EEES9_NS8_"
-          "ILj12ELj4EEENS8_ILj12ELj6EEElEEEESaISD_EE";
-      CompiledTyperQuery typer_q1 =
-          typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
-      if (!typer_q1) {
-         throw hybrid::HybridException(
-             "Could not find function for running Q1 in Typer!");
-      }
-
-      // compute typer result
-      result =
-          std::move(typer_q1(db, nrThreads, processedTuples.load(), twGroups));
+   if (processedTuples.load() > nrTuples) { processedTuples.store(nrTuples); }
+   // load library
+   if (!typerLib) {
+      throw hybrid::HybridException("Could not load shared Typer library!");
    }
+
+   // get compiled function
+   const std::string& funcName =
+       "_Z17compiled_typer_q1RN7runtime8DatabaseEmmSt6vectorISt5tupleIJS3_"
+       "IJN5types4CharILj1EEES6_EES3_IJNS4_7NumericILj12ELj2EEES9_NS8_"
+       "ILj12ELj4EEENS8_ILj12ELj6EEElEEEESaISD_EE";
+   CompiledTyperQuery typer_q1 =
+       typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
+   if (!typer_q1) {
+      throw hybrid::HybridException(
+          "Could not find function for running Q1 in Typer!");
+   }
+
+   // compute typer result
+   result =
+       std::move(typer_q1(db, nrThreads, processedTuples.load(), twGroups));
 
    end = std::chrono::steady_clock::now();
    std::cout << "Typer took "
