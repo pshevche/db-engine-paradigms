@@ -170,52 +170,6 @@ class GroupBy {
          if (!localEntries.empty()) consume(localEntries);
       });
    }
-
-   /// Iterate over all groups of tuples consumed by Locals::consume
-   template <typename C>
-   inline void mergeWithTectorwise(
-       std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&
-           twHashTables,
-       C consume) {
-
-      spillAll();
-
-      // aggregate from spill partitions
-      auto nrPartitions = partitionedDeques.begin()->getPartitions().size();
-
-      tbb::parallel_for(0ul, nrPartitions, [&](auto partitionNr) {
-         bool exists = false;
-         auto& ht = groups.local(exists);
-         size_t maxFill;
-         if (!exists)
-            maxFill = ht.setSize(1024);
-         else
-            maxFill = ht.capacity * 0.7;
-         auto& localEntries = entries.local();
-         ht.clear();
-         localEntries.clear();
-         // aggregate values from all deques for partitionNr
-         for (auto& deque : partitionedDeques) {
-            auto& partition = deque.getPartitions()[partitionNr];
-            for (auto chunk = partition.first; chunk; chunk = chunk->next) {
-               for (auto value = chunk->template data<group_t>(),
-                         end = value + partition.size(chunk, sizeof(group_t));
-                    value < end; value++) {
-                  auto group = ht.findOrCreate(
-                      value->k, value->h.hash, init, localEntries, [&]() {
-                         if (ht.size() >= maxFill) {
-                            maxFill = this->grow(ht, localEntries);
-                         }
-                      });
-                  update(*group, value->v);
-               }
-            }
-         }
-
-         // push aggregated groups into following pipeline
-         if (!localEntries.empty()) consume(localEntries);
-      });
-   }
 };
 
 template <typename K, typename V, typename HASH, typename UPDATE>

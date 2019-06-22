@@ -7,6 +7,7 @@
 #include "common/runtime/PartitionedDeque.hpp"
 #include "common/runtime/Query.hpp"
 #include "common/runtime/Types.hpp"
+#include "hybrid/hybrid_datatypes.hpp"
 #include "hyper/GroupBy.hpp"
 #include "hyper/ParallelHelper.hpp"
 #include "tbb/tbb.h"
