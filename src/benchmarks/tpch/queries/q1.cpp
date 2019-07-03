@@ -41,38 +41,6 @@ using vectorwise::primitives::hash_t;
 //    l_returnflag,
 //    l_linestatus
 
-// Transform results of thread-local aggregation into Typer-compatible
-// representation
-std::vector<std::tuple<hybrid::Q1TyperKey, hybrid::Q1TyperValue>>
-extractTWGroups(
-    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&
-        twThreadData) {
-   std::vector<std::tuple<hybrid::Q1TyperKey, hybrid::Q1TyperValue>> res;
-   for (auto& threadPartitions : twThreadData) {
-      for (auto& partition : threadPartitions.second.getPartitions()) {
-         for (auto chunk = partition.first; chunk; chunk = chunk->next) {
-            auto elementSize = threadPartitions.second.entrySize;
-            auto nPart = partition.size(chunk, elementSize);
-            auto data = chunk->data<void>();
-            for (unsigned i = 0; i < nPart; ++i) {
-               hybrid::Q1TectorTuple* t =
-                   reinterpret_cast<hybrid::Q1TectorTuple*>(data) + i;
-               hybrid::Q1TyperKey key =
-                   std::make_tuple(types::Char<1>::build(t->returnflag),
-                                   types::Char<1>::build(t->linestatus));
-               hybrid::Q1TyperValue value = std::make_tuple(
-                   types::Numeric<12, 2>(t->sum_qty),
-                   types::Numeric<12, 2>(t->sum_base_price),
-                   types::Numeric<12, 4>(t->sum_disc_price),
-                   types::Numeric<12, 6>(t->sum_charge), t->count_order);
-               res.push_back(std::make_tuple(key, value));
-            }
-         }
-      }
-   }
-   return res;
-}
-
 // Display query results
 void printResult(runtime::Query* result) {
    // display some results for debugging
@@ -109,8 +77,7 @@ void printResult(runtime::Query* result) {
 
 typedef std::unique_ptr<runtime::Query> (*CompiledTyperQuery)(
     Database&, size_t, size_t,
-    std::vector<std::tuple<hybrid::Q1TyperKey, hybrid::Q1TyperValue>>
-        twHashTables);
+    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&);
 std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
                                           size_t vectorSize,
                                           const std::string& path_to_lib_src,
@@ -193,7 +160,7 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
          if (groups >= maxFill) flushAndClear();
          processedTuples.fetch_add(vectorSize);
          //  FIXME: delay for debugging purposes
-         //  std::this_thread::sleep_for(1ms);
+         //   std::this_thread::sleep_for(1ms);
       }
       flushAndClear(); // flush remaining entries into spillStorage
       barrier();       // Wait until all workers have finished phase 1
@@ -207,13 +174,7 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
              << " milliseconds to process " << processedTuples.load()
              << " tuples." << std::endl;
 
-   // 3. TRANSFORM TW THREAD LOCAL HASHTABLES INTO TYPER-COMPATIBLE
-   // REPRESENTATION
-   std::vector<std::tuple<hybrid::Q1TyperKey, hybrid::Q1TyperValue>> twGroups =
-       extractTWGroups(
-           shared.get<HashGroup::Shared>(2).spillStorage.threadData);
-
-   // 4. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION RESULTS
+   // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION RESULTS
    compilationThread.join();
    start = std::chrono::steady_clock::now();
    size_t nrTuples = db["lineitem"].nrTuples;
@@ -225,9 +186,9 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
 
    // get compiled function
    const std::string& funcName =
-       "_Z17compiled_typer_q1RN7runtime8DatabaseEmmSt6vectorISt5tupleIJS3_"
-       "IJN5types4CharILj1EEES6_EES3_IJNS4_7NumericILj12ELj2EEES9_NS8_"
-       "ILj12ELj4EEENS8_ILj12ELj6EEElEEEESaISD_EE";
+       "_Z17compiled_typer_q1RN7runtime8DatabaseEmmRSt13unordered_"
+       "mapINSt6thread2idENS_16PartitionedDequeILm1024EEESt4hashIS4_ESt8equal_"
+       "toIS4_ESaISt4pairIKS4_S6_EEE";
    CompiledTyperQuery typer_q1 =
        typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
    if (!typer_q1) {
@@ -236,8 +197,9 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
    }
 
    // compute typer result
-   result =
-       std::move(typer_q1(db, nrThreads, processedTuples.load(), twGroups));
+   result = std::move(
+       typer_q1(db, nrThreads, processedTuples.load(),
+                shared.get<HashGroup::Shared>(2).spillStorage.threadData));
 
    end = std::chrono::steady_clock::now();
    std::cout << "Typer took "
