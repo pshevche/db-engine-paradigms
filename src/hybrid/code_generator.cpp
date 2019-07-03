@@ -25,7 +25,7 @@ const std::string CodeGenerator::generateTyperQ1() {
         "firstTuple, std::unordered_map<std::thread::id, "
         "runtime::PartitionedDeque<1024>>&"
         "twThreadData) {\n ";
-   f << "// prepare query data\n";
+   f << "\n// prepare query data\n";
    f << "types::Date c1 = types::Date::castString(\"1998-09-02\");";
    f << "types::Numeric<12, 2> one = types::Numeric<12, "
         "2>::castString(\"1.00\");";
@@ -40,10 +40,10 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "auto l_quantity = li[\"l_quantity\"].data<types::Numeric<12, "
         "2>>();";
    f << "auto l_shipdate = li[\"l_shipdate\"].data<types::Date>();";
-   f << "// setup parallel execution + prepare result\n";
+   f << "\n\n// setup parallel execution + prepare result\n";
    f << "auto resources = initQuery(nrThreads);";
    f << "using hash = runtime::CRC32Hash;";
-   f << "// define the aggregation\n";
+   f << "\n\n// define the aggregation\n";
    f << "auto groupOp = make_GroupBy<tuple<Char<1>, Char<1>>,";
    f << "tuple<Numeric<12, 2>, Numeric<12, 2>,";
    f << "Numeric<12, 4>, Numeric<12, 6>, int64_t>,";
@@ -58,7 +58,7 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "make_tuple(Numeric<12, 2>(), Numeric<12, 2>(), Numeric<12, 4>(),";
    f << "Numeric<12, 6>(), int64_t(0)),";
    f << "nrThreads);";
-   f << "// compute typer's partial thread-local hash tables\n";
+   f << "\n\n// compute typer's partial thread-local hash tables\n";
    f << "tbb::parallel_for(";
    f << "tbb::blocked_range<size_t>(firstTuple, li.nrTuples, morselSize),";
    f << "[&](const tbb::blocked_range<size_t>& r) {";
@@ -77,7 +77,8 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "}";
    f << "}";
    f << "});";
-   f << "// merge tw's partial thread-local hash tables with typer's partial "
+   f << "\n\n// merge tw's partial thread-local hash tables with typer's "
+        "partial "
         "thread-local hash tables\n";
    f << "tbb::parallel_for_each(twThreadData.begin(), twThreadData.end(), "
         "[&](auto& threadPartitions) {auto locals = "
@@ -97,7 +98,7 @@ const std::string CodeGenerator::generateTyperQ1() {
         "2>(t->sum_base_price),types::Numeric<12, "
         "4>(t->sum_disc_price),types::Numeric<12, 6>(t->sum_charge), "
         "t->count_order);locals.consume(key, value);}}});});";
-   f << "// materialize final result\n";
+   f << "\n\n// materialize final result\n";
    f << "auto& result = resources.query->result;";
    f << "auto retAttr = result->addAttribute(\"l_returnflag\", "
         "sizeof(Char<1>));";
@@ -142,7 +143,7 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "}";
    f << "block.addedElements(n);";
    f << "});";
-   f << "// join threads\n";
+   f << "\n\n// join threads\n";
    f << "leaveQuery(nrThreads);";
    f << "return move(resources.query);";
    f << "}\n";
