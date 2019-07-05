@@ -22,7 +22,10 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "using namespace types;\n";
    f << "std::unique_ptr<runtime::Query> compiled_typer_q1(Database& db, "
         "size_t nrThreads, size_t "
-        "firstTuple) {\n";
+        "firstTuple, std::unordered_map<std::thread::id, "
+        "runtime::PartitionedDeque<1024>>&"
+        "twThreadData) {\n ";
+   f << "\n// prepare query data\n";
    f << "types::Date c1 = types::Date::castString(\"1998-09-02\");";
    f << "types::Numeric<12, 2> one = types::Numeric<12, "
         "2>::castString(\"1.00\");";
@@ -31,12 +34,16 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "auto l_linestatus = li[\"l_linestatus\"].data<types::Char<1>>();";
    f << "auto l_extendedprice = "
         "li[\"l_extendedprice\"].data<types::Numeric<12, 2>>();";
-   f << "auto l_discount = li[\"l_discount\"].data<types::Numeric<12, 2>>();";
+   f << "auto l_discount = li[\"l_discount\"].data<types::Numeric<12, "
+        "2>>();";
    f << "auto l_tax = li[\"l_tax\"].data<types::Numeric<12, 2>>();";
-   f << "auto l_quantity = li[\"l_quantity\"].data<types::Numeric<12, 2>>();";
+   f << "auto l_quantity = li[\"l_quantity\"].data<types::Numeric<12, "
+        "2>>();";
    f << "auto l_shipdate = li[\"l_shipdate\"].data<types::Date>();";
+   f << "\n\n// setup parallel execution + prepare result\n";
    f << "auto resources = initQuery(nrThreads);";
    f << "using hash = runtime::CRC32Hash;";
+   f << "\n\n// define the aggregation\n";
    f << "auto groupOp = make_GroupBy<tuple<Char<1>, Char<1>>,";
    f << "tuple<Numeric<12, 2>, Numeric<12, 2>,";
    f << "Numeric<12, 4>, Numeric<12, 6>, int64_t>,";
@@ -51,6 +58,7 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "make_tuple(Numeric<12, 2>(), Numeric<12, 2>(), Numeric<12, 4>(),";
    f << "Numeric<12, 6>(), int64_t(0)),";
    f << "nrThreads);";
+   f << "\n\n// compute typer's partial thread-local hash tables\n";
    f << "tbb::parallel_for(";
    f << "tbb::blocked_range<size_t>(firstTuple, li.nrTuples, morselSize),";
    f << "[&](const tbb::blocked_range<size_t>& r) {";
@@ -69,12 +77,35 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "}";
    f << "}";
    f << "});";
+   f << "\n\n// merge tw's partial thread-local hash tables with typer's "
+        "partial "
+        "thread-local hash tables\n";
+   f << "tbb::parallel_for_each(twThreadData.begin(), twThreadData.end(), "
+        "[&](auto& threadPartitions) {auto locals = "
+        "groupOp.preAggLocals();tbb::parallel_for_each(threadPartitions.second."
+        "getPartitions().begin(),threadPartitions.second.getPartitions().end(),"
+        " [&](auto& partition) {for (auto chunk = partition.first; chunk; "
+        "chunk = chunk->next) {auto elementSize = "
+        "threadPartitions.second.entrySize;auto nPart = partition.size(chunk, "
+        "elementSize);auto data = chunk->template data<void>();for (unsigned i "
+        "= 0; i < "
+        "nPart; ++i) {hybrid::Q1TectorTuple* t "
+        "=reinterpret_cast<hybrid::Q1TectorTuple*>(data) + "
+        "i;hybrid::Q1TyperKey key "
+        "=std::make_tuple(types::Char<1>::build(t->returnflag),types::Char<1>::"
+        "build(t->linestatus));hybrid::Q1TyperValue value = "
+        "std::make_tuple(types::Numeric<12, 2>(t->sum_qty),types::Numeric<12, "
+        "2>(t->sum_base_price),types::Numeric<12, "
+        "4>(t->sum_disc_price),types::Numeric<12, 6>(t->sum_charge), "
+        "t->count_order);locals.consume(key, value);}}});});";
+   f << "\n\n// materialize final result\n";
    f << "auto& result = resources.query->result;";
    f << "auto retAttr = result->addAttribute(\"l_returnflag\", "
         "sizeof(Char<1>));";
    f << "auto statusAttr = result->addAttribute(\"l_linestatus\", "
         "sizeof(Char<1>));";
-   f << "auto qtyAttr = result->addAttribute(\"sum_qty\", sizeof(Numeric<12, "
+   f << "auto qtyAttr = result->addAttribute(\"sum_qty\", "
+        "sizeof(Numeric<12, "
         "2>));";
    f << "auto base_priceAttr = result->addAttribute(\"sum_base_price\", "
         "sizeof(Numeric<12, 2>));";
@@ -84,8 +115,9 @@ const std::string CodeGenerator::generateTyperQ1() {
         "sizeof(Numeric<12, 2>));";
    f << "auto count_orderAttr = result->addAttribute(\"count_order\", "
         "sizeof(int64_t));";
-   f << "groupOp.forallGroups(";
-   f << "[&](runtime::Stack<decltype(groupOp)::group_t>& /*auto&*/ entries) {";
+   f << "groupOp.forallGroups([&](runtime::Stack<decltype(groupOp)::group_t>"
+        "& "
+        "/*auto&*/ entries) {";
    f << "auto n = entries.size();";
    f << "auto block = result->createBlock(n);";
    f << "auto ret = reinterpret_cast<Char<1>*>(block.data(retAttr));";
@@ -111,6 +143,7 @@ const std::string CodeGenerator::generateTyperQ1() {
    f << "}";
    f << "block.addedElements(n);";
    f << "});";
+   f << "\n\n// join threads\n";
    f << "leaveQuery(nrThreads);";
    f << "return move(resources.query);";
    f << "}\n";

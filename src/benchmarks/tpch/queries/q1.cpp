@@ -2,6 +2,7 @@
 #include "common/runtime/Hash.hpp"
 #include "common/runtime/Types.hpp"
 #include "hybrid/compilation_engine.hpp"
+#include "hybrid/hybrid_datatypes.hpp"
 #include "hybrid/hybrid_exception.hpp"
 #include "hybrid/shared_library.hpp"
 #include "hyper/GroupBy.hpp"
@@ -14,6 +15,7 @@
 #include "vectorwise/VectorAllocator.hpp"
 #include <deque>
 #include <iostream>
+#include <map>
 
 using namespace runtime;
 using namespace std;
@@ -39,20 +41,49 @@ using vectorwise::primitives::hash_t;
 //    l_returnflag,
 //    l_linestatus
 
-typedef std::unique_ptr<runtime::Query> (*CompiledTyperQuery)(Database&, size_t,
-                                                              size_t);
+// Display query results
+void printResult(runtime::Query* result) {
+   // display some results for debugging
+   const std::string groupAttributes[2] = {"l_returnflag", "l_linestatus"};
+   const std::string otherAttributes[5] = {"sum_qty", "sum_base_price",
+                                           "sum_disc_price", "sum_charge",
+                                           "count_order"};
+   for (auto iter = result->result->begin(); iter != result->result->end();
+        ++iter) {
+      auto block = *iter;
+      char* l_returnflag = reinterpret_cast<char*>(
+          block.data(result->result->getAttribute(groupAttributes[0])));
+      char* l_linestatus = reinterpret_cast<char*>(
+          block.data(result->result->getAttribute(groupAttributes[1])));
+      // if a match is found, combine aggregation results
+      long* sum_qty = reinterpret_cast<long*>(
+          block.data(result->result->getAttribute(otherAttributes[0])));
+      long* sum_base_price = reinterpret_cast<long*>(
+          block.data(result->result->getAttribute(otherAttributes[1])));
+      long* sum_disc_price = reinterpret_cast<long*>(
+          block.data(result->result->getAttribute(otherAttributes[2])));
+      long* sum_charge = reinterpret_cast<long*>(
+          block.data(result->result->getAttribute(otherAttributes[3])));
+      long* count_order = reinterpret_cast<long*>(
+          block.data(result->result->getAttribute(otherAttributes[4])));
+      for (unsigned i = 0; i < block.size(); ++i) {
+         std::cout << l_returnflag[i] << " | " << l_linestatus[i] << " | "
+                   << sum_qty[i] << " | " << sum_base_price[i] << " | "
+                   << sum_disc_price[i] << " | " << sum_charge[i] << " | "
+                   << count_order[i] << std::endl;
+      }
+   }
+}
+
+typedef std::unique_ptr<runtime::Query> (*CompiledTyperQuery)(
+    Database&, size_t, size_t,
+    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&);
 std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
                                           size_t vectorSize,
                                           const std::string& path_to_lib_src,
                                           bool fromLLVM) {
    using namespace vectorwise;
    using namespace std::chrono_literals;
-
-   // 0. INFO ABOUT QUERY
-   const std::string groupAttributes[2] = {"l_returnflag", "l_linestatus"};
-   const std::string otherAttributes[5] = {"sum_qty", "sum_base_price",
-                                           "sum_disc_price", "sum_charge",
-                                           "count_order"};
 
    // 1. START COMPILING Q1 IN TYPER
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
@@ -91,148 +122,49 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
       std::unique_ptr<HashGroup> groupOp(
           static_cast<HashGroup*>(printOp->child.release()));
 
-      // GROUPING
+      // we only perform thread-local aggregation (typer will take these
+      // hashtables and merge them into single hashtable)
       runtime::Hashmap& ht = groupOp->getHashTable();
       size_t maxFill = groupOp->getMaxFill();
       using header_t = runtime::Hashmap::EntryHeader;
-      if (!groupOp->cont.consumed) {
-         /// ------ phase 1: local preaggregation
-         /// aggregate all incoming tuples into local hashtable
-         size_t groups = 0;
-         auto& spill = groupOp->shared.spillStorage.local();
-         auto entry_size = groupOp->preAggregation.ht_entry_size;
+      size_t groups = 0;
+      auto& spill = groupOp->shared.spillStorage.local();
+      auto entry_size = groupOp->preAggregation.ht_entry_size;
 
-         auto flushAndClear = [&]() INTERPRET_SEPARATE {
-            assert(offsetof(header_t, next) + sizeof(header_t::next) ==
-                   offsetof(header_t, hash));
-            // flush ht entries into spillStorage
-            for (auto& alloc : groupOp->preAggregation.allocations) {
-               for (auto entry = reinterpret_cast<header_t*>(alloc.first),
-                         end = addBytes(entry, alloc.second * entry_size);
-                    entry < end; entry = addBytes(entry, entry_size))
-                  spill.push_back(&entry->hash, entry->hash);
+      // stores thread-local aggregation results in shared store (i.e.
+      // SharedStateManager from above)
+      auto flushAndClear = [&]() INTERPRET_SEPARATE {
+         assert(offsetof(header_t, next) + sizeof(header_t::next) ==
+                offsetof(header_t, hash));
+         // flush ht entries into spillStorage
+         for (auto& alloc : groupOp->preAggregation.allocations) {
+            for (auto entry = reinterpret_cast<header_t*>(alloc.first),
+                      end = addBytes(entry, alloc.second * entry_size);
+                 entry < end; entry = addBytes(entry, entry_size)) {
+               spill.push_back(&entry->hash, entry->hash);
             }
-            groupOp->preAggregation.allocations.clear();
-            groupOp->preAggregation.clearHashtable(ht);
-         };
-
-         for (pos_t n = groupOp->child->next(); n != EndOfStream && !typerLib;
-              n = groupOp->child->next()) {
-            groupOp->groupHash.evaluate(n);
-            groupOp->preAggregation.findGroups(n, ht);
-            auto groupsCreated =
-                groupOp->preAggregation.createMissingGroups(ht, false);
-            groupOp->updateGroups.evaluate(n);
-            groups += groupsCreated;
-            if (groups >= maxFill) flushAndClear();
-            processedTuples.fetch_add(vectorSize);
-            // std::this_thread::sleep_for(1ms);
          }
-         flushAndClear(); // flush remaining entries into spillStorage
-         barrier();       // Wait until all workers have finished phase 1
+         groupOp->preAggregation.allocations.clear();
+         groupOp->preAggregation.clearHashtable(ht);
+      };
 
-         groupOp->cont.consumed = true;
-         groupOp->cont.partition = groupOp->shared.partition.fetch_add(1);
-         groupOp->cont.partitionNeedsAggregation = true;
+      // process relation data in chunks
+      for (pos_t n = groupOp->child->next(); n != EndOfStream && !typerLib;
+           n = groupOp->child->next()) {
+         groupOp->groupHash.evaluate(n);
+         groupOp->preAggregation.findGroups(n, ht);
+         auto groupsCreated =
+             groupOp->preAggregation.createMissingGroups(ht, false);
+         groupOp->updateGroups.evaluate(n);
+         groups += groupsCreated;
+         if (groups >= maxFill) flushAndClear();
+         processedTuples.fetch_add(vectorSize);
+         //  FIXME: delay for debugging purposes
+         //   std::this_thread::sleep_for(1ms);
       }
-
-      /// ------ phase 2: global aggregation
-      // get a partition
-      for (; groupOp->cont.partition < groupOp->nrPartitions;) {
-         if (groupOp->cont.partitionNeedsAggregation) {
-            auto partNr = groupOp->cont.partition;
-            // for all thread local partitions
-            for (auto& threadPartitions :
-                 groupOp->shared.spillStorage.threadData) {
-               // aggregate data from thread local partition
-               auto& partition =
-                   threadPartitions.second.getPartitions()[partNr];
-               for (auto chunk = partition.first; chunk; chunk = chunk->next) {
-                  auto elementSize = threadPartitions.second.entrySize;
-                  auto nPart = partition.size(chunk, elementSize);
-                  for (size_t n = std::min(nPart, vectorSize), pos = 0; n;
-                       nPart -= n, pos += n, n = std::min(nPart, vectorSize)) {
-
-                     // communicate data position of current chunk to primitives
-                     // for group lookup and creation
-                     auto data =
-                         addBytes(chunk->data<void>(), pos * elementSize);
-                     groupOp->globalAggregation.rowData = data;
-                     groupOp->findGroupsFromPartition(data, n);
-                     auto cGroups = [&]() INTERPRET_SEPARATE {
-                        groupOp->globalAggregation.createMissingGroups(ht,
-                                                                       true);
-                     };
-                     cGroups();
-                     groupOp->updateGroupsFromPartition.evaluate(n);
-                  }
-               }
-            }
-            groupOp->cont.partitionNeedsAggregation = false;
-            groupOp->cont.iter = groupOp->globalAggregation.allocations.begin();
-         }
-         // send aggregation result to parent operator
-         // TODO: refill result instead of sending all allocations separately
-         if (groupOp->cont.iter !=
-             groupOp->globalAggregation.allocations.end()) {
-            auto& block = *(groupOp->cont.iter);
-            // write current block start to htMatches so the the gather
-            // primitives can read the offset from there
-            *(groupOp->globalAggregation.htMatches) =
-                reinterpret_cast<header_t*>(block.first);
-            auto n = block.second;
-            groupOp->gatherGroups.evaluate(n);
-            groupOp->cont.iter++;
-
-            // RESULT WRITER
-            // assure that enough space is available in current block to fit
-            // result of all buffers
-            auto currentBlock = printOp->getCurrentBlock();
-            if (currentBlock.spaceRemaining() < n)
-               currentBlock = printOp->shared.result->result->createBlock(n);
-            auto blockSize = currentBlock.size();
-            for (const auto& input : printOp->inputs)
-               // copy data from intermediate buffers into result relation
-               std::memcpy(addBytes(currentBlock.data(input.attribute),
-                                    input.elementSize * blockSize),
-                           input.data, n * input.elementSize);
-            // update result relation size
-            currentBlock.addedElements(n);
-            // RESULT WRITER
-         } else {
-            auto htClear = [&]() INTERPRET_SEPARATE {
-               groupOp->globalAggregation.clearHashtable(ht);
-            };
-            htClear();
-            groupOp->cont.partitionNeedsAggregation = true;
-            groupOp->cont.partition = groupOp->shared.partition.fetch_add(1);
-         }
-      }
-      // GROUPING
-
-      // sync results
-      auto leader = barrier();
-      if (leader)
-         result =
-             move(dynamic_cast<ResultWriter*>(printOp.get())->shared.result);
+      flushAndClear(); // flush remaining entries into spillStorage
+      barrier();       // Wait until all workers have finished phase 1
    });
-
-   // display some results for debugging
-   for (auto twIter = result->result->begin(); twIter != result->result->end();
-        ++twIter) {
-      auto twBlock = *twIter;
-      char* tw_groupattr1 = reinterpret_cast<char*>(
-          twBlock.data(result->result->getAttribute(groupAttributes[0])));
-      char* tw_groupattr2 = reinterpret_cast<char*>(
-          twBlock.data(result->result->getAttribute(groupAttributes[1])));
-      // if a match is found, combine aggregation results
-      long* tw_sum_qty = reinterpret_cast<long*>(
-          twBlock.data(result->result->getAttribute(otherAttributes[0])));
-      for (unsigned i = 0; i < twBlock.size(); ++i) {
-         std::cout << tw_groupattr1[i] << " | " << tw_groupattr2[i] << " | "
-                   << tw_sum_qty[i] << std::endl;
-      }
-   }
 
    auto end = std::chrono::steady_clock::now();
    std::cout << "TW took "
@@ -242,109 +174,32 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
              << " milliseconds to process " << processedTuples.load()
              << " tuples." << std::endl;
 
-   // 3. PROCESS REMAINING TUPLES WITH TYPER
+   // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION RESULTS
    compilationThread.join();
    start = std::chrono::steady_clock::now();
    size_t nrTuples = db["lineitem"].nrTuples;
-   if (processedTuples.load() < nrTuples) {
-      // load library
-      if (!typerLib) {
-         throw hybrid::HybridException("Could not load shared Typer library!");
-      }
-
-      // get compiled function
-      const std::string& funcName =
-          "_Z17compiled_typer_q1RN7runtime8DatabaseEmm";
-      CompiledTyperQuery typer_q1 =
-          typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
-      if (!typer_q1) {
-         throw hybrid::HybridException(
-             "Could not find function for running Q1 in Typer!");
-      }
-
-      // compute typer result
-      std::unique_ptr<runtime::Query> typer_result =
-          typer_q1(db, nrThreads, processedTuples.load());
-
-      // display some results for debugging
-      for (auto typerIter = typer_result->result->begin();
-           typerIter != typer_result->result->end(); ++typerIter) {
-         auto typerBlock = *typerIter;
-         char* typer_groupattr1 = reinterpret_cast<char*>(typerBlock.data(
-             typer_result->result->getAttribute(groupAttributes[0])));
-         char* typer_groupattr2 = reinterpret_cast<char*>(typerBlock.data(
-             typer_result->result->getAttribute(groupAttributes[1])));
-         // if a match is found, combine aggregation results
-         long* typer_sum_qty = reinterpret_cast<long*>(typerBlock.data(
-             typer_result->result->getAttribute(otherAttributes[0])));
-         for (unsigned i = 0; i < typerBlock.size(); ++i) {
-            std::cout << typer_groupattr1[i] << " | " << typer_groupattr2[i]
-                      << " | " << typer_sum_qty[i] << std::endl;
-         }
-      }
-
-      // merge results
-      const std::string groupAttr1 = groupAttributes[0];
-      const std::string groupAttr2 = groupAttributes[1];
-      // for each block of the TW result
-      for (auto twIter = result->result->begin();
-           twIter != result->result->end(); ++twIter) {
-         auto twBlock = *twIter;
-         // for each tuple in the block
-         for (unsigned i = 0; i < twBlock.size(); ++i) {
-            // get values of the grouping attr in TW result
-            char tw_groupattr1 = reinterpret_cast<char*>(
-                twBlock.data(result->result->getAttribute(groupAttr1)))[i];
-            char tw_groupattr2 = reinterpret_cast<char*>(
-                twBlock.data(result->result->getAttribute(groupAttr2)))[i];
-            // and find a matching tuple in the blocks of the Typer result
-            for (auto typerIter = typer_result->result->begin();
-                 typerIter != typer_result->result->end(); ++typerIter) {
-               auto typerBlock = *typerIter;
-               for (unsigned j = 0; j < typerBlock.size(); ++j) {
-                  // get values of the grouping attr in Typer result
-                  char typer_groupattr1 =
-                      reinterpret_cast<char*>(typerBlock.data(
-                          typer_result->result->getAttribute(groupAttr1)))[j];
-                  char typer_groupattr2 =
-                      reinterpret_cast<char*>(typerBlock.data(
-                          typer_result->result->getAttribute(groupAttr2)))[j];
-
-                  // if a match is found
-                  if (tw_groupattr1 == typer_groupattr1 &&
-                      tw_groupattr2 == typer_groupattr2) {
-                     // aggregate over all remaining attributes
-                     for (unsigned k = 0; k < 5; ++k) {
-                        long* tw_attr = reinterpret_cast<long*>(twBlock.data(
-                            result->result->getAttribute(otherAttributes[k])));
-                        long* typer_attr = reinterpret_cast<long*>(
-                            typerBlock.data(typer_result->result->getAttribute(
-                                otherAttributes[k])));
-                        tw_attr[i] += typer_attr[j];
-                     }
-                  }
-               }
-            }
-         }
-      }
+   if (processedTuples.load() > nrTuples) { processedTuples.store(nrTuples); }
+   // load library
+   if (!typerLib) {
+      throw hybrid::HybridException("Could not load shared Typer library!");
    }
 
-   // display some results for debugging
-   for (auto twIter = result->result->begin(); twIter != result->result->end();
-        ++twIter) {
-      auto twBlock = *twIter;
-      char* tw_groupattr1 = reinterpret_cast<char*>(
-          twBlock.data(result->result->getAttribute(groupAttributes[0])));
-      char* tw_groupattr2 = reinterpret_cast<char*>(
-          twBlock.data(result->result->getAttribute(groupAttributes[1])));
-      // if a match is found, combine aggregation results
-      long* tw_sum_qty = reinterpret_cast<long*>(
-          twBlock.data(result->result->getAttribute(otherAttributes[0])));
-      for (unsigned i = 0; i < twBlock.size(); ++i) {
-         std::cout << tw_groupattr1[i] << " | " << tw_groupattr2[i] << " | "
-                   << tw_sum_qty[i] << std::endl;
-      }
+   // get compiled function
+   const std::string& funcName =
+       "_Z17compiled_typer_q1RN7runtime8DatabaseEmmRSt13unordered_"
+       "mapINSt6thread2idENS_16PartitionedDequeILm1024EEESt4hashIS4_ESt8equal_"
+       "toIS4_ESaISt4pairIKS4_S6_EEE";
+   CompiledTyperQuery typer_q1 =
+       typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
+   if (!typer_q1) {
+      throw hybrid::HybridException(
+          "Could not find function for running Q1 in Typer!");
    }
+
+   // compute typer result
+   result = std::move(
+       typer_q1(db, nrThreads, processedTuples.load(),
+                shared.get<HashGroup::Shared>(2).spillStorage.threadData));
 
    end = std::chrono::steady_clock::now();
    std::cout << "Typer took "
@@ -357,6 +212,8 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
 
    // close shared library
    delete typerLib;
+
+   //    printResult(result.get());
 
    return result;
 }

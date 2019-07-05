@@ -79,10 +79,10 @@ class GroupBy {
          cb(*group);
       }
 
-     template<typename KEY>
-      inline V& getGroup(KEY&& key) {
-       return *groups.findOrCreate(std::forward<KEY>(key), groups.hash(std::forward<KEY>(key)), parent.init,
-                                     entries, [&]() {
+      template <typename KEY> inline V& getGroup(KEY&& key) {
+         return *groups.findOrCreate(std::forward<KEY>(key),
+                                     groups.hash(std::forward<KEY>(key)),
+                                     parent.init, entries, [&]() {
                                         if (groups.size() >= maxFill) {
                                            spill();
                                            groups.clear();
@@ -112,7 +112,6 @@ class GroupBy {
    /// Spill all
    void spillAll() {
       tbb::parallel_for(entries.range(), [&](const auto& e) {
-
          bool exists;
          auto& deque = partitionedDeques.local(exists);
          if (!exists) deque.postConstruct(nrThreads * 4, sizeof(group_t));
@@ -174,7 +173,6 @@ class GroupBy {
 };
 
 template <typename K, typename V, typename HASH, typename UPDATE>
-GroupBy<K, V, HASH, UPDATE> make_GroupBy(UPDATE u, V i,
-                                               size_t nrThreads) {
+GroupBy<K, V, HASH, UPDATE> make_GroupBy(UPDATE u, V i, size_t nrThreads) {
    return std::move(GroupBy<K, V, HASH, UPDATE>(u, i, nrThreads));
 }
