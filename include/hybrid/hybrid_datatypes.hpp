@@ -21,6 +21,21 @@ typedef struct {
    long sum_base_price;
    long count_order;
 } Q1TectorTuple;
+
+typedef std::tuple<types::Integer, types::Date, types::Numeric<12, 2>,
+                   types::Char<25>, types::Integer>
+    Q18TyperKey;
+typedef types::Numeric<12U, 2U> Q18TyperValue;
+
+typedef struct {
+   char idk[9];
+   char c_name[21];
+   long c_custkey;
+   long o_orderkey;
+   types::Date o_orderdate;
+   long o_totalprice;
+   long sum;
+} Q18TectorTuple;
 } // namespace hybrid
 
 #endif

@@ -10,6 +10,7 @@ class CodeGenerator {
    // generates cpp files with Typer code for execution of TPC-H queries
    const std::string generateTyperQ1();
    const std::string generateTyperQ6();
+   const std::string generateTyperQ18();
 
  private:
    CodeGenerator();

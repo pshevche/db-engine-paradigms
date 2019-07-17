@@ -43,10 +43,7 @@ const std::string CompilationEngine::precompileAPIHeader() {
           << std::endl;
       std::stringstream precompile_header;
 
-      precompile_header << "clang++ -march=native -mtune=native -std=c++14 "
-                           "-Wall -Wextra "
-                           "-fno-omit-frame-pointer -Wno-unknown-pragmas "
-                           "-Wno-parentheses-equality -g -O3 -fpic "
+      precompile_header << "clang++ -march=native -std=c++14 -g -O3 -fpic "
                         << path_to_minimal_api_header << " -I "
                         << "include/ -o " << path_to_precompiled_header
                         << std::endl;
@@ -72,18 +69,12 @@ CompilationEngine::compileQueryCPP(const std::string& filename, bool toLLVM) {
    std::stringstream compile_cmd;
    if (!toLLVM) {
       path_to_target = filename + ".o";
-      compile_cmd << "clang++ -march=native -mtune=native -std=c++14 "
-                     "-Wabi -Wall -Wextra "
-                     "-fno-omit-frame-pointer -Wno-unknown-pragmas "
-                     "-Wno-parentheses-equality -g -O3 -include "
+      compile_cmd << "clang++ -march=native -std=c++14 -g -O3 -include "
                   << path_to_minimal_api_header << " -I include/ -c -fpic";
       compile_cmd << path_to_cpp << " -o " << path_to_target;
    } else {
       path_to_target = filename + ".ll";
-      compile_cmd << "clang++ -march=native -mtune=native -std=c++14 "
-                     "-Wabi -Wall -Wextra "
-                     "-fno-omit-frame-pointer -Wno-unknown-pragmas "
-                     "-Wno-parentheses-equality -g -O3 -include "
+      compile_cmd << "clang++ -march=native -std=c++14 -g -O3 -include "
                   << path_to_minimal_api_header
                   << " -I include/ -emit-llvm -S -c -fpic ";
       compile_cmd << path_to_cpp << " -o " << path_to_target;

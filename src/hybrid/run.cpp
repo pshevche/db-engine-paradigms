@@ -59,7 +59,9 @@ int main(int argc, char* argv[]) {
    bool clearCaches = false;
    if (argc > 3) nrThreads = atoi(argv[3]);
 
-   std::unordered_set<std::string> q = {"1v", "1h", "1hv", "6v", "6h", "6hv"};
+   std::unordered_set<std::string> q = {"18v", "18h", "18hv"};
+   //    std::unordered_set<std::string> q = {"1v", "1h", "1hv", "6v", "6h",
+   //    "6hv"};
 
    if (auto v = std::getenv("vectorSize")) vectorSize = atoi(v);
    if (auto v = std::getenv("SIMDhash")) conf.useSimdHash = atoi(v);
@@ -171,6 +173,59 @@ int main(int argc, char* argv[]) {
                              escape(&result);
                           },
                           repetitions);
+      } catch (hybrid::HybridException& exc) {
+         std::cerr << exc.what() << std::endl;
+      }
+   }
+
+   // Q18
+   if (q.count("18h")) {
+      e.timeAndProfile(
+          "q18 hyper     ",
+          nrTuples(tpch, {"customer", "lineitem", "orders", "lineitem"}),
+          [&]() {
+             if (clearCaches) clearOsCaches();
+             auto result = q18_hyper(tpch, nrThreads);
+             escape(&result);
+          },
+          repetitions);
+   }
+
+   if (q.count("18v")) {
+      e.timeAndProfile(
+          "q18 vectorwise",
+          nrTuples(tpch, {"customer", "lineitem", "orders", "lineitem"}),
+          [&]() {
+             if (clearCaches) clearOsCaches();
+             auto result = q18_vectorwise(tpch, nrThreads, vectorSize);
+             escape(&result);
+          },
+          repetitions);
+   }
+
+   if (q.count("18hv")) {
+      try {
+         // generate Typer code for Q18
+         const std::string& path_to_cpp =
+             hybrid::CodeGenerator::instance().generateTyperQ18();
+
+         // compile llvm
+         bool useLLVM = true;
+         const std::string& path_to_ll =
+             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                   useLLVM);
+
+         // run experiments
+         e.timeAndProfile(
+             "q18 hybrid   ",
+             nrTuples(tpch, {"customer", "lineitem", "orders", "lineitem"}),
+             [&]() {
+                if (clearCaches) clearOsCaches();
+                auto result = q18_hybrid(tpch, nrThreads, vectorSize,
+                                         path_to_ll, useLLVM);
+                escape(&result);
+             },
+             repetitions);
       } catch (hybrid::HybridException& exc) {
          std::cerr << exc.what() << std::endl;
       }
