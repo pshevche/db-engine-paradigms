@@ -28,13 +28,14 @@ typedef std::tuple<types::Integer, types::Date, types::Numeric<12, 2>,
 typedef types::Numeric<12U, 2U> Q18TyperValue;
 
 typedef struct {
-   char idk[9];
+   int8_t idk1[9];
    char c_name[21];
-   long c_custkey;
-   long o_orderkey;
-   types::Date o_orderdate;
-   long o_totalprice;
-   long sum;
+   int8_t idk2[4];
+   int8_t c_custkey[4];
+   int8_t o_orderdate[4];
+   int8_t o_totalprice[8];
+   int8_t o_orderkey[4];
+   int8_t sum[10];
 } Q18TectorTuple;
 } // namespace hybrid
 

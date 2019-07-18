@@ -62,9 +62,9 @@ void printResultQ18(runtime::Query* result) {
       auto block = *iter;
       char* c_name = reinterpret_cast<char*>(
           block.data(result->result->getAttribute("c_name")));
-      long* c_custkey = reinterpret_cast<long*>(
+      int32_t* c_custkey = reinterpret_cast<int32_t*>(
           block.data(result->result->getAttribute("c_custkey")));
-      long* o_orderkey = reinterpret_cast<long*>(
+      int32_t* o_orderkey = reinterpret_cast<int32_t*>(
           block.data(result->result->getAttribute("o_orderkey")));
       long* o_orderdate = reinterpret_cast<long*>(
           block.data(result->result->getAttribute("o_orderdate")));
@@ -185,10 +185,9 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
          for (auto chunk = partition.first; chunk; chunk = chunk->next) {
             auto elementSize = threadPartitions.second.entrySize;
             auto nPart = partition.size(chunk, elementSize);
-            auto data = chunk->template data<void>();
+            auto data = chunk->template data<hybrid::Q18TectorTuple>();
             for (unsigned i = 0; i < nPart; ++i) {
-               hybrid::Q18TectorTuple* t =
-                   reinterpret_cast<hybrid::Q18TectorTuple*>(data) + i;
+               hybrid::Q18TectorTuple t = data[i];
                std::cout << "data test" << std::endl;
                //    hybrid::Q1TyperKey key =
                //        std::make_tuple(types::Char<1>::build(t->returnflag),
@@ -403,7 +402,7 @@ NOVECTORIZE std::unique_ptr<runtime::Query> q18_hyper(Database& db,
    });
 
    leaveQuery(nrThreads);
-   printResultQ18(resources.query.get());
+   //    printResultQ18(resources.query.get());
    return move(resources.query);
 }
 
