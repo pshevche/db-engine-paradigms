@@ -27,15 +27,14 @@ typedef std::tuple<types::Integer, types::Date, types::Numeric<12, 2>,
     Q18TyperKey;
 typedef types::Numeric<12U, 2U> Q18TyperValue;
 
-typedef struct {
+typedef struct __attribute__((packed)) {
    int8_t idk1[9];
-   char c_name[21];
-   int8_t idk2[4];
-   int8_t c_custkey[4];
-   int8_t o_orderdate[4];
-   int8_t o_totalprice[8];
-   int8_t o_orderkey[4];
-   int8_t sum[10];
+   char c_name[25];
+   int32_t c_custkey;
+   int32_t o_orderdate;
+   int64_t o_totalprice;
+   int32_t o_orderkey;
+   int64_t sum;
 } Q18TectorTuple;
 } // namespace hybrid
 

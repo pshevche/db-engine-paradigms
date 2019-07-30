@@ -55,10 +55,9 @@ using namespace std;
 
 // Display query results
 void printResultQ18(runtime::Query* result) {
-   unsigned count = 0;
    // display some results for debugging
-   for (auto iter = result->result->begin();
-        count < 5 && iter != result->result->end(); ++iter) {
+   for (auto iter = result->result->begin(); iter != result->result->end();
+        ++iter) {
       auto block = *iter;
       char* c_name = reinterpret_cast<char*>(
           block.data(result->result->getAttribute("c_name")));
@@ -72,10 +71,11 @@ void printResultQ18(runtime::Query* result) {
           block.data(result->result->getAttribute("o_totalprice")));
       long* sum = reinterpret_cast<long*>(
           block.data(result->result->getAttribute("sum")));
-      std::cout << c_name << " | " << *c_custkey << " | " << *o_orderkey
-                << " | " << *o_orderdate << " | " << *o_totalprice << " | "
-                << *sum << std::endl;
-      ++count;
+      if (*c_custkey == 141098) {
+         std::cout << c_name << " | " << *c_custkey << " | " << *o_orderkey
+                   << " | " << *o_orderdate << " | " << *o_totalprice << " | "
+                   << *sum << std::endl;
+      }
    }
 }
 
@@ -178,30 +178,6 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
              << " milliseconds to process " << processedTuples.load()
              << " tuples." << std::endl;
 
-   auto& twThreadData =
-       shared.get<HashGroup::Shared>(9).spillStorage.threadData;
-   for (auto& threadPartitions : twThreadData) {
-      for (auto& partition : threadPartitions.second.getPartitions()) {
-         for (auto chunk = partition.first; chunk; chunk = chunk->next) {
-            auto elementSize = threadPartitions.second.entrySize;
-            auto nPart = partition.size(chunk, elementSize);
-            auto data = chunk->template data<hybrid::Q18TectorTuple>();
-            for (unsigned i = 0; i < nPart; ++i) {
-               hybrid::Q18TectorTuple t = data[i];
-               std::cout << "data test" << std::endl;
-               //    hybrid::Q1TyperKey key =
-               //        std::make_tuple(types::Char<1>::build(t->returnflag),
-               //                        types::Char<1>::build(t->linestatus));
-               //    hybrid::Q1TyperValue value = std::make_tuple(
-               //        types::Numeric<12, 2>(t->sum_qty),
-               //        types::Numeric<12, 2>(t->sum_base_price),
-               //        types::Numeric<12, 4>(t->sum_disc_price),
-               //        types::Numeric<12, 6>(t->sum_charge), t->count_order);
-            }
-         }
-      }
-   }
-
    // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION RESULTS
    compilationThread.join();
    start = std::chrono::steady_clock::now();
@@ -227,7 +203,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    // compute typer result
    result = std::move(
        typer_q18(db, nrThreads, processedTuples.load(),
-                 shared.get<HashGroup::Shared>(2).spillStorage.threadData));
+                 shared.get<HashGroup::Shared>(9).spillStorage.threadData));
 
    end = std::chrono::steady_clock::now();
    std::cout << "Typer took "
@@ -241,8 +217,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    // close shared library
    delete typerLib;
 
-   //    printResultQ18(result.get());
-
+   printResultQ18(result.get());
    return result;
 }
 
@@ -402,7 +377,7 @@ NOVECTORIZE std::unique_ptr<runtime::Query> q18_hyper(Database& db,
    });
 
    leaveQuery(nrThreads);
-   //    printResultQ18(resources.query.get());
+   printResultQ18(resources.query.get());
    return move(resources.query);
 }
 
@@ -565,6 +540,7 @@ std::unique_ptr<runtime::Query> q18_vectorwise(Database& db, size_t nrThreads,
          result = move(dynamic_cast<ResultWriter*>(resources->rootOp.get())
                            ->shared.result);
    });
+
    printResultQ18(result.get());
    return result;
 }
