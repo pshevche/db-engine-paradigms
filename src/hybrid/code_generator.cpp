@@ -151,7 +151,7 @@ const std::string CodeGenerator::generateTyperQ1() {
 
    // format code
    std::string format_command = std::string("astyle -q ") + cppName;
-   int ret = system(format_command.c_str());
+   system(format_command.c_str());
 
    return filename;
 }
@@ -216,7 +216,7 @@ const std::string CodeGenerator::generateTyperQ6() {
 
    // format code
    std::string format_command = std::string("astyle -q ") + cppName;
-   int ret = system(format_command.c_str());
+   system(format_command.c_str());
 
    return filename;
 }
@@ -424,7 +424,7 @@ const std::string CodeGenerator::generateTyperQ18() {
 
    // format code
    std::string format_command = std::string("astyle -q ") + cppName;
-   int ret = system(format_command.c_str());
+   system(format_command.c_str());
 
    return filename;
 }

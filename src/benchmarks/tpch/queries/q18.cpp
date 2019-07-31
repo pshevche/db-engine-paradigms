@@ -7,6 +7,7 @@
 #include "hybrid/compilation_engine.hpp"
 #include "hybrid/hybrid_datatypes.hpp"
 #include "hybrid/hybrid_exception.hpp"
+#include "hybrid/hybrid_operators.hpp"
 #include "hybrid/shared_library.hpp"
 #include "hyper/GroupBy.hpp"
 #include "hyper/ParallelHelper.hpp"
@@ -432,7 +433,7 @@ std::unique_ptr<Q18Builder::Q18> Q18Builder::getQuery() {
                       Buffer(c_name, sizeof(types::Char<25>)),
                       primitives::gather_col_Char_25_col);
    auto lineitem2 = Scan("lineitem");
-   HashJoin(Buffer(lineitem_matches, sizeof(pos_t)))
+   HybridHashJoin(Buffer(lineitem_matches, sizeof(pos_t)))
        .addBuildKey(Column(orders, "o_orderkey"), Buffer(customer_matches),
                     primitives::hash_sel_int32_t_col,
                     primitives::scatter_sel_int32_t_col)
