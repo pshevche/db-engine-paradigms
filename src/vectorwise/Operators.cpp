@@ -2,6 +2,7 @@
 #include "common/Compat.hpp"
 #include "common/runtime/Concurrency.hpp"
 #include "common/runtime/SIMD.hpp"
+#include "hybrid/hybrid_operators.hpp"
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
@@ -854,7 +855,8 @@ size_t HashGroup::next() {
          preAggregation.clearHashtable(ht);
       };
 
-      for (pos_t n = child->next(); n != EndOfStream; n = child->next()) {
+      for (auto n = child->next(); n != EndOfStream; n = child->next()) {
+         if (n == hybrid::IgnoreValue) { continue; }
          groupHash.evaluate(n);
          preAggregation.findGroups(n, ht);
          auto groupsCreated = preAggregation.createMissingGroups(ht, false);

@@ -42,7 +42,7 @@ using vectorwise::primitives::hash_t;
 //    l_linestatus
 
 // Display query results
-void printResult(runtime::Query* result) {
+void printResultQ1(runtime::Query* result) {
    // display some results for debugging
    const std::string groupAttributes[2] = {"l_returnflag", "l_linestatus"};
    const std::string otherAttributes[5] = {"sum_qty", "sum_base_price",
@@ -213,7 +213,7 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
    // close shared library
    delete typerLib;
 
-   //    printResult(result.get());
+   //    printResultQ1(result.get());
 
    return result;
 }

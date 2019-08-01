@@ -208,7 +208,7 @@ class Hashjoin : public BinaryOperator {
           : nextProbe(0), numProbes(0), buildMatch(runtime::Hashmap::end()) {}
    } cont;
 
- private:
+ protected:
    Shared& shared;
    /// Additional state to continue iteration in next call for  joinSelParallel
    struct IterConcurrentContinuation {

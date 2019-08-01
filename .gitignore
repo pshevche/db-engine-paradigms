@@ -44,3 +44,6 @@ plot/*.tex
 
 # Benchmark data
 data/
+
+# generated typer code
+src/hybrid/typer_q*

@@ -247,6 +247,10 @@ struct Q18Builder : public Query, private vectorwise::QueryBuilder {
    std::unique_ptr<Q18> getGroupQuery();
 };
 
+std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
+                                           size_t nrThreads, size_t vectorSize,
+                                           const std::string& path_to_lib_src,
+                                           bool fromLLVM);
 std::unique_ptr<runtime::Query>
 q18_hyper(runtime::Database& db,
           size_t nrThreads = std::thread::hardware_concurrency());

@@ -1,7 +1,7 @@
 #pragma once
 #include "common/defs.hpp"
 #include "common/runtime/Memory.hpp"
-#include "common/runtime/SIMD.hpp"
+// #include "common/runtime/SIMD.hpp"
 #include "common/runtime/Stack.hpp"
 #include <assert.h>
 #include <atomic>
@@ -34,7 +34,7 @@ class Hashmap {
    /// Uses pointer tagging as a filter to quickly determine whether hash is
    /// contained
    inline EntryHeader* find_chain_tagged(hash_t hash);
-   inline Vec8uM find_chain_tagged(Vec8u hashes);
+   //    inline Vec8uM find_chain_tagged(Vec8u hashes);
    /// Insert entry into chain for the given hash
    template <bool concurrentInsert = true>
    inline void insert(EntryHeader* entry, hash_t hash);
@@ -68,7 +68,7 @@ class Hashmap {
  private:
    inline Hashmap::EntryHeader* ptr(Hashmap::EntryHeader* p);
    inline ptr_t tag(hash_t p);
-   inline Vec8u tag(Vec8u p);
+   //    inline Vec8u tag(Vec8u p);
    inline Hashmap::EntryHeader* update(Hashmap::EntryHeader* old,
                                        Hashmap::EntryHeader* p, hash_t hash);
 };
@@ -87,10 +87,10 @@ inline Hashmap::ptr_t Hashmap::tag(Hashmap::hash_t hash) {
    return ((size_t)1) << (tagPos + (sizeof(ptr_t) * 8 - 16));
 }
 
-inline Vec8u Hashmap::tag(Vec8u hashes) {
-   auto tagPos = hashes >> (sizeof(hash_t) * 8 - 4);
-   return Vec8u(1) << (tagPos + Vec8u(sizeof(ptr_t) * 8 - 16));
-}
+// inline Vec8u Hashmap::tag(Vec8u hashes) {
+//    auto tagPos = hashes >> (sizeof(hash_t) * 8 - 4);
+//    return Vec8u(1) << (tagPos + Vec8u(sizeof(ptr_t) * 8 - 16));
+// }
 
 inline Hashmap::EntryHeader* Hashmap::ptr(Hashmap::EntryHeader* p) {
    return (EntryHeader*)((ptr_t)p & maskPointer);
@@ -141,15 +141,15 @@ inline Hashmap::EntryHeader* Hashmap::find_chain_tagged(hash_t hash) {
       return end();
 }
 
-inline Vec8uM Hashmap::find_chain_tagged(Vec8u hashes) {
-   auto pos = hashes & Vec8u(mask);
-   Vec8u candidates =
-       _mm512_i64gather_epi64(pos, (const long long int*)entries, 8);
-   Vec8u filterMatch = candidates & tag(hashes);
-   __mmask8 matches = filterMatch != Vec8u(uint64_t(0));
-   candidates = candidates & Vec8u(maskPointer);
-   return {candidates, matches};
-}
+// inline Vec8uM Hashmap::find_chain_tagged(Vec8u hashes) {
+//    auto pos = hashes & Vec8u(mask);
+//    Vec8u candidates =
+//        _mm512_i64gather_epi64(pos, (const long long int*)entries, 8);
+//    Vec8u filterMatch = candidates & tag(hashes);
+//    __mmask8 matches = filterMatch != Vec8u(uint64_t(0));
+//    candidates = candidates & Vec8u(maskPointer);
+//    return {candidates, matches};
+// }
 
 template <bool concurrentInsert>
 void inline Hashmap::insert_tagged(EntryHeader* entry, hash_t hash) {
