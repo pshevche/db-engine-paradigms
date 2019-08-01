@@ -66,18 +66,16 @@ void printResultQ18(runtime::Query* result) {
           block.data(result->result->getAttribute("c_custkey")));
       int32_t* o_orderkey = reinterpret_cast<int32_t*>(
           block.data(result->result->getAttribute("o_orderkey")));
-      long* o_orderdate = reinterpret_cast<long*>(
+      types::Date* o_orderdate = reinterpret_cast<types::Date*>(
           block.data(result->result->getAttribute("o_orderdate")));
       long* o_totalprice = reinterpret_cast<long*>(
           block.data(result->result->getAttribute("o_totalprice")));
       long* sum = reinterpret_cast<long*>(
           block.data(result->result->getAttribute("sum")));
       for (unsigned i = 0; i < block.size(); ++i) {
-         if (c_custkey[i] == 128120) {
-            std::cout << c_custkey[i] << " | " << o_orderkey[i] << " | "
-                      << o_orderdate[i] << " | " << o_totalprice[i] << " | "
-                      << sum[i] << std::endl;
-         }
+         std::cout << c_custkey[i] << " | " << o_orderkey[i] << " | "
+                   << o_orderdate[i] << " | " << o_totalprice[i] << " | "
+                   << sum[i] << std::endl;
       }
    }
 }
@@ -160,6 +158,8 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
            n = groupOp->child->next()) {
          if (n == hybrid::IgnoreValue) {
             processedTuples.fetch_add(vectorSize);
+            //  DEBUGGING
+            // std::this_thread::sleep_for(1ms);
             continue;
          }
          groupOp->groupHash.evaluate(n);
@@ -170,8 +170,8 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
          groups += groupsCreated;
          if (groups >= maxFill) flushAndClear();
          processedTuples.fetch_add(vectorSize);
-         //  FIXME: delay for debugging purposes
-         //   std::this_thread::sleep_for(1ms);
+         //  DEBUGGING
+         //  std::this_thread::sleep_for(1ms);
       }
       flushAndClear(); // flush remaining entries into spillStorage
       barrier();       // Wait until all workers have finished phase 1
@@ -184,24 +184,6 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                     .count()
              << " milliseconds to process " << processedTuples.load()
              << " tuples." << std::endl;
-
-   auto& twThreadData =
-       shared.get<HashGroup::Shared>(9).spillStorage.threadData;
-   for (auto& threadPartitions : twThreadData) {
-      for (auto& partition : threadPartitions.second.getPartitions()) {
-         for (auto chunk = partition.first; chunk; chunk = chunk->next) {
-            auto elementSize = threadPartitions.second.entrySize;
-            auto nPart = partition.size(chunk, elementSize);
-            auto data = chunk->template data<hybrid::Q18TectorTuple>();
-            for (unsigned i = 0; i < nPart; ++i) {
-               hybrid::Q18TectorTuple t = data[i];
-               std::cout << t.c_name << " | " << t.c_custkey << " | "
-                         << t.o_orderkey << " | " << t.o_orderdate << " | "
-                         << t.o_totalprice << " | " << t.sum << std::endl;
-            }
-         }
-      }
-   }
 
    // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION RESULTS
    compilationThread.join();

@@ -35,6 +35,7 @@ typedef struct __attribute__((packed)) {
    int64_t o_totalprice;
    int32_t o_orderkey;
    int64_t sum;
+   int8_t idk2[2];
 } Q18TectorTuple;
 } // namespace hybrid
 
