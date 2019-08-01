@@ -48,23 +48,22 @@ size_t HybridHashJoin::next() {
       consumed = true;
       barrier(); // wait for all threads to finish build phase
    }
-   // --- lookup
-   while (true) {
-      if (cont.nextProbe >= cont.numProbes) {
-         cont.numProbes = right->next();
-         cont.nextProbe = 0;
-         if (cont.numProbes == EndOfStream) return EndOfStream;
-         probeHash.evaluate(cont.numProbes);
-      }
-      // create join pair vectors with matching hashes (Entry*, pos), where
-      // Entry* is for the build side, pos a selection index to the right side
-      auto n = (this->*join)();
-      // check key equality and remove non equal keys from join result
-      n = keyEquality.evaluate(n);
-      if (n == 0) continue;
-      // materialize build side
-      buildGather.evaluate(n);
-      return n;
+   // --- lookup (PS: return a value after each iteration to keep track of
+   // processed tuples)
+   if (cont.nextProbe >= cont.numProbes) {
+      cont.numProbes = right->next();
+      cont.nextProbe = 0;
+      if (cont.numProbes == EndOfStream) return EndOfStream;
+      probeHash.evaluate(cont.numProbes);
    }
+   // create join pair vectors with matching hashes (Entry*, pos), where
+   // Entry* is for the build side, pos a selection index to the right side
+   auto n = (this->*join)();
+   // check key equality and remove non equal keys from join result
+   n = keyEquality.evaluate(n);
+   if (n == 0) { return IgnoreValue; };
+   // materialize build side
+   buildGather.evaluate(n);
+   return n;
 }
 } // namespace hybrid

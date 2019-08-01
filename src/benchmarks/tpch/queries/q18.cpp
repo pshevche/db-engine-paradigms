@@ -72,10 +72,12 @@ void printResultQ18(runtime::Query* result) {
           block.data(result->result->getAttribute("o_totalprice")));
       long* sum = reinterpret_cast<long*>(
           block.data(result->result->getAttribute("sum")));
-      if (*c_custkey == 141098) {
-         std::cout << c_name << " | " << *c_custkey << " | " << *o_orderkey
-                   << " | " << *o_orderdate << " | " << *o_totalprice << " | "
-                   << *sum << std::endl;
+      for (unsigned i = 0; i < block.size(); ++i) {
+         if (c_custkey[i] == 128120) {
+            std::cout << c_custkey[i] << " | " << o_orderkey[i] << " | "
+                      << o_orderdate[i] << " | " << o_totalprice[i] << " | "
+                      << sum[i] << std::endl;
+         }
       }
    }
 }
@@ -154,8 +156,12 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
       };
 
       // process relation data in chunks (lineitem from top join)
-      for (pos_t n = groupOp->child->next(); n != EndOfStream && !typerLib;
+      for (auto n = groupOp->child->next(); n != EndOfStream && !typerLib;
            n = groupOp->child->next()) {
+         if (n == hybrid::IgnoreValue) {
+            processedTuples.fetch_add(vectorSize);
+            continue;
+         }
          groupOp->groupHash.evaluate(n);
          groupOp->preAggregation.findGroups(n, ht);
          auto groupsCreated =
@@ -178,6 +184,24 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                     .count()
              << " milliseconds to process " << processedTuples.load()
              << " tuples." << std::endl;
+
+   auto& twThreadData =
+       shared.get<HashGroup::Shared>(9).spillStorage.threadData;
+   for (auto& threadPartitions : twThreadData) {
+      for (auto& partition : threadPartitions.second.getPartitions()) {
+         for (auto chunk = partition.first; chunk; chunk = chunk->next) {
+            auto elementSize = threadPartitions.second.entrySize;
+            auto nPart = partition.size(chunk, elementSize);
+            auto data = chunk->template data<hybrid::Q18TectorTuple>();
+            for (unsigned i = 0; i < nPart; ++i) {
+               hybrid::Q18TectorTuple t = data[i];
+               std::cout << t.c_name << " | " << t.c_custkey << " | "
+                         << t.o_orderkey << " | " << t.o_orderdate << " | "
+                         << t.o_totalprice << " | " << t.sum << std::endl;
+            }
+         }
+      }
+   }
 
    // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION RESULTS
    compilationThread.join();
@@ -218,7 +242,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    // close shared library
    delete typerLib;
 
-   printResultQ18(result.get());
+   //    printResultQ18(result.get());
    return result;
 }
 
@@ -378,7 +402,7 @@ NOVECTORIZE std::unique_ptr<runtime::Query> q18_hyper(Database& db,
    });
 
    leaveQuery(nrThreads);
-   printResultQ18(resources.query.get());
+   //    printResultQ18(resources.query.get());
    return move(resources.query);
 }
 
@@ -608,5 +632,7 @@ q18group_vectorwise(Database& db, size_t nrThreads, size_t vectorSize) {
          result = move(dynamic_cast<ResultWriter*>(resources->rootOp.get())
                            ->shared.result);
    });
+
+   printResultQ18(result.get());
    return result;
 }
