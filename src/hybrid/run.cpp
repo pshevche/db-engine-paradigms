@@ -59,9 +59,8 @@ int main(int argc, char* argv[]) {
    bool clearCaches = false;
    if (argc > 3) nrThreads = atoi(argv[3]);
 
-   std::unordered_set<std::string> q = {"18hv"};
-   //    std::unordered_set<std::string> q = {"1v", "1h", "1hv", "6v", "6h",
-   //    "6hv"};
+   std::unordered_set<std::string> q = {"1v",  "1h",  "1hv", "6v",  "6h",
+                                        "6hv", "18v", "18h", "18hv"};
 
    if (auto v = std::getenv("vectorSize")) vectorSize = atoi(v);
    if (auto v = std::getenv("SIMDhash")) conf.useSimdHash = atoi(v);
