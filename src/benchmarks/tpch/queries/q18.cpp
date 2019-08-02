@@ -548,7 +548,7 @@ std::unique_ptr<runtime::Query> q18_vectorwise(Database& db, size_t nrThreads,
                            ->shared.result);
    });
 
-   printResultQ18(result.get());
+   //    printResultQ18(result.get());
    return result;
 }
 
