@@ -615,6 +615,6 @@ q18group_vectorwise(Database& db, size_t nrThreads, size_t vectorSize) {
                            ->shared.result);
    });
 
-   printResultQ18(result.get());
+   //    printResultQ18(result.get());
    return result;
 }
