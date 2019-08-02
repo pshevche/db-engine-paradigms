@@ -101,7 +101,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
    }
 
    // get compiled function
-   const std::string& funcName = "_Z17compiled_typer_q6RN7runtime8DatabaseEmm";
+   const std::string& funcName = "_Z17compiled_typer_q6RN7runtime8DatabaseEmml";
    CompiledTyperQuery typer_q6 =
        typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
    if (!typer_q6) {
@@ -123,6 +123,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
 
    // close shared library
    delete typerLib;
+   //    printResultQ6(result);
    return result;
 }
 

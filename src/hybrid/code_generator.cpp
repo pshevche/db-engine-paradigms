@@ -173,7 +173,7 @@ const std::string CodeGenerator::generateTyperQ6() {
    f << "auto c3 = types::Numeric<12, 2>::castString(\"0.05\");\n";
    f << "auto c4 = types::Numeric<12, 2>::castString(\"0.07\");\n";
    f << "auto c5 = types::Integer(24);\n";
-   f << "types::Numeric<12, 4> revenue = 0;\n";
+   f << "types::Numeric<12, 4> revenue(twRevenue);\n";
    f << "auto& rel = db[\"lineitem\"];\n";
    f << "auto l_shipdate_col = rel[\"l_shipdate\"].data<types::Date>();\n";
    f << "auto l_quantity_col = rel[\"l_quantity\"].data<types::Numeric<12, "
@@ -182,7 +182,7 @@ const std::string CodeGenerator::generateTyperQ6() {
         "rel[\"l_extendedprice\"].data<types::Numeric<12,2 >>();\n";
    f << "auto l_discount_col = rel[\"l_discount\"].data<types::Numeric<12,"
         "2>>();\n";
-   f << "revenue = tbb::parallel_reduce(\n";
+   f << "revenue += tbb::parallel_reduce(\n";
    f << "tbb::blocked_range<size_t>(firstTuple, rel.nrTuples),\n";
    f << "types::Numeric<12, 4>(0),\n";
    f << "[&](const tbb::blocked_range<size_t>& r,\n";
@@ -204,7 +204,6 @@ const std::string CodeGenerator::generateTyperQ6() {
         "{\n";
    f << "return x + y;\n";
    f << "});\n";
-   f << "revenue += types::Numeric<12, 4>(twRevenue);";
    f << "auto& rev = "
         "result[\"revenue\"].typedAccessForChange<types::Numeric<12,4>>();"
         "\n";
