@@ -14,8 +14,17 @@
 #include <iostream>
 
 using namespace runtime;
-typedef Relation (*CompiledTyperQuery)(Database&, size_t, size_t);
 
+// Display query results
+void printResultQ6(Relation& result) {
+   auto& revenue =
+       result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
+   for (size_t i = 0; i < revenue.size(); ++i) {
+      std::cout << revenue[i] << std::endl;
+   }
+}
+
+typedef Relation (*CompiledTyperQuery)(Database&, size_t, size_t, int64_t);
 // Execute hybrid of Typer and Tectorwise
 Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
                    const std::string& path_to_lib_src, bool fromLLVM) {
@@ -44,9 +53,6 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
       }
    });
 
-   // final result
-   Relation result;
-
    // 2. WHILE Q6 IS COMPILING, START TECTORWISE
    auto start = std::chrono::steady_clock::now();
    vectorwise::SharedStateManager shared;
@@ -65,28 +71,16 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
           static_cast<vectorwise::FixedAggr*>(query->rootOp.release()));
 
       // while children provide tuples, compute the aggregate
-      size_t pos = topAggr->child->next();
-      while (pos != EndOfStream && !typerLib) {
+      for (auto pos = topAggr->child->next(); pos != EndOfStream && !typerLib;
+           pos = topAggr->child->next()) {
          topAggr->aggregates.evaluate(pos);
          processedTuples.fetch_add(vectorSize);
-         pos = topAggr->child->next();
          // add delay to debug typer
          //  std::this_thread::sleep_for(1ms);
       }
 
       // store result from this thread
       aggr.fetch_add(query->aggregator);
-
-      // invoke leader to update result relation
-      auto leader = barrier();
-      if (leader) {
-         result.insert("revenue", std::make_unique<algebra::Numeric>(12, 4));
-         auto& sum = result["revenue"].template typedAccessForChange<int64_t>();
-         sum.reset(1);
-         auto a = aggr.load();
-         sum.push_back(a);
-         result.nrTuples = 1;
-      }
    });
    auto end = std::chrono::steady_clock::now();
    std::cout << "TW took "
@@ -100,34 +94,24 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
    compilationThread.join();
    start = std::chrono::steady_clock::now();
    size_t nrTuples = db["lineitem"].nrTuples;
-   if (processedTuples.load() < nrTuples) {
-      // load library
-      if (!typerLib) {
-         throw hybrid::HybridException("Could not load shared Typer library!");
-      }
-
-      // get compiled function
-      const std::string& funcName =
-          "_Z17compiled_typer_q6RN7runtime8DatabaseEmm";
-      CompiledTyperQuery typer_q6 =
-          typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
-      if (!typer_q6) {
-         throw hybrid::HybridException(
-             "Could not find function for running Q6 in Typer!");
-      }
-
-      // compute typer result
-      Relation typer_result = typer_q6(db, nrThreads, processedTuples.load());
-
-      // merge results
-      auto& revenue =
-          result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
-      auto& typerRevenue =
-          typer_result["revenue"].typedAccessForChange<types::Numeric<12, 4>>();
-      for (size_t i = 0; i < revenue.size(); ++i) {
-         revenue[i] += typerRevenue[i];
-      }
+   if (processedTuples.load() > nrTuples) { processedTuples.store(nrTuples); }
+   // load library
+   if (!typerLib) {
+      throw hybrid::HybridException("Could not load shared Typer library!");
    }
+
+   // get compiled function
+   const std::string& funcName = "_Z17compiled_typer_q6RN7runtime8DatabaseEmm";
+   CompiledTyperQuery typer_q6 =
+       typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
+   if (!typer_q6) {
+      throw hybrid::HybridException(
+          "Could not find function for running Q6 in Typer!");
+   }
+
+   // compute typer result
+   Relation result =
+       typer_q6(db, nrThreads, processedTuples.load(), aggr.load());
    end = std::chrono::steady_clock::now();
    std::cout << "Typer took "
              << std::chrono::duration_cast<std::chrono::milliseconds>(end -

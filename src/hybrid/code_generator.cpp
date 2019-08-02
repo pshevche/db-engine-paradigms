@@ -165,7 +165,7 @@ const std::string CodeGenerator::generateTyperQ6() {
    f << "using namespace runtime;\n";
    f << "using namespace std;\n";
    f << "Relation compiled_typer_q6(Database& db, size_t nrThreads, size_t "
-        "firstTuple) {\n";
+        "firstTuple, int64_t twRevenue) {\n";
    f << "Relation result;\n";
    f << "result.insert(\"revenue\", make_unique<algebra::Numeric>(12,4));\n";
    f << "auto c1 = types::Date::castString(\"1994-01-01\");\n";
@@ -204,6 +204,7 @@ const std::string CodeGenerator::generateTyperQ6() {
         "{\n";
    f << "return x + y;\n";
    f << "});\n";
+   f << "revenue += types::Numeric<12, 4>(twRevenue);";
    f << "auto& rev = "
         "result[\"revenue\"].typedAccessForChange<types::Numeric<12,4>>();"
         "\n";
