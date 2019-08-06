@@ -27,13 +27,15 @@ void printResultQ6(Relation& result) {
 typedef Relation (*CompiledTyperQuery)(Database&, size_t, size_t, int64_t);
 // Execute hybrid of Typer and Tectorwise
 Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
-                   const std::string& path_to_lib_src, bool fromLLVM) {
+                   const std::string& path_to_lib_src, bool fromLLVM,
+                   bool verbose) {
    using namespace vectorwise;
    using namespace std::chrono_literals;
 
    // 1. START COMPILING Q6 IN TYPER
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
-   std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM] {
+   std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
+                                  &verbose] {
       try {
          auto start = std::chrono::steady_clock::now();
          // link library
@@ -43,11 +45,13 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
          // open library
          typerLib = hybrid::SharedLibrary::load(path_to_lib + ".so");
          auto end = std::chrono::steady_clock::now();
-         std::cout << "Compilation took "
-                   << std::chrono::duration_cast<std::chrono::milliseconds>(
-                          end - start)
-                          .count()
-                   << " milliseconds." << std::endl;
+         if (verbose) {
+            std::cout << "Compilation took "
+                      << std::chrono::duration_cast<std::chrono::milliseconds>(
+                             end - start)
+                             .count()
+                      << " milliseconds." << std::endl;
+         }
       } catch (hybrid::HybridException& exc) {
          std::cerr << exc.what() << std::endl;
       }
@@ -83,12 +87,14 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
       aggr.fetch_add(query->aggregator);
    });
    auto end = std::chrono::steady_clock::now();
-   std::cout << "TW took "
-             << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                      start)
-                    .count()
-             << " milliseconds to process " << processedTuples.load()
-             << " tuples." << std::endl;
+   if (verbose) {
+      std::cout << "TW took "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                         start)
+                       .count()
+                << " milliseconds to process " << processedTuples.load()
+                << " tuples." << std::endl;
+   }
 
    // 3. PROCESS REMAINING TUPLES WITH TYPER
    compilationThread.join();
@@ -113,13 +119,15 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
    Relation result =
        typer_q6(db, nrThreads, processedTuples.load(), aggr.load());
    end = std::chrono::steady_clock::now();
-   std::cout << "Typer took "
-             << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                      start)
-                    .count()
-             << " milliseconds to process "
-             << (long)nrTuples - (long)processedTuples.load() << " tuples."
-             << std::endl;
+   if (verbose) {
+      std::cout << "Typer took "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                         start)
+                       .count()
+                << " milliseconds to process "
+                << (long)nrTuples - (long)processedTuples.load() << " tuples."
+                << std::endl;
+   }
 
    // close shared library
    delete typerLib;

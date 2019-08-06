@@ -81,13 +81,14 @@ typedef std::unique_ptr<runtime::Query> (*CompiledTyperQuery)(
 std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
                                           size_t vectorSize,
                                           const std::string& path_to_lib_src,
-                                          bool fromLLVM) {
+                                          bool fromLLVM, bool verbose) {
    using namespace vectorwise;
    using namespace std::chrono_literals;
 
    // 1. START COMPILING Q1 IN TYPER
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
-   std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM] {
+   std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
+                                  &verbose] {
       try {
          auto start = std::chrono::steady_clock::now();
          // link library
@@ -97,11 +98,14 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
          // open library
          typerLib = hybrid::SharedLibrary::load(path_to_lib + ".so");
          auto end = std::chrono::steady_clock::now();
-         std::cout << "Compilation took "
-                   << std::chrono::duration_cast<std::chrono::milliseconds>(
-                          end - start)
-                          .count()
-                   << " milliseconds." << std::endl;
+         if (verbose) {
+            std::cout << "Compilation took "
+                      << std::chrono::duration_cast<std::chrono::milliseconds>(
+                             end - start)
+                             .count()
+                      << " milliseconds." << std::endl;
+         }
+
       } catch (hybrid::HybridException& exc) {
          std::cerr << exc.what() << std::endl;
       }
@@ -167,12 +171,14 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
    });
 
    auto end = std::chrono::steady_clock::now();
-   std::cout << "TW took "
-             << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                      start)
-                    .count()
-             << " milliseconds to process " << processedTuples.load()
-             << " tuples." << std::endl;
+   if (verbose) {
+      std::cout << "TW took "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                         start)
+                       .count()
+                << " milliseconds to process " << processedTuples.load()
+                << " tuples." << std::endl;
+   }
 
    // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION RESULTS
    compilationThread.join();
@@ -202,13 +208,15 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
                 shared.get<HashGroup::Shared>(2).spillStorage.threadData));
 
    end = std::chrono::steady_clock::now();
-   std::cout << "Typer took "
-             << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                      start)
-                    .count()
-             << " milliseconds to process "
-             << (long)nrTuples - (long)processedTuples.load() << " tuples."
-             << std::endl;
+   if (verbose) {
+      std::cout << "Typer took "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                         start)
+                       .count()
+                << " milliseconds to process "
+                << (long)nrTuples - (long)processedTuples.load() << " tuples."
+                << std::endl;
+   }
 
    // close shared library
    delete typerLib;

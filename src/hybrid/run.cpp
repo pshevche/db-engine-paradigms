@@ -57,7 +57,9 @@ int main(int argc, char* argv[]) {
    size_t nrThreads = std::thread::hardware_concurrency();
    size_t vectorSize = 1024;
    bool clearCaches = false;
-   if (argc > 3) nrThreads = atoi(argv[3]);
+   bool verbose = false;
+   if (argc > 3) { nrThreads = atoi(argv[3]); }
+   if (argc > 4) { verbose = atoi(argv[4]); }
 
    std::unordered_set<std::string> q = {"1h",  "1v",  "1hv", "6h",  "6v",
                                         "6hv", "18h", "18v", "18hv"};
@@ -121,7 +123,7 @@ int main(int argc, char* argv[]) {
                              if (clearCaches) clearOsCaches();
                              auto result =
                                  q1_hybrid(tpch, nrThreads, vectorSize,
-                                           path_to_ll, useLLVM);
+                                           path_to_ll, useLLVM, verbose);
                              escape(&result);
                           },
                           repetitions);
@@ -159,16 +161,18 @@ int main(int argc, char* argv[]) {
              hybrid::CodeGenerator::instance().generateTyperQ6();
 
          // compile LLVM
+         bool useLLVM = true;
          const std::string& path_to_ll =
              hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
-                                                                   true);
+                                                                   useLLVM);
 
          // run experiments
          e.timeAndProfile("q6 hybrid    ", tpch["lineitem"].nrTuples,
                           [&]() {
                              if (clearCaches) clearOsCaches();
-                             auto result = q6_hybrid(
-                                 tpch, nrThreads, vectorSize, path_to_ll, true);
+                             auto result =
+                                 q6_hybrid(tpch, nrThreads, vectorSize,
+                                           path_to_ll, useLLVM, verbose);
                              escape(&result);
                           },
                           repetitions);
@@ -221,7 +225,7 @@ int main(int argc, char* argv[]) {
              [&]() {
                 if (clearCaches) clearOsCaches();
                 auto result = q18_hybrid(tpch, nrThreads, vectorSize,
-                                         path_to_ll, useLLVM);
+                                         path_to_ll, useLLVM, verbose);
                 escape(&result);
              },
              repetitions);
