@@ -158,22 +158,18 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
       // process relation data in chunks (lineitem from top join)
       for (auto n = groupOp->child->next(); n != EndOfStream && !typerLib;
            n = groupOp->child->next()) {
-         if (n == hybrid::IgnoreValue) {
-            processedTuples.fetch_add(vectorSize);
-            //  DEBUGGING
-            // std::this_thread::sleep_for(1ms);
-            continue;
+         if (n != hybrid::IgnoreValue) {
+            groupOp->groupHash.evaluate(n);
+            groupOp->preAggregation.findGroups(n, ht);
+            auto groupsCreated =
+                groupOp->preAggregation.createMissingGroups(ht, false);
+            groupOp->updateGroups.evaluate(n);
+            groups += groupsCreated;
+            if (groups >= maxFill) flushAndClear();
          }
-         groupOp->groupHash.evaluate(n);
-         groupOp->preAggregation.findGroups(n, ht);
-         auto groupsCreated =
-             groupOp->preAggregation.createMissingGroups(ht, false);
-         groupOp->updateGroups.evaluate(n);
-         groups += groupsCreated;
-         if (groups >= maxFill) flushAndClear();
-         processedTuples.fetch_add(vectorSize);
          //  DEBUGGING
          //  std::this_thread::sleep_for(1ms);
+         processedTuples.fetch_add(vectorSize);
       }
       flushAndClear(); // flush remaining entries into spillStorage
       barrier();       // Wait until all workers have finished phase 1
