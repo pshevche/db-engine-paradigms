@@ -164,7 +164,6 @@ set(HYBRID_MODULES
   src/hybrid/code_generator.cpp
   src/hybrid/compilation_engine.cpp
   src/hybrid/hybrid_exception.cpp
-  src/hybrid/hybrid_operators.cpp
   src/hybrid/shared_library.cpp
   )
 add_library(hybrid
@@ -210,7 +209,7 @@ if(AVX512EXPERIMENTS)
     COMPILE_FLAGS "-march=skylake-avx512"
   )
 endif()
-target_link_libraries(vectorwise common hybrid)
+target_link_libraries(vectorwise common)
 
 add_executable(bench
   ${HYPER_TRANSLATORS}

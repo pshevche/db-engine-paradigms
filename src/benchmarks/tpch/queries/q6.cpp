@@ -1,6 +1,7 @@
 #include "benchmarks/tpch/Queries.hpp"
 #include "common/runtime/Types.hpp"
 #include "hybrid/compilation_engine.hpp"
+#include "hybrid/hybrid_datatypes.hpp"
 #include "hybrid/hybrid_exception.hpp"
 #include "hybrid/shared_library.hpp"
 #include "tbb/tbb.h"
@@ -24,7 +25,6 @@ void printResultQ6(Relation& result) {
    }
 }
 
-typedef Relation (*CompiledTyperQuery)(Database&, size_t, size_t, int64_t);
 // Execute hybrid of Typer and Tectorwise
 Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
                    const std::string& path_to_lib_src, bool fromLLVM,
@@ -108,8 +108,8 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
 
    // get compiled function
    const std::string& funcName = "_Z17compiled_typer_q6RN7runtime8DatabaseEmml";
-   CompiledTyperQuery typer_q6 =
-       typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
+   hybrid::CompiledTyperQ6 typer_q6 =
+       typerLib.load()->getFunction<hybrid::CompiledTyperQ6>(funcName);
    if (!typer_q6) {
       throw hybrid::HybridException(
           "Could not find function for running Q6 in Typer!");

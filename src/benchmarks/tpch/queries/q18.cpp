@@ -7,7 +7,6 @@
 #include "hybrid/compilation_engine.hpp"
 #include "hybrid/hybrid_datatypes.hpp"
 #include "hybrid/hybrid_exception.hpp"
-#include "hybrid/hybrid_operators.hpp"
 #include "hybrid/shared_library.hpp"
 #include "hyper/GroupBy.hpp"
 #include "hyper/ParallelHelper.hpp"
@@ -78,9 +77,6 @@ void printResultQ18(runtime::Query* result) {
    }
 }
 
-typedef std::unique_ptr<runtime::Query> (*CompiledTyperQuery)(
-    Database&, size_t, size_t,
-    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&);
 std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                                            size_t nrThreads, size_t vectorSize,
                                            const std::string& path_to_lib_src,
@@ -128,51 +124,47 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
           static_cast<ResultWriter*>(query->rootOp.release()));
       std::unique_ptr<HashGroup> groupOp(
           static_cast<HashGroup*>(printOp->child.release()));
+      std::unique_ptr<Hashjoin> topJoin(
+          static_cast<Hashjoin*>(groupOp->child.release()));
+      std::unique_ptr<Hashjoin> customerJoin(
+          static_cast<Hashjoin*>(topJoin->left.release()));
 
-      // we only perform thread-local aggregation (typer will take these
-      // hashtables and merge them into single hashtable)
-      runtime::Hashmap& ht = groupOp->getHashTable();
-      size_t maxFill = groupOp->getMaxFill();
-      using header_t = runtime::Hashmap::EntryHeader;
-      size_t groups = 0;
-      auto& spill = groupOp->shared.spillStorage.local();
-      auto entry_size = groupOp->preAggregation.ht_entry_size;
-
-      // stores thread-local aggregation results in shared store (i.e.
-      // SharedStateManager from above)
-      auto flushAndClear = [&]() INTERPRET_SEPARATE {
-         assert(offsetof(header_t, next) + sizeof(header_t::next) ==
-                offsetof(header_t, hash));
-         // flush ht entries into spillStorage
-         for (auto& alloc : groupOp->preAggregation.allocations) {
-            for (auto entry = reinterpret_cast<header_t*>(alloc.first),
-                      end = addBytes(entry, alloc.second * entry_size);
-                 entry < end; entry = addBytes(entry, entry_size)) {
-               spill.push_back(&entry->hash, entry->hash);
-            }
-         }
-         groupOp->preAggregation.allocations.clear();
-         groupOp->preAggregation.clearHashtable(ht);
-      };
-
-      // process relation data in chunks (lineitem from top join)
-      for (auto n = groupOp->child->next(); n != EndOfStream && !typerLib;
-           n = groupOp->child->next()) {
-         if (n != hybrid::IgnoreValue) {
-            groupOp->groupHash.evaluate(n);
-            groupOp->preAggregation.findGroups(n, ht);
-            auto groupsCreated =
-                groupOp->preAggregation.createMissingGroups(ht, false);
-            groupOp->updateGroups.evaluate(n);
-            groups += groupsCreated;
-            if (groups >= maxFill) flushAndClear();
-         }
-         //  DEBUGGING
-         //  std::this_thread::sleep_for(1ms);
-         processedTuples.fetch_add(vectorSize);
+      using runtime::Hashmap;
+      // PS: we only build the hash table for the customers relation
+      auto& left = customerJoin->left;
+      auto& right = customerJoin->right;
+      auto& buildHash = customerJoin->buildHash;
+      auto& ht_entry_size = customerJoin->ht_entry_size;
+      auto& allocations = customerJoin->allocations;
+      auto& scatterStart = customerJoin->scatterStart;
+      auto& buildScatter = customerJoin->buildScatter;
+      auto& shared = customerJoin->shared;
+      size_t found = 0;
+      // --- build phase 1: materialize ht entries
+      for (auto n = customerJoin->left->next(); n != EndOfStream;
+           n = left->next()) {
+         found += n;
+         // build hashes
+         buildHash.evaluate(n);
+         // scatter hash, keys and values into ht entries
+         auto alloc =
+             runtime::this_worker->allocator.allocate(n * ht_entry_size);
+         if (!alloc) throw std::runtime_error("malloc failed");
+         allocations.push_back(std::make_pair(alloc, n));
+         scatterStart = reinterpret_cast<decltype(scatterStart)>(alloc);
+         buildScatter.evaluate(n);
       }
-      flushAndClear(); // flush remaining entries into spillStorage
-      barrier();       // Wait until all workers have finished phase 1
+
+      // --- build phase 2: insert ht entries
+      shared.found.fetch_add(found);
+      barrier([&]() {
+         auto globalFound = shared.found.load();
+         if (globalFound) shared.ht.setSize(globalFound);
+      });
+      auto globalFound = shared.found.load();
+      if (globalFound == 0) { return EndOfStream; }
+      insertAllEntries(allocations, shared.ht, ht_entry_size);
+      barrier(); // wait for all threads to finish build phase
    });
 
    auto end = std::chrono::steady_clock::now();
@@ -200,8 +192,8 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
        "_Z18compiled_typer_q18RN7runtime8DatabaseEmmRSt13unordered_"
        "mapINSt6thread2idENS_16PartitionedDequeILm1024EEESt4hashIS4_ESt8equal_"
        "toIS4_ESaISt4pairIKS4_S6_EEE";
-   CompiledTyperQuery typer_q18 =
-       typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
+   hybrid::CompiledTyperQ18 typer_q18 =
+       typerLib.load()->getFunction<hybrid::CompiledTyperQ18>(funcName);
    if (!typer_q18) {
       throw hybrid::HybridException(
           "Could not find function for running Q1 in Typer!");
@@ -441,7 +433,7 @@ std::unique_ptr<Q18Builder::Q18> Q18Builder::getQuery() {
                       Buffer(c_name, sizeof(types::Char<25>)),
                       primitives::gather_col_Char_25_col);
    auto lineitem2 = Scan("lineitem");
-   HybridHashJoin(Buffer(lineitem_matches, sizeof(pos_t)))
+   HashJoin(Buffer(lineitem_matches, sizeof(pos_t)))
        .addBuildKey(Column(orders, "o_orderkey"), Buffer(customer_matches),
                     primitives::hash_sel_int32_t_col,
                     primitives::scatter_sel_int32_t_col)

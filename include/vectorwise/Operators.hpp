@@ -208,7 +208,7 @@ class Hashjoin : public BinaryOperator {
           : nextProbe(0), numProbes(0), buildMatch(runtime::Hashmap::end()) {}
    } cont;
 
- protected:
+ public:
    Shared& shared;
    /// Additional state to continue iteration in next call for  joinSelParallel
    struct IterConcurrentContinuation {
@@ -542,5 +542,15 @@ HashGroup::GroupLookup<T>::clearHashtable(runtime::Hashmap& ht) {
    parent.groupStore.reset();
    // for (auto& alloc : allocations) free(alloc.first);
    allocations.clear();
+}
+
+template <typename T, typename HT>
+void INTERPRET_SEPARATE insertAllEntries(T& allocations, HT& ht,
+                                         size_t ht_entry_size) {
+   for (auto& block : allocations) {
+      auto start =
+          reinterpret_cast<runtime::Hashmap::EntryHeader*>(block.first);
+      ht.insertAll_tagged(start, block.second, ht_entry_size);
+   }
 }
 } // namespace vectorwise

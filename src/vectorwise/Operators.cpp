@@ -2,7 +2,6 @@
 #include "common/Compat.hpp"
 #include "common/runtime/Concurrency.hpp"
 #include "common/runtime/SIMD.hpp"
-#include "hybrid/hybrid_operators.hpp"
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
@@ -700,16 +699,6 @@ pos_t Hashjoin::joinSelSIMD() {
    return found;
 }
 
-template <typename T, typename HT>
-void INTERPRET_SEPARATE insertAllEntries(T& allocations, HT& ht,
-                                         size_t ht_entry_size) {
-   for (auto& block : allocations) {
-      auto start =
-          reinterpret_cast<runtime::Hashmap::EntryHeader*>(block.first);
-      ht.insertAll_tagged(start, block.second, ht_entry_size);
-   }
-}
-
 pos_t Hashjoin::joinBoncz() {
    size_t followupWrite = contCon.followupWrite;
    size_t found = 0;
@@ -856,7 +845,6 @@ size_t HashGroup::next() {
       };
 
       for (auto n = child->next(); n != EndOfStream; n = child->next()) {
-         if (n == hybrid::IgnoreValue) { continue; }
          groupHash.evaluate(n);
          preAggregation.findGroups(n, ht);
          auto groupsCreated = preAggregation.createMissingGroups(ht, false);

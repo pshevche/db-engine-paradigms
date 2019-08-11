@@ -1,7 +1,6 @@
 #pragma once
 #include "Operators.hpp"
 #include "common/runtime/Database.hpp"
-#include "hybrid/hybrid_operators.hpp"
 #include "vectorwise/VectorAllocator.hpp"
 #include <memory>
 #include <stack>
@@ -165,11 +164,6 @@ class QueryBuilder {
    HashJoinBuilder
    HashJoin(DS probeMatches,
             pos_t (Hashjoin::*join)() = &Hashjoin::joinAllParallel);
-   // creates a hashjoin operator that returns values after each probing step
-   // which helps to keep track of processed tuples
-   HashJoinBuilder
-   HybridHashJoin(DS probeMatches,
-                  pos_t (Hashjoin::*join)() = &Hashjoin::joinAllParallel);
    HashGroupBuilder HashGroup();
 
    ~QueryBuilder();

@@ -75,9 +75,6 @@ void printResultQ1(runtime::Query* result) {
    }
 }
 
-typedef std::unique_ptr<runtime::Query> (*CompiledTyperQuery)(
-    Database&, size_t, size_t,
-    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&);
 std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
                                           size_t vectorSize,
                                           const std::string& path_to_lib_src,
@@ -195,8 +192,8 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
        "_Z17compiled_typer_q1RN7runtime8DatabaseEmmRSt13unordered_"
        "mapINSt6thread2idENS_16PartitionedDequeILm1024EEESt4hashIS4_ESt8equal_"
        "toIS4_ESaISt4pairIKS4_S6_EEE";
-   CompiledTyperQuery typer_q1 =
-       typerLib.load()->getFunction<CompiledTyperQuery>(funcName);
+   hybrid::CompiledTyperQ1 typer_q1 =
+       typerLib.load()->getFunction<hybrid::CompiledTyperQ1>(funcName);
    if (!typer_q1) {
       throw hybrid::HybridException(
           "Could not find function for running Q1 in Typer!");

@@ -1,10 +1,14 @@
-#ifndef HYBRID_DATATYPES
-#define HYBRID_DATATYPES
-
+#pragma once
+#include "common/runtime/Database.hpp"
 #include "common/runtime/Types.hpp"
 #include <tuple>
 
 namespace hybrid {
+
+// Q1
+typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ1)(
+    runtime::Database&, size_t, size_t,
+    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&);
 typedef std::tuple<types::Char<1>, types::Char<1>> Q1TyperKey;
 typedef std::tuple<types::Numeric<12, 2>, types::Numeric<12, 2>,
                    types::Numeric<12, 4>, types::Numeric<12, 6>, int64_t>
@@ -22,6 +26,14 @@ typedef struct {
    long count_order;
 } Q1TectorTuple;
 
+// Q6
+typedef runtime::Relation (*CompiledTyperQ6)(runtime::Database&, size_t, size_t,
+                                             int64_t);
+
+// Q18
+typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ18)(
+    runtime::Database&, size_t, size_t,
+    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&);
 typedef std::tuple<types::Integer, types::Date, types::Numeric<12, 2>,
                    types::Char<25>, types::Integer>
     Q18TyperKey;
@@ -38,5 +50,3 @@ typedef struct __attribute__((packed)) {
    int8_t idk2[2];
 } Q18TectorTuple;
 } // namespace hybrid
-
-#endif

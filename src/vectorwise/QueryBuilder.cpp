@@ -253,38 +253,6 @@ QueryBuilder::HashJoin(DS probeMatches, pos_t (Hashjoin::*joinFun)()) {
    return b;
 }
 
-QueryBuilder::HashJoinBuilder
-QueryBuilder::HybridHashJoin(DS probeMatches, pos_t (Hashjoin::*joinFun)()) {
-   HashJoinBuilder b(*this);
-   auto nr = nextOpNr();
-   auto& s = operatorState.get<Hashjoin::Shared>(nr);
-   auto join = make_unique<hybrid::HybridHashJoin>(s);
-   join->followupIds = reinterpret_cast<decltype(join->followupIds)>(
-       vecs.getPlus1(sizeof(*join->followupIds)));
-   join->followupEntries = reinterpret_cast<decltype(join->followupEntries)>(
-       vecs.getPlus1(sizeof(*join->followupEntries)));
-   join->followupBufferSize = vecs.getVecSize() + 1;
-   b.join = join.get();
-   b.join->join = joinFun;
-   b.join->ht_entry_size = sizeof(runtime::Hashmap::EntryHeader);
-   b.join->batchSize = vecs.getVecSize();
-   b.join->buildMatches = static_cast<runtime::Hashmap::EntryHeader**>(
-       vecs.get(sizeof(runtime::Hashmap::EntryHeader*)));
-   b.join->probeMatches = probeMatches;
-   b.buildHashBuffer = vecs.get(sizeof(runtime::Hashmap::hash_t));
-   b.probeHashBuffer = vecs.get(sizeof(runtime::Hashmap::hash_t));
-
-   auto scatter_hash = make_unique<FScatterOp>(
-       primitives::scatter_hash_t_col, b.buildHashBuffer,
-       reinterpret_cast<void**>(&b.join->scatterStart), &b.join->ht_entry_size,
-       offsetof(runtime::Hashmap::EntryHeader, hash));
-   b.join->buildScatter += move(scatter_hash);
-   b.join->right = popOperator();
-   b.join->left = popOperator();
-   pushOperator(move(join));
-   return b;
-}
-
 QueryBuilder::HashJoinBuilder&
 QueryBuilder::HashJoinBuilder::addBuildKey(DS col, primitives::F2 hash,
                                            primitives::FScatter scatter) {
