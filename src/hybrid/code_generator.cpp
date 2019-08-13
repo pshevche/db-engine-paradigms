@@ -232,7 +232,8 @@ const std::string CodeGenerator::generateTyperQ18() {
    f << "using namespace types;\n";
    f << "std::unique_ptr<runtime::Query> compiled_typer_q18(Database& db, "
         "size_t nrThreads, std::atomic<size_t>* firstTuples, "
-        "std::tuple<runtime::Hashmap, runtime::Hashmap> twHashTables) {\n ";
+        "std::tuple<runtime::Hashmap, std::unordered_map<std::thread::id, "
+        "runtime::PartitionedDeque<1024>>> twHashTables) {\n ";
    f << "using namespace types;\n"
         "using namespace std;\n"
 
