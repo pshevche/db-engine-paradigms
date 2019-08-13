@@ -231,10 +231,8 @@ const std::string CodeGenerator::generateTyperQ18() {
    f << "using namespace std;\n";
    f << "using namespace types;\n";
    f << "std::unique_ptr<runtime::Query> compiled_typer_q18(Database& db, "
-        "size_t nrThreads, size_t "
-        "firstTuple, std::unordered_map<std::thread::id, "
-        "runtime::PartitionedDeque<1024>>&"
-        "twThreadData) {\n ";
+        "size_t nrThreads, std::atomic<size_t>* firstTuples, "
+        "std::tuple<runtime::Hashmap, runtime::Hashmap> twHashTables) {\n ";
    f << "using namespace types;\n"
         "using namespace std;\n"
 
@@ -341,7 +339,7 @@ const std::string CodeGenerator::generateTyperQ18() {
 
         "\n// scan lineitem and group by l_orderkey\n"
         "tbb::parallel_for("
-        "tbb::blocked_range<size_t>(firstTuple, li.nrTuples, morselSize),"
+        "tbb::blocked_range<size_t>(0, li.nrTuples, morselSize),"
         "[&](const tbb::blocked_range<size_t>& r) {"
         "auto locals = finalGroupOp.preAggLocals();"
         "for (size_t i = r.begin(), end = r.end(); i != end; ++i) {"
@@ -354,30 +352,6 @@ const std::string CodeGenerator::generateTyperQ18() {
         "}"
         "}"
         "});"
-
-        "\n\n// merge tw's partial thread-local hash tables with typer's "
-        "partial "
-        "thread-local hash tables\n"
-        "tbb::parallel_for_each(twThreadData.begin(), twThreadData.end(), "
-        "[&](auto& threadPartitions) {auto locals = "
-        "finalGroupOp.preAggLocals();tbb::parallel_for_each(threadPartitions."
-        "second."
-        "getPartitions().begin(),threadPartitions.second.getPartitions().end(),"
-        " [&](auto& partition) {for (auto chunk = partition.first; chunk; "
-        "chunk = chunk->next) {auto elementSize = "
-        "threadPartitions.second.entrySize;auto nPart = partition.size(chunk,"
-        "elementSize);"
-
-        "auto data = chunk->template data<hybrid::Q18TectorTuple>();"
-        "for (unsigned i = 0; i < nPart; ++i) {"
-        "hybrid::Q18TectorTuple t = data[i];"
-        "hybrid::Q18TyperKey key = std::make_tuple("
-        "types::Integer(t.c_custkey), types::Date(t.o_orderdate),"
-        "types::Numeric<12, 2>(t.o_totalprice),"
-        "types::Char<25>::build(t.c_name),"
-        "types::Integer(t.o_orderkey));"
-        "hybrid::Q18TyperValue value = types::Numeric<12, 2>(t.sum);"
-        "locals.consume(key, value);}}});});"
 
         "auto& result = resources.query->result;"
         "auto namAttr = result->addAttribute(\"c_name\", "

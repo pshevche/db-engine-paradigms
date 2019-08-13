@@ -1,5 +1,6 @@
 #pragma once
 #include "common/runtime/Database.hpp"
+#include "common/runtime/Hashmap.hpp"
 #include "common/runtime/Types.hpp"
 #include <tuple>
 
@@ -32,21 +33,6 @@ typedef runtime::Relation (*CompiledTyperQ6)(runtime::Database&, size_t, size_t,
 
 // Q18
 typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ18)(
-    runtime::Database&, size_t, size_t,
-    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&);
-typedef std::tuple<types::Integer, types::Date, types::Numeric<12, 2>,
-                   types::Char<25>, types::Integer>
-    Q18TyperKey;
-typedef types::Numeric<12U, 2U> Q18TyperValue;
-
-typedef struct __attribute__((packed)) {
-   int8_t idk1[9];
-   char c_name[25];
-   int32_t c_custkey;
-   int32_t o_orderdate;
-   int64_t o_totalprice;
-   int32_t o_orderkey;
-   int64_t sum;
-   int8_t idk2[2];
-} Q18TectorTuple;
+    runtime::Database&, size_t, std::atomic<size_t>*,
+    std::tuple<runtime::Hashmap, runtime::Hashmap>);
 } // namespace hybrid
