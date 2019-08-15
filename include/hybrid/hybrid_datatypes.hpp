@@ -33,8 +33,23 @@ typedef runtime::Relation (*CompiledTyperQ6)(runtime::Database&, size_t, size_t,
 
 // Q18
 typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ18)(
-    runtime::Database&, size_t, std::atomic<size_t>*,
-    std::tuple<
-        runtime::Hashmap,
-        std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>>);
+    runtime::Database&, size_t, runtime::Hashmap&,
+    std::unordered_map<int32_t, defs::hash_t>& twHashFunction,
+    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&,
+    size_t);
+
+typedef struct __attribute__((packed)) {
+   uint8_t idk[8];
+   int32_t l_orderkey;
+   int64_t l_quantity;
+   uint8_t idk2[4];
+} Q18TWAggrTuple;
+
+typedef struct __attribute__((packed)) {
+   uint8_t idk1[16];
+   int32_t c_custkey;
+   uint8_t idk2[1];
+   char c_name[25];
+   uint8_t idk3[2];
+} Q18TWJoinTuple;
 } // namespace hybrid

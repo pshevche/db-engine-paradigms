@@ -11,6 +11,7 @@
 #include "hyper/GroupBy.hpp"
 #include "hyper/ParallelHelper.hpp"
 #include "tbb/tbb.h"
+#include <unordered_map>
 
 namespace runtime {
 struct Relation;

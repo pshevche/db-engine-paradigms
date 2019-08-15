@@ -14,10 +14,11 @@
 #include "vectorwise/Operations.hpp"
 #include "vectorwise/Operators.hpp"
 #include "vectorwise/Primitives.hpp"
-
 #include "vectorwise/QueryBuilder.hpp"
 #include "vectorwise/VectorAllocator.hpp"
+
 #include <iostream>
+#include <unordered_map>
 
 using namespace runtime;
 using namespace std;
@@ -77,6 +78,11 @@ void printResultQ18(runtime::Query* result) {
    }
 }
 
+int32_t extractKeyFromEntry(runtime::Hashmap::EntryHeader* entry) {
+   auto t = reinterpret_cast<hybrid::Q18TWJoinTuple*>(entry);
+   return t->c_custkey;
+}
+
 std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                                            size_t nrThreads, size_t vectorSize,
                                            const std::string& path_to_lib_src,
@@ -123,6 +129,8 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
 
    WorkerGroup workers(nrThreads);
    vectorwise::SharedStateManager shared;
+
+   std::unordered_map<int32_t, defs::hash_t> twHashFunction;
 
    std::unique_ptr<runtime::Query> result;
    workers.run([&]() {
@@ -172,8 +180,10 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
          });
          auto globalFound = customerJoin->shared.found.load();
          if (globalFound != 0) {
-            insertAllEntries(customerJoin->allocations, customerJoin->shared.ht,
-                             customerJoin->ht_entry_size);
+            insertAllEntriesHybrid(customerJoin->allocations,
+                                   customerJoin->shared.ht,
+                                   customerJoin->ht_entry_size, twHashFunction,
+                                   extractKeyFromEntry);
          }
          if (processedTuples[0].load() > nrTuples[0]) {
             processedTuples[0].store(nrTuples[0]);
@@ -219,7 +229,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
             if (groups >= maxFill) flushAndClear();
             processedTuples[1].fetch_add(vectorSize);
             //  FIXME: delay for debugging purposes
-            //   std::this_thread::sleep_for(1ms);
+            std::this_thread::sleep_for(1ms);
          }
          flushAndClear(); // flush remaining entries into spillStorage
          if (processedTuples[1].load() > nrTuples[1]) {
@@ -240,7 +250,8 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                 << std::endl;
    }
 
-   // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION RESULTS
+   // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION
+   // RESULTS
    compilationThread.join();
    start = std::chrono::steady_clock::now();
    // load library
@@ -250,10 +261,9 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
 
    // get compiled function
    const std::string& funcName =
-       "_Z18compiled_typer_q18RN7runtime8DatabaseEmPSt6atomicImESt5tupleIJNS_"
-       "7HashmapESt13unordered_mapINSt6thread2idENS_"
-       "16PartitionedDequeILm1024EEESt4hashIS9_ESt8equal_toIS9_ESaISt4pairIKS9_"
-       "SB_EEEEE";
+       "_Z18compiled_typer_q18RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_"
+       "mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEERS4_INSt6thread2idENS_"
+       "16PartitionedDequeILm1024EEES5_ISG_ES7_ISG_ESaIS9_IKSG_SI_EEEm";
    hybrid::CompiledTyperQ18 typer_q18 =
        typerLib.load()->getFunction<hybrid::CompiledTyperQ18>(funcName);
    if (!typer_q18) {
@@ -262,13 +272,10 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    }
 
    // compute typer result
-   std::tuple<
-       runtime::Hashmap,
-       std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>>
-       twHashTables = std::make_tuple(
-           shared.get<Hashjoin::Shared>(6).ht,
-           shared.get<HashGroup::Shared>(3).spillStorage.threadData);
-   result = std::move(typer_q18(db, nrThreads, processedTuples, twHashTables));
+   result = std::move(typer_q18(
+       db, nrThreads, shared.get<Hashjoin::Shared>(6).ht, twHashFunction,
+       shared.get<HashGroup::Shared>(3).spillStorage.threadData,
+       processedTuples[1].load()));
 
    end = std::chrono::steady_clock::now();
    if (verbose) {
