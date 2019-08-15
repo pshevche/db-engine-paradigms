@@ -229,7 +229,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
             if (groups >= maxFill) flushAndClear();
             processedTuples[1].fetch_add(vectorSize);
             //  FIXME: delay for debugging purposes
-            std::this_thread::sleep_for(1ms);
+            // std::this_thread::sleep_for(1ms);
          }
          flushAndClear(); // flush remaining entries into spillStorage
          if (processedTuples[1].load() > nrTuples[1]) {
