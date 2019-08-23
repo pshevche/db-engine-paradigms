@@ -114,7 +114,6 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
 
    // 2. WHILE Q18 IS COMPILING, START TECTORWISE
    auto start = std::chrono::steady_clock::now();
-   unsigned trackedTables = 2;
    // processed fraction of relations of interest
    std::atomic<size_t> processedTuples(0);
    size_t liSize = db["lineitem"].nrTuples;
