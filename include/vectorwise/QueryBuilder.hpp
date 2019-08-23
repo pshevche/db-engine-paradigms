@@ -183,7 +183,8 @@ template <typename PAYLOAD>
 void QueryBuilder::Debug(std::function<void(size_t, PAYLOAD&)> step,
                          std::function<void(PAYLOAD&)> finish) {
 
-   auto& shared = operatorState.get<typename DebugOperator<PAYLOAD>::Shared>(nextOpNr());
+   auto& shared =
+       operatorState.get<typename DebugOperator<PAYLOAD>::Shared>(nextOpNr());
    auto debug = std::make_unique<DebugOperator<PAYLOAD>>(
        shared, std::move(step), std::move(finish));
    debug->child = popOperator();

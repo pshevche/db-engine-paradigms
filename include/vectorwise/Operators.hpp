@@ -181,6 +181,8 @@ class ResultWriter : public UnaryOperator {
    ResultWriter(Shared& s);
    /// run the operator
    virtual size_t next() override;
+   // get access to the currentBlock
+   runtime::BlockRelation::Block& getCurrentBlock();
 
  private:
    runtime::BlockRelation::Block currentBlock;
@@ -206,7 +208,7 @@ class Hashjoin : public BinaryOperator {
           : nextProbe(0), numProbes(0), buildMatch(runtime::Hashmap::end()) {}
    } cont;
 
- private:
+ public:
    Shared& shared;
    /// Additional state to continue iteration in next call for  joinSelParallel
    struct IterConcurrentContinuation {
@@ -288,6 +290,8 @@ class HashGroup : public UnaryOperator {
 
    HashGroup(Shared& shared);
    ~HashGroup();
+   runtime::Hashmap& getHashTable();
+   size_t getMaxFill();
 
    std::unique_ptr<runtime::HashmapSmall<pos_t, pos_t>> groupHt;
 
@@ -301,9 +305,9 @@ class HashGroup : public UnaryOperator {
       /// Find entries in ht for groupHashes.
       /// Found entries are written to htMatches, missing entries
       /// are added to groupsNotFound
-      pos_t htLookup(pos_t n, decltype(ht) & ht);
+      pos_t htLookup(pos_t n, decltype(ht)& ht);
       /// Follows chains in ht for entries in keysNEq
-      pos_t htFollow(decltype(ht) & ht);
+      pos_t htFollow(decltype(ht)& ht);
 
       HashGroup& parent;
 
@@ -316,7 +320,7 @@ class HashGroup : public UnaryOperator {
       /// ------- group lookup
       /// Find group entries for all in flight tuples.
       /// Write matches to htMatches
-      pos_t findGroups(pos_t n, decltype(ht) & ht);
+      pos_t findGroups(pos_t n, decltype(ht)& ht);
       /// Buffer which contains hashes of group keys
       hash_t* groupHashes;
       /// Buffer which contains entry pointers after group lookup
@@ -334,7 +338,7 @@ class HashGroup : public UnaryOperator {
 
       /// ------ group creation
       /// Creates missing groups. Returns number of groups created.
-      size_t createMissingGroups(decltype(ht) & ht, bool allowResize = false);
+      size_t createMissingGroups(decltype(ht)& ht, bool allowResize = false);
       /// Expression to execute partitioning on groupsNotFound
       Expression partitionKeys;
       /// Expression to scatter
@@ -352,7 +356,7 @@ class HashGroup : public UnaryOperator {
       void getGroupRepresentatives(pos_t nrGroups, pos_t* data,
                                    pos_t* groupEnds, pos_t* out);
 
-      void clearHashtable(decltype(ht) & ht);
+      void clearHashtable(decltype(ht)& ht);
 
     private:
       T* self() { return static_cast<T*>(this); }
@@ -539,4 +543,15 @@ HashGroup::GroupLookup<T>::clearHashtable(runtime::Hashmap& ht) {
    // for (auto& alloc : allocations) free(alloc.first);
    allocations.clear();
 }
+
+template <typename T, typename HT>
+void INTERPRET_SEPARATE insertAllEntries(T& allocations, HT& ht,
+                                         size_t ht_entry_size) {
+   for (auto& block : allocations) {
+      auto start =
+          reinterpret_cast<runtime::Hashmap::EntryHeader*>(block.first);
+      ht.insertAll_tagged(start, block.second, ht_entry_size);
+   }
+}
+
 } // namespace vectorwise

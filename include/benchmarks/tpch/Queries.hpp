@@ -38,6 +38,10 @@ struct Q1Builder : public Query, private vectorwise::QueryBuilder {
    std::unique_ptr<Q1> getQuery();
 };
 
+std::unique_ptr<runtime::Query> q1_hybrid(runtime::Database& db,
+                                          size_t nrThreads, size_t vectorSize,
+                                          const std::string& path_to_lib_src,
+                                          bool fromLLVM, bool verbose = false);
 std::unique_ptr<runtime::Query>
 q1_hyper(runtime::Database& db,
          size_t nrThreads = std::thread::hardware_concurrency());
@@ -163,6 +167,10 @@ runtime::Relation
 q6_vectorwise(runtime::Database& db,
               size_t nrThreads = std::thread::hardware_concurrency(),
               size_t vectorSize = 1024);
+runtime::Relation q6_hybrid(runtime::Database& db, size_t nrThreads,
+                            size_t vectorSize,
+                            const std::string& path_to_lib_src, bool fromLLVM,
+                            bool verbose = false);
 
 struct Q9Builder : public Query, private vectorwise::QueryBuilder {
    enum {
@@ -240,6 +248,10 @@ struct Q18Builder : public Query, private vectorwise::QueryBuilder {
    std::unique_ptr<Q18> getGroupQuery();
 };
 
+std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
+                                           size_t nrThreads, size_t vectorSize,
+                                           const std::string& path_to_lib_src,
+                                           bool fromLLVM, bool verbose = false);
 std::unique_ptr<runtime::Query>
 q18_hyper(runtime::Database& db,
           size_t nrThreads = std::thread::hardware_concurrency());

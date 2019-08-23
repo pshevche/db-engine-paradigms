@@ -128,6 +128,21 @@ ELSE(LINUX)
   set(JEVENTSLIB "")
 ENDIF(LINUX)
 
+# Configure required Boost libraries
+set(BOOST_ROOT "" CACHE PATH "Boost build root (useful on Windows)")
+option(Boost_USE_STATIC_LIBS
+       "Search for static boost libs" OFF)
+option(Boost_USE_MULTITHREADED
+       "Search for multithreaded boost libs" ON)
+option(Boost_USE_STATIC_RUNTIME
+       "Search for boost libs linked against static C++ runtime" OFF)
+find_package(Boost 1.47.0 REQUIRED
+             filesystem system thread program_options serialization
+             chrono random date_time iostreams regex log)
+# ensure that dependant libraries not explicitly specified here
+# are found by the linker:
+link_directories(${Boost_LIBRARY_DIRS})
+
 add_library(common
   src/common/algebra/Operators.cpp
   src/common/algebra/Types.cpp
@@ -145,6 +160,20 @@ target_include_directories(common PUBLIC
     $<INSTALL_INTERFACE:include>
     PRIVATE src)
 
+set(HYBRID_MODULES
+  src/hybrid/code_generator.cpp
+  src/hybrid/compilation_engine.cpp
+  src/hybrid/hybrid_exception.cpp
+  src/hybrid/shared_library.cpp
+  )
+add_library(hybrid
+  ${HYBRID_MODULES}
+  )
+target_include_directories(hybrid PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    PRIVATE src)
+target_link_libraries(hybrid ${CMAKE_DL_LIBS} ${Boost_LIBRARIES})
 
 set(HYPER_TRANSLATORS
   src/hyper/codegen/operators/Map.cpp
@@ -209,7 +238,18 @@ target_include_directories(tpch PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
     PRIVATE src)
-target_link_libraries(tpch benchmark_config pthread hyper ${TBB_LIBRARIES} vectorwise common)
+target_link_libraries(tpch benchmark_config pthread hybrid hyper ${TBB_LIBRARIES} vectorwise common)
+
+add_executable(run_hybrid
+  ${HYPER_TRANSLATORS}
+  ${HYBRID_MODULES}
+  src/hybrid/run.cpp
+  )
+target_include_directories(run_hybrid PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    PRIVATE src)
+target_link_libraries(run_hybrid tpch hybrid hyper vectorwise common ${JEVENTSLIB} )
 
 add_executable(run_tpch
   ${HYPER_TRANSLATORS}

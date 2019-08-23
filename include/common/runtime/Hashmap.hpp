@@ -1,7 +1,7 @@
 #pragma once
 #include "common/defs.hpp"
 #include "common/runtime/Memory.hpp"
-#include "common/runtime/SIMD.hpp"
+// #include "common/runtime/SIMD.hpp"
 #include "common/runtime/Stack.hpp"
 #include <assert.h>
 #include <atomic>
@@ -34,7 +34,7 @@ class Hashmap {
    /// Uses pointer tagging as a filter to quickly determine whether hash is
    /// contained
    inline EntryHeader* find_chain_tagged(hash_t hash);
-   inline Vec8uM find_chain_tagged(Vec8u hashes);
+   //    inline Vec8uM find_chain_tagged(Vec8u hashes);
    /// Insert entry into chain for the given hash
    template <bool concurrentInsert = true>
    inline void insert(EntryHeader* entry, hash_t hash);
@@ -62,13 +62,13 @@ class Hashmap {
 
    inline static EntryHeader* end();
    Hashmap() = default;
-   Hashmap(const Hashmap&) = delete;
+   Hashmap(const Hashmap&) {}
    inline ~Hashmap();
 
  private:
    inline Hashmap::EntryHeader* ptr(Hashmap::EntryHeader* p);
    inline ptr_t tag(hash_t p);
-   inline Vec8u tag(Vec8u p);
+   //    inline Vec8u tag(Vec8u p);
    inline Hashmap::EntryHeader* update(Hashmap::EntryHeader* old,
                                        Hashmap::EntryHeader* p, hash_t hash);
 };
@@ -78,8 +78,8 @@ extern Hashmap::EntryHeader notFound;
 inline Hashmap::EntryHeader* Hashmap::end() { return nullptr; }
 
 inline Hashmap::~Hashmap() {
-  if (entries)
-     mem::free_huge(entries, capacity * sizeof(std::atomic<EntryHeader*>));
+   if (entries)
+      mem::free_huge(entries, capacity * sizeof(std::atomic<EntryHeader*>));
 }
 
 inline Hashmap::ptr_t Hashmap::tag(Hashmap::hash_t hash) {
@@ -87,10 +87,10 @@ inline Hashmap::ptr_t Hashmap::tag(Hashmap::hash_t hash) {
    return ((size_t)1) << (tagPos + (sizeof(ptr_t) * 8 - 16));
 }
 
-inline Vec8u Hashmap::tag(Vec8u hashes) {
-   auto tagPos = hashes >> (sizeof(hash_t) * 8 - 4);
-   return Vec8u(1) << (tagPos + Vec8u(sizeof(ptr_t) * 8 - 16));
-}
+// inline Vec8u Hashmap::tag(Vec8u hashes) {
+//    auto tagPos = hashes >> (sizeof(hash_t) * 8 - 4);
+//    return Vec8u(1) << (tagPos + Vec8u(sizeof(ptr_t) * 8 - 16));
+// }
 
 inline Hashmap::EntryHeader* Hashmap::ptr(Hashmap::EntryHeader* p) {
    return (EntryHeader*)((ptr_t)p & maskPointer);
@@ -131,7 +131,7 @@ void inline Hashmap::insert(EntryHeader* entry, hash_t hash) {
 }
 
 inline Hashmap::EntryHeader* Hashmap::find_chain_tagged(hash_t hash) {
-  //static_assert(sizeof(hash_t) == 8, "Hashtype not supported");
+   // static_assert(sizeof(hash_t) == 8, "Hashtype not supported");
    auto pos = hash & mask;
    auto candidate = entries[pos].load(std::memory_order_relaxed);
    auto filterMatch = (size_t)candidate & tag(hash);
@@ -141,14 +141,15 @@ inline Hashmap::EntryHeader* Hashmap::find_chain_tagged(hash_t hash) {
       return end();
 }
 
-inline Vec8uM Hashmap::find_chain_tagged(Vec8u hashes) {
-   auto pos = hashes & Vec8u(mask);
-   Vec8u candidates = _mm512_i64gather_epi64(pos, (const long long int*)entries, 8);
-   Vec8u filterMatch = candidates & tag(hashes);
-   __mmask8 matches = filterMatch != Vec8u(uint64_t(0));
-   candidates = candidates & Vec8u(maskPointer);
-   return {candidates, matches};
-}
+// inline Vec8uM Hashmap::find_chain_tagged(Vec8u hashes) {
+//    auto pos = hashes & Vec8u(mask);
+//    Vec8u candidates =
+//        _mm512_i64gather_epi64(pos, (const long long int*)entries, 8);
+//    Vec8u filterMatch = candidates & tag(hashes);
+//    __mmask8 matches = filterMatch != Vec8u(uint64_t(0));
+//    candidates = candidates & Vec8u(maskPointer);
+//    return {candidates, matches};
+// }
 
 template <bool concurrentInsert>
 void inline Hashmap::insert_tagged(EntryHeader* entry, hash_t hash) {
@@ -203,7 +204,7 @@ size_t inline Hashmap::setSize(size_t nrEntries) {
    mask = capacity - 1;
    entries = static_cast<std::atomic<EntryHeader*>*>(
        mem::malloc_huge(capacity * sizeof(std::atomic<EntryHeader*>)));
-   //clear();
+   // clear();
    return capacity * loadFactor;
 }
 
@@ -252,7 +253,7 @@ class Hashmapx : public Hashmap {
    size_t inline setSize(size_t nrEntries);
    void clear();
    Hashmapx() = default;
-   Hashmapx(Hashmapx&&) = default;
+   //    Hashmapx(Hashmapx&&) = default;
 };
 
 template <typename K, typename V, typename H, bool useTags>
@@ -324,13 +325,13 @@ Hashmapx<K, V, H, useTags>::findOneEntry(const K& key, hash_t h) {
    Entry* entry;
    if (useTags)
       entry = reinterpret_cast<Entry*>(find_chain_tagged(h));
-    else
+   else
       entry = reinterpret_cast<Entry*>(find_chain(h));
-    if (entry == end()) return nullptr;
-    for (; entry != end(); entry = reinterpret_cast<Entry*>(entry->h.next))
-       if (entry->h.hash == h && entry->k == key) return entry;
-    return nullptr;
-  }
+   if (entry == end()) return nullptr;
+   for (; entry != end(); entry = reinterpret_cast<Entry*>(entry->h.next))
+      if (entry->h.hash == h && entry->k == key) return entry;
+   return nullptr;
+}
 
 template <typename K, typename V, typename H, bool useTags>
 inline V* Hashmapx<K, V, H, useTags>::findOne(const K& key) {
@@ -369,9 +370,10 @@ inline V* Hashmapx<K, V, H, useTags>::findOrCreate(K& key, hash_t hash,
 
 template <typename K, typename V, typename H, bool useTags>
 template <typename T, typename CB, typename KEY>
-inline V*
-Hashmapx<K, V, H, useTags>::findOrCreate(KEY&& key, hash_t hash, V& defaultValue,
-                                         T& entryCollection, CB onGroup) {
+inline V* Hashmapx<K, V, H, useTags>::findOrCreate(KEY&& key, hash_t hash,
+                                                   V& defaultValue,
+                                                   T& entryCollection,
+                                                   CB onGroup) {
    V* group = findOne(key, hash);
    if (!group) {
       onGroup();

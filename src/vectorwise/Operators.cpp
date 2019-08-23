@@ -108,6 +108,10 @@ size_t ResultWriter::next() {
    return found;
 }
 
+runtime::BlockRelation::Block& ResultWriter::getCurrentBlock() {
+   return currentBlock;
+}
+
 pos_t Hashjoin::joinAll() {
    size_t found = 0;
    // perform continuation
@@ -695,16 +699,6 @@ pos_t Hashjoin::joinSelSIMD() {
    return found;
 }
 
-template <typename T, typename HT>
-void INTERPRET_SEPARATE insertAllEntries(T& allocations, HT& ht,
-                                         size_t ht_entry_size) {
-   for (auto& block : allocations) {
-      auto start =
-          reinterpret_cast<runtime::Hashmap::EntryHeader*>(block.first);
-      ht.insertAll_tagged(start, block.second, ht_entry_size);
-   }
-}
-
 pos_t Hashjoin::joinBoncz() {
    size_t followupWrite = contCon.followupWrite;
    size_t found = 0;
@@ -739,11 +733,11 @@ pos_t Hashjoin::joinBoncz() {
          cont.nextProbe = cont.numProbes;
          contCon.followupWrite = followupWrite;
          return found;
-      } else if(found + followupWrite >= batchSize){
+      } else if (found + followupWrite >= batchSize) {
          contCon.followupWrite = followupWrite;
          assert(found);
          return found;
-     }
+      }
    }
    cont.nextProbe = cont.numProbes;
    contCon.followupWrite = followupWrite;
@@ -819,6 +813,9 @@ HashGroup::~HashGroup() {
    // for (auto& alloc : globalAggregation.allocations) free(alloc.first);
 }
 
+runtime::Hashmap& HashGroup::getHashTable() { return this->ht; }
+size_t HashGroup::getMaxFill() { return this->maxFill; }
+
 pos_t HashGroup::findGroupsFromPartition(void* data, size_t n) {
    globalAggregation.groupHashes = reinterpret_cast<hash_t*>(data);
    return globalAggregation.findGroups(n, ht);
@@ -847,7 +844,7 @@ size_t HashGroup::next() {
          preAggregation.clearHashtable(ht);
       };
 
-      for (pos_t n = child->next(); n != EndOfStream; n = child->next()) {
+      for (auto n = child->next(); n != EndOfStream; n = child->next()) {
          groupHash.evaluate(n);
          preAggregation.findGroups(n, ht);
          auto groupsCreated = preAggregation.createMissingGroups(ht, false);

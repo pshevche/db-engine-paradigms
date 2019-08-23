@@ -56,7 +56,7 @@ class PartitionedDeque
    // required so that we are able to cope with the tbb interface for
    // enumerable_thread_specific
    void postConstruct(size_t nrPartitions_ = 0, size_t entrySize_ = 0);
-   PartitionedDeque(const PartitionedDeque&) = delete;
+   PartitionedDeque(const PartitionedDeque&) {}
    ~PartitionedDeque();
 
    void push_back(void* element, hash_t hash);
