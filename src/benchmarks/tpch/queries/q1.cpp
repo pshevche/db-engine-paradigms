@@ -189,7 +189,7 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
 
    // get compiled function
    const std::string& funcName =
-       "_Z17compiled_typer_q1RN7runtime8DatabaseEmmRSt13unordered_"
+       "_Z15hybrid_typer_q1RN7runtime8DatabaseEmmRSt13unordered_"
        "mapINSt6thread2idENS_16PartitionedDequeILm1024EEESt4hashIS4_ESt8equal_"
        "toIS4_ESaISt4pairIKS4_S6_EEE";
    hybrid::CompiledTyperQ1 typer_q1 =

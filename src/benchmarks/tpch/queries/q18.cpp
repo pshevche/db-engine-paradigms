@@ -259,7 +259,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
 
    // get compiled function
    const std::string& funcName =
-       "_Z18compiled_typer_q18RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_"
+       "_Z16hybrid_typer_q18RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_"
        "mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEERS4_INSt6thread2idENS_"
        "16PartitionedDequeILm1024EEES5_ISG_ES7_ISG_ESaIS9_IKSG_SI_EEEm";
    hybrid::CompiledTyperQ18 typer_q18 =

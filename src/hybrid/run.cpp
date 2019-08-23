@@ -85,13 +85,43 @@ int main(int argc, char* argv[]) {
 
    // Q1
    if (q.count("1h")) {
-      e.timeAndProfile("q1 hyper     ", nrTuples(tpch, {"lineitem"}),
-                       [&]() {
-                          if (clearCaches) clearOsCaches();
-                          auto result = q1_hyper(tpch, nrThreads);
-                          escape(&result);
-                       },
-                       repetitions);
+      try {
+         // generate Typer code for Q1
+         const std::string& path_to_cpp =
+             hybrid::CodeGenerator::instance().generatePureTyperQ1();
+
+         // compile llvm
+         bool useLLVM = true;
+         const std::string& path_to_ll =
+             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                   useLLVM);
+
+         // run experiments
+         e.timeAndProfile(
+             "q1 hyper     ", nrTuples(tpch, {"lineitem"}),
+             [&]() {
+                auto start = std::chrono::steady_clock::now();
+                // link library
+                const std::string& path_to_lib =
+                    hybrid::CompilationEngine::instance().linkQueryLib(
+                        path_to_ll, useLLVM);
+                auto end = std::chrono::steady_clock::now();
+                if (verbose) {
+                   std::cout
+                       << "Compilation took "
+                       << std::chrono::duration_cast<std::chrono::milliseconds>(
+                              end - start)
+                              .count()
+                       << " milliseconds." << std::endl;
+                }
+                if (clearCaches) clearOsCaches();
+                auto result = q1_hyper(tpch, nrThreads);
+                escape(&result);
+             },
+             repetitions);
+      } catch (hybrid::HybridException& exc) {
+         std::cerr << exc.what() << std::endl;
+      }
    }
 
    if (q.count("1v")) {
@@ -109,7 +139,7 @@ int main(int argc, char* argv[]) {
       try {
          // generate Typer code for Q1
          const std::string& path_to_cpp =
-             hybrid::CodeGenerator::instance().generateTyperQ1();
+             hybrid::CodeGenerator::instance().generateHybridTyperQ1();
 
          // compile llvm
          bool useLLVM = true;
@@ -134,13 +164,43 @@ int main(int argc, char* argv[]) {
 
    // Q6
    if (q.count("6h")) {
-      e.timeAndProfile("q6 hyper     ", tpch["lineitem"].nrTuples,
-                       [&]() {
-                          if (clearCaches) clearOsCaches();
-                          auto result = q6_hyper(tpch, nrThreads);
-                          escape(&result);
-                       },
-                       repetitions);
+      try {
+         // generate Typer code for Q6
+         const std::string& path_to_cpp =
+             hybrid::CodeGenerator::instance().generatePureTyperQ6();
+
+         // compile LLVM
+         bool useLLVM = true;
+         const std::string& path_to_ll =
+             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                   useLLVM);
+
+         // run experiments
+         e.timeAndProfile(
+             "q6 hyper     ", tpch["lineitem"].nrTuples,
+             [&]() {
+                auto start = std::chrono::steady_clock::now();
+                // link library
+                const std::string& path_to_lib =
+                    hybrid::CompilationEngine::instance().linkQueryLib(
+                        path_to_ll, useLLVM);
+                auto end = std::chrono::steady_clock::now();
+                if (verbose) {
+                   std::cout
+                       << "Compilation took "
+                       << std::chrono::duration_cast<std::chrono::milliseconds>(
+                              end - start)
+                              .count()
+                       << " milliseconds." << std::endl;
+                }
+                if (clearCaches) clearOsCaches();
+                auto result = q6_hyper(tpch, nrThreads);
+                escape(&result);
+             },
+             repetitions);
+      } catch (hybrid::HybridException& exc) {
+         std::cerr << exc.what() << std::endl;
+      }
    }
 
    if (q.count("6v")) {
@@ -158,7 +218,7 @@ int main(int argc, char* argv[]) {
       try {
          // generate Typer code for Q6
          const std::string& path_to_cpp =
-             hybrid::CodeGenerator::instance().generateTyperQ6();
+             hybrid::CodeGenerator::instance().generateHybridTyperQ6();
 
          // compile LLVM
          bool useLLVM = true;
@@ -183,15 +243,44 @@ int main(int argc, char* argv[]) {
 
    // Q18
    if (q.count("18h")) {
-      e.timeAndProfile(
-          "q18 hyper     ",
-          nrTuples(tpch, {"customer", "lineitem", "orders", "lineitem"}),
-          [&]() {
-             if (clearCaches) clearOsCaches();
-             auto result = q18_hyper(tpch, nrThreads);
-             escape(&result);
-          },
-          repetitions);
+      try {
+         // generate Typer code for Q18
+         const std::string& path_to_cpp =
+             hybrid::CodeGenerator::instance().generateHybridTyperQ18();
+
+         // compile llvm
+         bool useLLVM = true;
+         const std::string& path_to_ll =
+             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                   useLLVM);
+
+         // run experiments
+         e.timeAndProfile(
+             "q18 hyper     ",
+             nrTuples(tpch, {"customer", "lineitem", "orders", "lineitem"}),
+             [&]() {
+                auto start = std::chrono::steady_clock::now();
+                // link library
+                const std::string& path_to_lib =
+                    hybrid::CompilationEngine::instance().linkQueryLib(
+                        path_to_ll, useLLVM);
+                auto end = std::chrono::steady_clock::now();
+                if (verbose) {
+                   std::cout
+                       << "Compilation took "
+                       << std::chrono::duration_cast<std::chrono::milliseconds>(
+                              end - start)
+                              .count()
+                       << " milliseconds." << std::endl;
+                }
+                if (clearCaches) clearOsCaches();
+                auto result = q18_hyper(tpch, nrThreads);
+                escape(&result);
+             },
+             repetitions);
+      } catch (hybrid::HybridException& exc) {
+         std::cerr << exc.what() << std::endl;
+      }
    }
 
    if (q.count("18v")) {
@@ -210,7 +299,7 @@ int main(int argc, char* argv[]) {
       try {
          // generate Typer code for Q18
          const std::string& path_to_cpp =
-             hybrid::CodeGenerator::instance().generateTyperQ18();
+             hybrid::CodeGenerator::instance().generateHybridTyperQ18();
 
          // compile llvm
          bool useLLVM = true;
