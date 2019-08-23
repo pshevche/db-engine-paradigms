@@ -6,6 +6,7 @@ namespace hybrid {
 // Singleton to handle all compilation related issues
 class CompilationEngine {
  public:
+   // return an instance of the engine
    static CompilationEngine& instance();
    // compile .pch file to speed up future compilations
    const std::string precompileAPIHeader();

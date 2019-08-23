@@ -75,6 +75,7 @@ void printResultQ1(runtime::Query* result) {
    }
 }
 
+// Execute the Q1 using the Hybrid approach
 std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
                                           size_t vectorSize,
                                           const std::string& path_to_lib_src,
@@ -160,7 +161,7 @@ std::unique_ptr<runtime::Query> q1_hybrid(Database& db, size_t nrThreads,
          groups += groupsCreated;
          if (groups >= maxFill) flushAndClear();
          processedTuples.fetch_add(vectorSize);
-         //  FIXME: delay for debugging purposes
+         //  DEBUG: delay for debugging purposes
          //   std::this_thread::sleep_for(1ms);
       }
       flushAndClear(); // flush remaining entries into spillStorage

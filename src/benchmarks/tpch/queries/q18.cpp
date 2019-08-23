@@ -78,11 +78,7 @@ void printResultQ18(runtime::Query* result) {
    }
 }
 
-int32_t extractKeyFromEntry(runtime::Hashmap::EntryHeader* entry) {
-   auto t = reinterpret_cast<hybrid::Q18TWJoinTuple*>(entry);
-   return t->c_custkey;
-}
-
+// Execute Q18 using hybrid approach
 std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                                            size_t nrThreads, size_t vectorSize,
                                            const std::string& path_to_lib_src,
@@ -120,17 +116,11 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    auto start = std::chrono::steady_clock::now();
    unsigned trackedTables = 2;
    // processed fraction of relations of interest
-   std::atomic<size_t>* processedTuples =
-       new std::atomic<size_t>[trackedTables];
-   for (unsigned i = 0; i < trackedTables; ++i) { processedTuples[i].store(0); }
-   size_t* nrTuples = new size_t[trackedTables];
-   nrTuples[0] = db["customer"].nrTuples;
-   nrTuples[1] = db["lineitem"].nrTuples;
+   std::atomic<size_t> processedTuples(0);
+   size_t liSize = db["lineitem"].nrTuples;
 
    WorkerGroup workers(nrThreads);
    vectorwise::SharedStateManager shared;
-
-   std::unordered_map<int32_t, defs::hash_t> twHashFunction;
 
    std::unique_ptr<runtime::Query> result;
    workers.run([&]() {
@@ -169,7 +159,6 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
             customerJoin->scatterStart =
                 reinterpret_cast<decltype(customerJoin->scatterStart)>(alloc);
             customerJoin->buildScatter.evaluate(n);
-            processedTuples[0].fetch_add(vectorSize);
          }
 
          // --- build phase 2: insert ht entries
@@ -182,9 +171,6 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
          if (globalFound != 0) {
             insertAllEntries(customerJoin->allocations, customerJoin->shared.ht,
                              customerJoin->ht_entry_size);
-         }
-         if (processedTuples[0].load() > nrTuples[0]) {
-            processedTuples[0].store(nrTuples[0]);
          }
          barrier(); // wait for all threads to finish build phase
       }
@@ -225,14 +211,12 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
             lineitemAggr->updateGroups.evaluate(n);
             groups += groupsCreated;
             if (groups >= maxFill) flushAndClear();
-            processedTuples[1].fetch_add(vectorSize);
+            processedTuples.fetch_add(vectorSize);
             //  FIXME: delay for debugging purposes
             // std::this_thread::sleep_for(1ms);
          }
          flushAndClear(); // flush remaining entries into spillStorage
-         if (processedTuples[1].load() > nrTuples[1]) {
-            processedTuples[1].store(nrTuples[1]);
-         }
+         if (processedTuples.load() > liSize) { processedTuples.store(liSize); }
          barrier(); // Wait until all workers have finished phase 1
       }
    });
@@ -243,9 +227,8 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                 << std::chrono::duration_cast<std::chrono::milliseconds>(end -
                                                                          start)
                        .count()
-                << " milliseconds to process " << processedTuples[0].load()
-                << " and " << processedTuples[1].load() << " tuples."
-                << std::endl;
+                << " milliseconds to process " << processedTuples.load()
+                << " lineitem tuples." << std::endl;
    }
 
    // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION
@@ -260,8 +243,8 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    // get compiled function
    const std::string& funcName =
        "_Z16hybrid_typer_q18RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_"
-       "mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEERS4_INSt6thread2idENS_"
-       "16PartitionedDequeILm1024EEES5_ISG_ES7_ISG_ESaIS9_IKSG_SI_EEEm";
+       "mapINSt6thread2idENS_16PartitionedDequeILm1024EEESt4hashIS6_ESt8equal_"
+       "toIS6_ESaISt4pairIKS6_S8_EEEm";
    hybrid::CompiledTyperQ18 typer_q18 =
        typerLib.load()->getFunction<hybrid::CompiledTyperQ18>(funcName);
    if (!typer_q18) {
@@ -270,10 +253,10 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    }
 
    // compute typer result
-   result = std::move(typer_q18(
-       db, nrThreads, shared.get<Hashjoin::Shared>(6).ht, twHashFunction,
-       shared.get<HashGroup::Shared>(3).spillStorage.threadData,
-       processedTuples[1].load()));
+   result = std::move(
+       typer_q18(db, nrThreads, shared.get<Hashjoin::Shared>(6).ht,
+                 shared.get<HashGroup::Shared>(3).spillStorage.threadData,
+                 processedTuples.load()));
 
    end = std::chrono::steady_clock::now();
    if (verbose) {
@@ -282,15 +265,12 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                                                                          start)
                        .count()
                 << " milliseconds to process "
-                << (long)nrTuples[0] - (long)processedTuples[0].load()
-                << " and "
-                << (long)nrTuples[1] - (long)processedTuples[1].load()
-                << " tuples." << std::endl;
+                << (long)liSize - (long)processedTuples.load()
+                << " lineitem tuples." << std::endl;
    }
 
    // close shared library
    delete typerLib;
-   delete[] processedTuples;
 
    //    printResultQ18(result.get());
    return result;

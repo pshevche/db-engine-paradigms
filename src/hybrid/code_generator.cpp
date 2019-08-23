@@ -580,7 +580,6 @@ const std::string CodeGenerator::generateHybridTyperQ18() {
         "using namespace types;"
         "std::unique_ptr<runtime::Query> hybrid_typer_q18("
         "Database & db, size_t nrThreads, runtime::Hashmap & twCustomerHT,"
-        "std::unordered_map<int32_t, defs::hash_t>& twHashFunction,"
         "std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>& "
         "twAggrRes, "
         "size_t firstTuple) {"

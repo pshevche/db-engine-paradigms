@@ -34,7 +34,6 @@ typedef runtime::Relation (*CompiledTyperQ6)(runtime::Database&, size_t, size_t,
 // Q18
 typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ18)(
     runtime::Database&, size_t, runtime::Hashmap&,
-    std::unordered_map<int32_t, defs::hash_t>& twHashFunction,
     std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&,
     size_t);
 

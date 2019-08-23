@@ -4,6 +4,7 @@
 
 namespace hybrid {
 
+// Custom exception for issues caused by hybrid approach
 class HybridException : std::exception {
  public:
    HybridException(const std::string& msg);
