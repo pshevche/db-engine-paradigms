@@ -34,9 +34,9 @@ pos_t sel_col_val_or_val(pos_t n, pos_t* RES result, T* RES param1,
    const auto& con2 = *param3;
    auto rStart = result;
    for (uint64_t i = 0; i < n; ++i) {
-     bool decision = Op<T>()(param1[i], con1) | Op<T>()(param1[i], con2);
-     *result = i;
-     result += decision;
+      bool decision = Op<T>()(param1[i], con1) | Op<T>()(param1[i], con2);
+      *result = i;
+      result += decision;
    }
    return result - rStart;
 }
@@ -427,9 +427,9 @@ pos_t gather_val(pos_t n, T** RES input, size_t offset, size_t* struct_size,
 //--- hashing templates
 using hash_t = defs::hash_t;
 #if HASH_SIZE == 32
-const hash_t seed = 4000932304;
+const hash_t seed = 902850234;
 #else
-const hash_t seed = 29875498475984;
+const hash_t seed = 902850234;
 #endif
 
 template <typename T, typename Op>

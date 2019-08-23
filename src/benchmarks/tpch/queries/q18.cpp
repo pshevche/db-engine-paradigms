@@ -180,10 +180,8 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
          });
          auto globalFound = customerJoin->shared.found.load();
          if (globalFound != 0) {
-            insertAllEntriesHybrid(customerJoin->allocations,
-                                   customerJoin->shared.ht,
-                                   customerJoin->ht_entry_size, twHashFunction,
-                                   extractKeyFromEntry);
+            insertAllEntries(customerJoin->allocations, customerJoin->shared.ht,
+                             customerJoin->ht_entry_size);
          }
          if (processedTuples[0].load() > nrTuples[0]) {
             processedTuples[0].store(nrTuples[0]);
