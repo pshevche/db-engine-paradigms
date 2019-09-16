@@ -15,6 +15,7 @@ class SharedLibrary {
    Function getFunction(const std::string& funcName) {
       return reinterpret_cast<Function>(getSymbol(funcName));
    }
+   // close the library
    ~SharedLibrary();
 
  private:

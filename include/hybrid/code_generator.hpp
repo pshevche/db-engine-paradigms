@@ -3,9 +3,10 @@
 
 namespace hybrid {
 
-// Singleton that generates Typer code for TPC-H queries
+// Singleton that generates Hyper code for TPC-H queries
 class CodeGenerator {
  public:
+    // get instance of the generator
    static CodeGenerator& instance();
    // generates cpp files with Typer code for execution of TPC-H queries
    const std::string generateTyperQ1();

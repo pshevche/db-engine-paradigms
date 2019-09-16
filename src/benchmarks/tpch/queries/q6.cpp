@@ -25,7 +25,7 @@ void printResultQ6(Relation& result) {
    }
 }
 
-// Execute hybrid of Typer and Tectorwise
+// Execute Q6 using hybrid approach
 Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
                    const std::string& path_to_lib_src, bool fromLLVM,
                    bool verbose) {
@@ -79,7 +79,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
            pos = topAggr->child->next()) {
          topAggr->aggregates.evaluate(pos);
          processedTuples.fetch_add(vectorSize);
-         // add delay to debug typer
+         // DEBUG: add delay to debug typer
          //  std::this_thread::sleep_for(1ms);
       }
 
@@ -107,7 +107,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
    }
 
    // get compiled function
-   const std::string& funcName = "_Z17compiled_typer_q6RN7runtime8DatabaseEmml";
+   const std::string& funcName = "_Z15hybrid_typer_q6RN7runtime8DatabaseEmml";
    hybrid::CompiledTyperQ6 typer_q6 =
        typerLib.load()->getFunction<hybrid::CompiledTyperQ6>(funcName);
    if (!typer_q6) {
