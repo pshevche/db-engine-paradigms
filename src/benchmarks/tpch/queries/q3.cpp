@@ -152,8 +152,6 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
                 auto alloc = runtime::this_worker->allocator.allocate(
                         n * CustOrdHashJoin->ht_entry_size);
 
-                std::cout<<CustOrdHashJoin->ht_entry_size<<std::endl;
-
                 if (!alloc) throw std::runtime_error("malloc failed");
                 CustOrdHashJoin->allocations.push_back(std::make_pair(alloc,n));
                 CustOrdHashJoin->scatterStart =
@@ -186,7 +184,6 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
         }
 
     });
-    std::cout<<"Customer and order join end"<<std::endl;
 
     auto end = std::chrono::steady_clock::now();
     if(verbose){

@@ -14,6 +14,16 @@ class CodeGenerator {
    const std::string generateTyperQ18();
    const std::string generateTyperQ3();
 
+    const std::string generatePureTyperQ1();
+    const std::string generatePureTyperQ6();
+    const std::string generatePureTyperQ18();
+//    const std::string generatePureTyperQ3();
+//
+    const std::string generateHybridTyperQ1();
+    const std::string generateHybridTyperQ6();
+    const std::string generateHybridTyperQ18();
+    const std::string generateHybridTyperQ3();
+
  private:
    CodeGenerator();
 };

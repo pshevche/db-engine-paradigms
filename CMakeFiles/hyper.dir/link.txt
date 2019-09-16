@@ -1,2 +1,0 @@
-/usr/bin/ar qc libhyperd.a  CMakeFiles/hyper.dir/src/hyper/codegen/Translator.cpp.o CMakeFiles/hyper.dir/src/hyper/codegen/TranslatorRegistry.cpp.o
-/usr/bin/ranlib libhyperd.a

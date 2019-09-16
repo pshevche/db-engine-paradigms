@@ -1,2 +1,0 @@
-/usr/bin/ar qc libbenchmark_configd.a  CMakeFiles/benchmark_config.dir/src/benchmarks/config.cpp.o
-/usr/bin/ranlib libbenchmark_configd.a

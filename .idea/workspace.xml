@@ -30,16 +30,166 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e43a0728-3076-4296-b503-9f53d9674c85" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeFiles/test_all.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeFiles/tpch.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.14.3/CMakeCCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.14.3/CMakeCXXCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.14.3/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.14.3/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.14.3/CMakeSystem.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.14.3/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.14.3/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.5.1/CMakeCCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.5.1/CMakeCXXCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.5.1/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.5.1/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.5.1/CMakeSystem.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.5.1/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/3.5.1/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/CMakeError.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/CMakeOutput.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/Makefile.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/Makefile2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/bench.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/bench.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/bench.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/bench.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/bench.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/bench.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/bench.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/bench.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/bench.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/cmake_clean_target.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/benchmark_config.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/clion-environment.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/cmake.check_cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/cmake_clean_target.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/common.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/feature_tests.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/feature_tests.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/feature_tests.cxx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/cmake_clean_target.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hybrid.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/cmake_clean_target.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/hyper.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/progress.marks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_hybrid.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_hybrid.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_hybrid.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_hybrid.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_hybrid.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_hybrid.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_hybrid.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_hybrid.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_hybrid.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_prim.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_prim.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_prim.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_prim.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_prim.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_prim.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_prim.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_prim.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_prim.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_ssb.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/run_tpch.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/cmake_clean_target.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/ssb.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/test_all.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/cmake_clean_target.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/tpch.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/CXX.includecache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/cmake_clean_target.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/depend.internal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeFiles/vectorwise.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/hybrid/code_generator.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hybrid/code_generator.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_hybrid" beforeDir="false" afterPath="$PROJECT_DIR$/run_hybrid" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_prim" beforeDir="false" afterPath="$PROJECT_DIR$/run_prim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_ssb" beforeDir="false" afterPath="$PROJECT_DIR$/run_ssb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_tpch" beforeDir="false" afterPath="$PROJECT_DIR$/run_tpch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/benchmarks/tpch/queries/q3.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/benchmarks/tpch/queries/q3.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hybrid/code_generator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/hybrid/code_generator.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hybrid/run.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/hybrid/run.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_all" beforeDir="false" afterPath="$PROJECT_DIR$/test_all" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -59,29 +209,13 @@
       <content type="file-editors">
         <state>
           <leaf>
-            <file pinned="false" current-in-tab="false">
+            <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/queries/q18.cpp">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="307">
-                    <caret line="80" column="67" selection-start-line="80" selection-start-column="67" selection-end-line="80" selection-end-column="67" />
+                  <state relative-caret-position="613">
+                    <caret line="190" column="45" selection-start-line="190" selection-start-column="45" selection-end-line="190" selection-end-column="45" />
                     <folding>
                       <element signature="e#0#38#0" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/include/vectorwise/Operators.hpp">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="539">
-                    <caret line="560" column="63" lean-forward="true" selection-start-line="560" selection-start-column="63" selection-end-line="560" selection-end-column="63" />
-                    <folding>
-                      <element signature="e#10965#11187#1" />
-                      <element signature="e#11288#11579#1" />
-                      <element signature="e#11992#12412#1" />
-                      <element signature="e#17334#17371#0" expanded="true" />
-                      <element signature="e#18039#18076#0" expanded="true" />
                     </folding>
                   </state>
                 </provider>
@@ -98,8 +232,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/hybrid/code_generator.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6235">
-              <caret line="564" column="8" selection-start-line="564" selection-start-column="8" selection-end-line="564" selection-end-column="8" />
+            <state relative-caret-position="414">
+              <caret line="770" selection-start-line="770" selection-end-line="898" />
+              <folding>
+                <element signature="e#219#5128#0" />
+                <element signature="e#5130#7811#0" />
+                <element signature="e#7813#14999#0" />
+                <element signature="e#15001#21807#0" />
+                <element signature="e#21809#24545#0" />
+                <element signature="e#24547#33279#0" />
+                <element signature="e#33279#42011#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/hybrid/code_generator.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="12" selection-start-column="12" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -108,20 +260,7 @@
         <entry file="file://$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="791">
-              <caret line="65" column="22" lean-forward="true" selection-start-line="65" selection-start-column="22" selection-end-line="65" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/queries/q3.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="625">
-              <caret line="175" column="16" selection-start-line="175" selection-start-column="16" selection-end-line="175" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#38#0" expanded="true" />
-                <element signature="e#1101#1155#0" />
-              </folding>
+              <caret line="64" column="22" selection-start-line="64" selection-start-column="22" selection-end-line="64" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -129,8 +268,33 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/hybrid/typer_q3_edit">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1152">
-              <caret line="64" column="40" selection-start-line="64" selection-start-column="40" selection-end-line="64" selection-end-column="40" />
+            <state relative-caret-position="594">
+              <caret line="33" column="67" selection-end-line="114" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/hybrid/run.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="441" column="9" selection-start-line="441" selection-start-column="9" selection-end-line="441" selection-end-column="9" />
+              <folding>
+                <element signature="e#0#20#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/queries/q3.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="521">
+              <caret line="186" selection-start-line="186" selection-end-line="186" />
+              <folding>
+                <element signature="e#0#38#0" expanded="true" />
+                <element signature="e#1101#1155#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -182,18 +346,18 @@
         <option value="$PROJECT_DIR$/include/common/runtime/Hash.hpp" />
         <option value="$PROJECT_DIR$/src/vectorwise/primitives/Hash.cpp" />
         <option value="$PROJECT_DIR$/src/benchmarks/tpch/queries/q6.cpp" />
-        <option value="$PROJECT_DIR$/include/hybrid/code_generator.hpp" />
         <option value="$PROJECT_DIR$/src/hybrid/compilation_engine.cpp" />
         <option value="$PROJECT_DIR$/src/hybrid/typer_q1.cpp" />
         <option value="$PROJECT_DIR$/src/hybrid/typer_q18.cpp" />
         <option value="$PROJECT_DIR$/include/benchmarks/tpch/Queries.hpp" />
         <option value="$PROJECT_DIR$/src/hybrid/typer_q3.cpp" />
-        <option value="$PROJECT_DIR$/src/hybrid/run.cpp" />
         <option value="$PROJECT_DIR$/src/benchmarks/tpch/queries/q18.cpp" />
-        <option value="$PROJECT_DIR$/src/hybrid/code_generator.cpp" />
         <option value="$PROJECT_DIR$/src/hybrid/typer_q3_edit" />
         <option value="$PROJECT_DIR$/include/vectorwise/Operators.hpp" />
         <option value="$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp" />
+        <option value="$PROJECT_DIR$/include/hybrid/code_generator.hpp" />
+        <option value="$PROJECT_DIR$/src/hybrid/code_generator.cpp" />
+        <option value="$PROJECT_DIR$/src/hybrid/run.cpp" />
         <option value="$PROJECT_DIR$/src/benchmarks/tpch/queries/q3.cpp" />
       </list>
     </option>
@@ -227,6 +391,32 @@
             <path>
               <item name="exec_engine_comparison" type="b2602c69:ProjectViewProjectNode" />
               <item name="db-engine-paradigms" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="exec_engine_comparison" type="b2602c69:ProjectViewProjectNode" />
+              <item name="db-engine-paradigms" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="exec_engine_comparison" type="b2602c69:ProjectViewProjectNode" />
+              <item name="db-engine-paradigms" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="benchmarks" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="exec_engine_comparison" type="b2602c69:ProjectViewProjectNode" />
+              <item name="db-engine-paradigms" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="benchmarks" type="462c0819:PsiDirectoryNode" />
+              <item name="tpch" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="exec_engine_comparison" type="b2602c69:ProjectViewProjectNode" />
+              <item name="db-engine-paradigms" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="benchmarks" type="462c0819:PsiDirectoryNode" />
+              <item name="tpch" type="462c0819:PsiDirectoryNode" />
+              <item name="queries" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -396,7 +586,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="88338000" />
+    <option name="totallyTimeSpent" value="89169000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-4" width="1680" height="1054" extended-state="6" />
@@ -561,27 +751,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/hybrid/code_generator.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="13" column="36" selection-start-line="13" selection-start-column="36" selection-end-line="13" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/include/c++/5/bits/basic_string.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
           <caret line="397" column="6" selection-start-line="397" selection-start-column="6" selection-end-line="397" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/run.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1047">
-          <caret line="148" column="8" selection-start-line="148" selection-start-column="8" selection-end-line="148" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -676,17 +849,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/hybrid/run.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="481" column="11" selection-start-line="481" selection-start-column="11" selection-end-line="481" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-            <element signature="e#1223#11200#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/benchmarks/Config.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="468">
@@ -739,13 +901,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/hybrid/typer_q3_edit">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1152">
-          <caret line="64" column="40" selection-start-line="64" selection-start-column="40" selection-end-line="64" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/common/defs.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="36">
@@ -783,16 +938,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/queries/q18.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="307">
-          <caret line="80" column="67" selection-start-line="80" selection-start-column="67" selection-end-line="80" selection-end-column="67" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/vectorwise/Operators.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="539">
@@ -817,24 +962,77 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/hybrid/code_generator.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6235">
-          <caret line="564" column="8" selection-start-line="564" selection-start-column="8" selection-end-line="564" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="791">
-          <caret line="65" column="22" lean-forward="true" selection-start-line="65" selection-start-column="22" selection-end-line="65" selection-end-column="22" />
+          <caret line="64" column="22" selection-start-line="64" selection-start-column="22" selection-end-line="64" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/run.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1943">
+          <caret line="148" column="8" selection-start-line="148" selection-start-column="8" selection-end-line="148" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/hybrid/typer_q3_edit">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="33" column="67" selection-end-line="114" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/hybrid/code_generator.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="770" selection-start-line="770" selection-end-line="898" />
+          <folding>
+            <element signature="e#219#5128#0" />
+            <element signature="e#5130#7811#0" />
+            <element signature="e#7813#14999#0" />
+            <element signature="e#15001#21807#0" />
+            <element signature="e#21809#24545#0" />
+            <element signature="e#24547#33279#0" />
+            <element signature="e#33279#42011#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/hybrid/code_generator.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="12" selection-start-column="12" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/hybrid/run.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="441" column="9" selection-start-line="441" selection-start-column="9" selection-end-line="441" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/queries/q18.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="613">
+          <caret line="190" column="45" selection-start-line="190" selection-start-column="45" selection-end-line="190" selection-end-column="45" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/queries/q3.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="625">
-          <caret line="175" column="16" selection-start-line="175" selection-start-column="16" selection-end-line="175" selection-end-column="16" />
+        <state relative-caret-position="521">
+          <caret line="186" selection-start-line="186" selection-end-line="186" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
             <element signature="e#1101#1155#0" />

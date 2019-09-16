@@ -469,7 +469,7 @@ std::cout<<"Running q3"<<std::endl;
       try {
          // generate Typer code for Q18
          const std::string& path_to_cpp =
-             hybrid::CodeGenerator::instance().generateTyperQ3();
+                 hybrid::CodeGenerator::instance().generateHybridTyperQ3();
 
          // compile llvm
          bool useLLVM = true;
