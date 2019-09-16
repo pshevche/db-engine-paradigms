@@ -1,6 +1,10 @@
 #include "benchmarks/tpch/Queries.hpp"
 #include "common/runtime/Hash.hpp"
 #include "common/runtime/Types.hpp"
+#include "hybrid/compilation_engine.hpp"
+#include "hybrid/hybrid_datatypes.hpp"
+#include "hybrid/hybrid_exception.hpp"
+#include "hybrid/shared_library.hpp"
 #include "hyper/GroupBy.hpp"
 #include "hyper/ParallelHelper.hpp"
 #include "tbb/tbb.h"
@@ -35,6 +39,178 @@ using vectorwise::primitives::hash_t;
 //   l_orderkey,
 //   o_orderdate,
 //   o_shippriority
+
+/*
+ * Bala - Trying Q3 hybrid from Pavlo's work
+ *
+ */
+
+//This extracts the values from tectorwise hash table output
+int32_t extractKeyFromEntryq3(runtime::Hashmap::EntryHeader* entry) {
+
+    auto t = reinterpret_cast<hybrid::Q3TWJoinTuple*>(entry);
+    return t->o_orderkey;
+}
+
+
+std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
+                   size_t nrThreads,
+                   size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
+                   bool verbose){
+
+    using namespace vectorwise;
+    using namespace std::chrono_literals;
+
+    //START COMPILING Q3 IN HYPER
+    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
+    std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
+                                          &verbose] {
+        try {
+            auto start = std::chrono::steady_clock::now();
+            // link library
+            const std::string& path_to_lib =
+                    hybrid::CompilationEngine::instance().linkQueryLib(path_to_lib_src,
+                                                                       fromLLVM);
+            // open library
+            typerLib = hybrid::SharedLibrary::load(path_to_lib + ".so");
+            auto end = std::chrono::steady_clock::now();
+            if (verbose) {
+                std::cout << "Compilation took "
+                          << std::chrono::duration_cast<std::chrono::milliseconds>(
+                                  end - start)
+                                  .count()
+                          << " milliseconds." << std::endl;
+            }
+        } catch (hybrid::HybridException& exc) {
+            std::cout<<"error in compilation"<<std::endl;
+            std::cerr << exc.what() << std::endl;
+        }
+    });
+
+    //STARTING EXECUTION USING TECTORWISE
+    auto start = std::chrono::steady_clock::now();
+    WorkerGroup workers(nrThreads);
+    vectorwise::SharedStateManager shared;
+    std::unique_ptr<runtime::Query> result;
+    short trackedTables = 1;
+    std::atomic<size_t>* processedTuples =
+            new std::atomic<size_t>[trackedTables];
+
+    std::unordered_map<int32_t, defs::hash_t> twHashFunction;
+    size_t* nrTuples = new size_t[trackedTables];
+    nrTuples[0] = db["customer"].nrTuples;
+
+    //Partial execution starts here
+    //The parallel workers run until the particular blocking operation until
+    // which the compilation of the hyper is done.
+
+    //since in this query the first operation is a hash join we assume that it
+    // is this location where the vectorwise will be processing
+
+    //First we have to select the operation until which we have to run in the threads
+    //Tectorwise is a to-down call operation: i.e. at first the print function is called
+    // and the print function requests for results and so on. This way, the execution moves down
+    // and finally ends up with final/first operation to be executed.
+    //Since, we cut this in our method, so that we process only until a particular operation
+
+
+    /*
+     * Starting tectorwise
+     */
+    workers.run([&]() {
+        using runtime::Hashmap;
+        Q3Builder builder(db, shared, vectorSize);
+        auto query = builder.getQuery();
+        std::unique_ptr<ResultWriter> printOp(
+                static_cast<ResultWriter*>(query->rootOp.release()));
+        std::unique_ptr<vectorwise::HashGroup> finalAggregates(
+                static_cast<vectorwise::HashGroup*>(printOp->child.release()));
+        std::unique_ptr<Project> projectExpression(
+                static_cast<Project*>(finalAggregates->child.release()));
+        std::unique_ptr<Hashjoin> lineItemHashJoin(
+                static_cast<Hashjoin*>(projectExpression->child.release()));
+        std::unique_ptr<Hashjoin> CustOrdHashJoin(
+                static_cast<Hashjoin*>(lineItemHashJoin->left.release()));
+        std::unique_ptr<vectorwise::Select> lineItemSelect(
+                static_cast<vectorwise::Select*>(lineItemHashJoin->right.release()));
+        std::unique_ptr<vectorwise::Select> CustomerSelect(
+                static_cast<vectorwise::Select*>(CustOrdHashJoin->left.release()));
+        std::unique_ptr<vectorwise::Select> OrdersSelect(
+                static_cast<vectorwise::Select*>(CustOrdHashJoin->right.release()));
+        //Here the execution statements are written
+        //Executing hash table build in here
+        //We select the second hash join using line item is the location of transfer. I.E. the hash join for customer-order relation
+
+        //Building hash table for hash join in customer-order relation
+        {
+            size_t found = 0;
+            // building cutomer hash table from relation
+            for (auto n = CustOrdHashJoin->left->next();
+                    n!= EndOfStream; n = CustOrdHashJoin->left->next()){
+
+                found +=n;
+                std::cout<<found<<std::endl;
+            }
+
+        }
+
+    });
+    std::cout<<"Customer and order join end"<<std::endl;
+
+//    auto end = std::chrono::steady_clock::now();
+//    if(verbose){
+//
+//        std::cout   << "TW took"
+//                    <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+//                    <<" milliseconds to process "<< processedTuples[0].load()
+//                    << " tuples."<<std::endl;
+//     }
+//
+//    //Start typer execution here
+//    compilationThread.join();
+//    start = std::chrono::steady_clock::now();
+//
+//    // load library
+//    if (!typerLib) {
+//        throw hybrid::HybridException("Could not load shared Typer library!");
+//    }
+//
+//    //Loading function into the runtime
+//    const std::string& funcName =
+//            "_Z17compiled_typer_q3RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEEm";
+//
+//    hybrid::CompiledTyperQ3 typer_q3 = //here-> the compiled typer function definition has to be given properly
+//            typerLib.load()->getFunction<hybrid::CompiledTyperQ3>(funcName);
+//    if (!typer_q3) {
+//        throw hybrid::HybridException(
+//                "Could not find function for running Q3 in Typer!");
+//    }
+//
+//    // compute typer result
+//    result = std::move(typer_q3(
+//            db, nrThreads, shared.get<Hashjoin::Shared>(6).ht, twHashFunction,
+//            processedTuples[0].load()));
+//
+//    end = std::chrono::steady_clock::now();
+//    if (verbose) {
+//        std::cout << "Typer took "
+//                  << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+//                                                                           start)
+//                          .count()
+//                  << " milliseconds to process "
+//                  << (long)nrTuples[0] - (long)processedTuples[0].load()
+//                  << " and "
+//                  << (long)nrTuples[1] - (long)processedTuples[1].load()
+//                  << " tuples." << std::endl;
+//    }
+//
+//    // close shared library
+//    delete typerLib;
+//    delete[] processedTuples;
+
+    //    printResultQ18(result.get());
+    return result;
+}
 
 NOVECTORIZE std::unique_ptr<runtime::Query> q3_hyper(Database& db,
                                                      size_t nrThreads) {
@@ -190,17 +366,30 @@ std::unique_ptr<Q3Builder::Q3> Q3Builder::getQuery() {
                              Buffer(sel_order, sizeof(pos_t)),           //
                              Column(order, "o_orderdate"),               //
                              Value(&r->c2)));
-   HashJoin(Buffer(cust_ord, sizeof(pos_t)), conf.joinAll())
-       .setProbeSelVector(Buffer(sel_order), conf.joinSel())
-       .addBuildKey(Column(customer, "c_custkey"),       //
-                    Buffer(sel_cust),                    //
-                    conf.hash_sel_int32_t_col(),         //
-                    primitives::scatter_sel_int32_t_col) //
-       .addProbeKey(Column(order, "o_custkey"),          //
-                    Buffer(sel_order),                   //
-                    conf.hash_sel_int32_t_col(),         //
-                    primitives::keys_equal_int32_t_col);
-   auto lineitem = Scan("lineitem");
+    HashJoin(Buffer(cust_ord, sizeof(pos_t)))
+        .setProbeSelVector(Buffer(sel_order))
+        .addBuildKey(Column(customer, "c_custkey"),       //
+                     Buffer(sel_cust),                    //
+                     conf.hash_sel_int32_t_col(),         //
+                     primitives::scatter_sel_int32_t_col) //
+        .addProbeKey(Column(order, "o_custkey"),          //
+                     Buffer(sel_order),                   //
+                     conf.hash_sel_int32_t_col(),         //
+                     primitives::keys_equal_int32_t_col);
+
+
+//    HashJoin(Buffer(cust_ord, sizeof(pos_t)), conf.joinAll())
+//            .setProbeSelVector(Buffer(sel_order), conf.joinSel())
+//            .addBuildKey(Column(customer, "c_custkey"),       //
+//                         Buffer(sel_cust),                    //
+//                         conf.hash_sel_int32_t_col(),         //
+//                         primitives::scatter_sel_int32_t_col) //
+//            .addProbeKey(Column(order, "o_custkey"),          //
+//                         Buffer(sel_order),                   //
+//                         conf.hash_sel_int32_t_col(),         //
+//                         primitives::keys_equal_int32_t_col);
+
+    auto lineitem = Scan("lineitem");
    Select(Expression().addOp(BF(primitives::sel_greater_Date_col_Date_val), //
                              Buffer(sel_lineitem, sizeof(pos_t)),           //
                              Column(lineitem, "l_shipdate"),                //

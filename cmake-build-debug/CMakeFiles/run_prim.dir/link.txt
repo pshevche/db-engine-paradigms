@@ -1,0 +1,1 @@
+/usr/bin/g++   -march=native -mtune=native -std=c++14 -fPIC -Wall -Wextra -Wno-psabi -fno-omit-frame-pointer -Wno-unknown-pragmas  -fno-tree-vectorize  -fsanitize=address -static-libasan  -rdynamic CMakeFiles/run_prim.dir/src/benchmarks/primitives/run.cpp.o  -o run_prim libvectorwised.a libcommond.a -ltbb 3rdparty/jevents/libjeventsd.a 

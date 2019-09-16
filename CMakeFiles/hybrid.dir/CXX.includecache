@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hybrid/code_generator.cpp
+hybrid/code_generator.hpp
+/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hybrid/hybrid/code_generator.hpp
+fstream
+-
+sstream
+-
+
+include/hybrid/code_generator.hpp
+string
+-
+

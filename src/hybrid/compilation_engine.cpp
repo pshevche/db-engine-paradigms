@@ -47,7 +47,10 @@ const std::string CompilationEngine::precompileAPIHeader() {
                         << path_to_minimal_api_header << " -I "
                         << "include/ -o " << path_to_precompiled_header
                         << std::endl;
-      auto ret = system(precompile_header.str().c_str());
+
+
+       auto ret = system(precompile_header.str().c_str());
+       std::cout<<"Here is compilation start"<<std::endl;
       if (ret) {
          throw HybridException("Compilation of precompiled header failed!");
       } else {

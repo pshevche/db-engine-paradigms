@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/jevents.h
+sys/types.h
+-
+
+/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/listevents.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+fnmatch.h
+-
+assert.h
+-
+jevents.h
+/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/jevents.h
+

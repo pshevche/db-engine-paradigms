@@ -709,10 +709,10 @@ pos_t keys_equal(pos_t n, T* RES buildEntry[], size_t offset, pos_t* probeIdx,
 {
    uint64_t found = 0;
    for (uint64_t i = 0; i < n; ++i) {
-      auto buildKey = addBytes(buildEntry[i], offset);
-      if (Op<T>()(*buildKey, probeKey[probeIdx[i]])) {
-         buildEntry[found] = buildEntry[i];
-         probeIdx[found++] = probeIdx[i];
+      auto buildKey = addBytes(buildEntry[i], offset); //Extract key from packed values
+      if (Op<T>()(*buildKey, probeKey[probeIdx[i]])) { //checks if the key is available in probe index
+         buildEntry[found] = buildEntry[i];            // update the buildentry index with found key
+         probeIdx[found++] = probeIdx[i];              // update the probeindex with probe value
       }
    }
    return found;

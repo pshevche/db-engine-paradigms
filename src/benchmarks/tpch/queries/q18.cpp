@@ -92,6 +92,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
 
    // 1. START COMPILING Q18 IN TYPER
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
+
    std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
                                   &verbose] {
       try {
@@ -264,6 +265,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
        "_Z18compiled_typer_q18RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_"
        "mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEERS4_INSt6thread2idENS_"
        "16PartitionedDequeILm1024EEES5_ISG_ES7_ISG_ESaIS9_IKSG_SI_EEEm";
+
    hybrid::CompiledTyperQ18 typer_q18 =
        typerLib.load()->getFunction<hybrid::CompiledTyperQ18>(funcName);
    if (!typer_q18) {

@@ -1,0 +1,1 @@
+/usr/bin/gcc  -fPIC -Wall -Wextra -fno-omit-frame-pointer -march=native -fdiagnostics-color  -Wno-sign-compare -Wno-unused-result -Wno-unused-parameter -g  -rdynamic CMakeFiles/listevents.dir/listevents.c.o  -o listevents libjeventsd.a 

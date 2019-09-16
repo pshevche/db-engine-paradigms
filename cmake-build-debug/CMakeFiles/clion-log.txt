@@ -1,0 +1,63 @@
+/home/gurumurt/clion/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/gurumurt/Student-Files/hiwi/db-engine-paradigms
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-download
+Scanning dependencies of target googletest
+[ 11%] Creating directories for 'googletest'
+[ 22%] Performing download step (git clone) for 'googletest'
+-- Avoiding repeated git clone, stamp file is up to date: '/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-download/googletest-prefix/src/googletest-stamp/googletest-gitclone-lastrun.txt'
+[ 33%] No patch step for 'googletest'
+[ 44%] Performing update step for 'googletest'
+[ 55%] No configure step for 'googletest'
+[ 66%] No build step for 'googletest'
+[ 77%] No install step for 'googletest'
+[ 88%] No test step for 'googletest'
+[100%] Completed 'googletest'
+[100%] Built target googletest
+-- The C compiler identification is GNU 5.4.0
+-- The CXX compiler identification is GNU 5.4.0
+-- Check for working C compiler: /usr/bin/gcc
+-- Check for working C compiler: /usr/bin/gcc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/g++
+-- Check for working CXX compiler: /usr/bin/g++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMake Warning (dev) at CMakeLists.txt:106 (project):
+  Policy CMP0048 is not set: project() command manages VERSION variables.
+  Run "cmake --help-policy CMP0048" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  The following variable(s) would be set to empty:
+
+    CMAKE_PROJECT_VERSION
+    CMAKE_PROJECT_VERSION_MAJOR
+    CMAKE_PROJECT_VERSION_MINOR
+    CMAKE_PROJECT_VERSION_PATCH
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- setting datadir to proj dir 
+-- /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data
+-- Boost version: 1.58.0
+-- Found the following Boost libraries:
+--   filesystem
+--   system
+--   thread
+--   program_options
+--   serialization
+--   chrono
+--   random
+--   date_time
+--   iostreams
+--   regex
+--   log
+--   atomic
+--   log_setup
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms

@@ -570,4 +570,23 @@ void INTERPRET_SEPARATE insertAllEntriesHybrid(
       }
    }
 }
+
+template <typename T, typename HT, typename K>
+void INTERPRET_SEPARATE insertAllEntriesHybridQ3(
+        T& allocations, HT& ht, size_t ht_entry_size,
+        std::unordered_map<K, defs::hash_t>& twHashFunction,
+        K (*extractKeyFromEntryq3)(runtime::Hashmap::EntryHeader*)) {
+
+    for (auto& block : allocations) {
+        runtime::Hashmap::EntryHeader* e =
+                reinterpret_cast<runtime::Hashmap::EntryHeader*>(block.first);
+        for (size_t i = 0; i < block.second; ++i) {
+            ht.insert_tagged(e, e->hash);
+            twHashFunction[extractKeyFromEntryq3(e)] = e->hash;
+            e = reinterpret_cast<runtime::Hashmap::EntryHeader*>(
+                    reinterpret_cast<uint8_t*>(e) + ht_entry_size);
+        }
+    }
+}
+
 } // namespace vectorwise
