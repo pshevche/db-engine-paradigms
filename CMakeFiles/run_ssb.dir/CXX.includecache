@@ -30,24 +30,6 @@ profile.hpp
 tbb/tbb.h
 /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/benchmarks/sbb/tbb/tbb.h
 
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hyper/codegen/operators/Map.cpp
-hyper/codegen/Translator.hpp
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hyper/codegen/operators/hyper/codegen/Translator.hpp
-iostream
--
-
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hyper/codegen/operators/Print.cpp
-hyper/codegen/Translator.hpp
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hyper/codegen/operators/hyper/codegen/Translator.hpp
-iostream
--
-
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hyper/codegen/operators/Scan.cpp
-hyper/codegen/Translator.hpp
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hyper/codegen/operators/hyper/codegen/Translator.hpp
-iostream
--
-
 3rdparty/jevents/jevents.h
 sys/types.h
 -
@@ -89,14 +71,6 @@ sys/types.h
 -
 unistd.h
 -
-
-include/common/algebra/Operators.hpp
-string
--
-memory
--
-common/runtime/Database.hpp
-include/common/algebra/common/runtime/Database.hpp
 
 include/common/algebra/Types.hpp
 string
@@ -337,18 +311,6 @@ stddef.h
 include/common/runtime/stddef.h
 stdint.h
 include/common/runtime/stdint.h
-
-include/hyper/codegen/Translator.hpp
-common/algebra/Operators.hpp
-include/hyper/codegen/common/algebra/Operators.hpp
-hyper/codegen/TranslatorRegistry.hpp
-include/hyper/codegen/hyper/codegen/TranslatorRegistry.hpp
-
-include/hyper/codegen/TranslatorRegistry.hpp
-hyper/codegen/Translator.hpp
-include/hyper/codegen/hyper/codegen/Translator.hpp
-unordered_map
--
 
 include/profile.hpp
 common/Compat.hpp

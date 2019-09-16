@@ -131,15 +131,10 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
                 static_cast<Hashjoin*>(projectExpression->child.release()));
         std::unique_ptr<Hashjoin> CustOrdHashJoin(
                 static_cast<Hashjoin*>(lineItemHashJoin->left.release()));
-        std::unique_ptr<vectorwise::Select> lineItemSelect(
-                static_cast<vectorwise::Select*>(lineItemHashJoin->right.release()));
-        std::unique_ptr<vectorwise::Select> CustomerSelect(
-                static_cast<vectorwise::Select*>(CustOrdHashJoin->left.release()));
-        std::unique_ptr<vectorwise::Select> OrdersSelect(
-                static_cast<vectorwise::Select*>(CustOrdHashJoin->right.release()));
         //Here the execution statements are written
         //Executing hash table build in here
         //We select the second hash join using line item is the location of transfer. I.E. the hash join for customer-order relation
+
 
         //Building hash table for hash join in customer-order relation
         {
@@ -149,64 +144,100 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
                     n!= EndOfStream; n = CustOrdHashJoin->left->next()){
 
                 found +=n;
-                std::cout<<found<<std::endl;
+
+                //Building hash tables
+                CustOrdHashJoin->buildHash.evaluate(n);
+
+                // scatter hash, keys and values into ht entries
+                auto alloc = runtime::this_worker->allocator.allocate(
+                        n * CustOrdHashJoin->ht_entry_size);
+
+                std::cout<<CustOrdHashJoin->ht_entry_size<<std::endl;
+
+                if (!alloc) throw std::runtime_error("malloc failed");
+                CustOrdHashJoin->allocations.push_back(std::make_pair(alloc,n));
+                CustOrdHashJoin->scatterStart =
+                        reinterpret_cast<decltype(CustOrdHashJoin->scatterStart)>(alloc);
+                CustOrdHashJoin->buildScatter.evaluate(n);
+                processedTuples[0].fetch_add(vectorSize);
             }
 
+            //Insertion of hashing entries
+            CustOrdHashJoin->shared.found.fetch_add(found);
+            barrier([&]() {
+                auto globalFound = CustOrdHashJoin->shared.found.load();
+                if (globalFound)  CustOrdHashJoin->shared.ht.setSize(globalFound);
+            });
+
+            auto globalFound = CustOrdHashJoin->shared.found.load();
+
+            if (globalFound != 0) {
+
+                insertAllEntriesHybridQ3(CustOrdHashJoin->allocations,
+                                       CustOrdHashJoin->shared.ht,
+                                       CustOrdHashJoin->ht_entry_size, twHashFunction,
+                                       extractKeyFromEntryq3);
+            }
+
+            if (processedTuples[0].load() > nrTuples[0]) {
+                processedTuples[0].store(nrTuples[0]);
+            }
+            barrier(); // wait for all threads to finish build phase
         }
 
     });
     std::cout<<"Customer and order join end"<<std::endl;
 
-//    auto end = std::chrono::steady_clock::now();
-//    if(verbose){
-//
-//        std::cout   << "TW took"
-//                    <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-//                    <<" milliseconds to process "<< processedTuples[0].load()
-//                    << " tuples."<<std::endl;
-//     }
-//
-//    //Start typer execution here
-//    compilationThread.join();
-//    start = std::chrono::steady_clock::now();
-//
-//    // load library
-//    if (!typerLib) {
-//        throw hybrid::HybridException("Could not load shared Typer library!");
-//    }
-//
-//    //Loading function into the runtime
-//    const std::string& funcName =
-//            "_Z17compiled_typer_q3RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEEm";
-//
-//    hybrid::CompiledTyperQ3 typer_q3 = //here-> the compiled typer function definition has to be given properly
-//            typerLib.load()->getFunction<hybrid::CompiledTyperQ3>(funcName);
-//    if (!typer_q3) {
-//        throw hybrid::HybridException(
-//                "Could not find function for running Q3 in Typer!");
-//    }
-//
-//    // compute typer result
-//    result = std::move(typer_q3(
-//            db, nrThreads, shared.get<Hashjoin::Shared>(6).ht, twHashFunction,
-//            processedTuples[0].load()));
-//
-//    end = std::chrono::steady_clock::now();
-//    if (verbose) {
-//        std::cout << "Typer took "
-//                  << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-//                                                                           start)
-//                          .count()
-//                  << " milliseconds to process "
-//                  << (long)nrTuples[0] - (long)processedTuples[0].load()
-//                  << " and "
-//                  << (long)nrTuples[1] - (long)processedTuples[1].load()
-//                  << " tuples." << std::endl;
-//    }
-//
-//    // close shared library
-//    delete typerLib;
-//    delete[] processedTuples;
+    auto end = std::chrono::steady_clock::now();
+    if(verbose){
+
+        std::cout   << "TW took "
+                    <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+                    <<" milliseconds to process "<< processedTuples[0].load()
+                    << " tuples."<<std::endl;
+     }
+
+    //Start typer execution here
+    compilationThread.join();
+    start = std::chrono::steady_clock::now();
+
+    // load library
+    if (!typerLib) {
+        throw hybrid::HybridException("Could not load shared Typer library!");
+    }
+
+    //Loading function into the runtime
+    const std::string& funcName =
+            "_Z17compiled_typer_q3RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEEm";
+
+    hybrid::CompiledTyperQ3 typer_q3 = //here-> the compiled typer function definition has to be given properly
+            typerLib.load()->getFunction<hybrid::CompiledTyperQ3>(funcName);
+    if (!typer_q3) {
+        throw hybrid::HybridException(
+                "Could not find function for running Q3 in Typer!");
+    }
+    std::cout<<"called function"<<std::endl;
+    // compute typer result
+    result = std::move(typer_q3(
+            db, nrThreads, shared.get<Hashjoin::Shared>(3).ht, twHashFunction,
+            processedTuples[0].load()));
+
+    end = std::chrono::steady_clock::now();
+    if (verbose) {
+        std::cout << "Typer took "
+                  << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                           start)
+                          .count()
+                  << " milliseconds to process "
+                  << (long)nrTuples[0] - (long)processedTuples[0].load()
+                  << " and "
+                  << (long)nrTuples[1] - (long)processedTuples[1].load()
+                  << " tuples." << std::endl;
+    }
+
+    // close shared library
+    delete typerLib;
+    delete[] processedTuples;
 
     //    printResultQ18(result.get());
     return result;
