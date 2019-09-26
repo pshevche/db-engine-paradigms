@@ -1056,9 +1056,6 @@
 			<Option target="hybrid"/>
 			<Option target="run_hybrid"/>
 		</Unit>
-		<Unit filename="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hybrid/typer_q3.cpp">
-			<Option target="run_hybrid"/>
-		</Unit>
 		<Unit filename="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src/hyper/codegen/Translator.cpp">
 			<Option target="hyper"/>
 		</Unit>
