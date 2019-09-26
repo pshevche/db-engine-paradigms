@@ -92,13 +92,11 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
     WorkerGroup workers(nrThreads);
     vectorwise::SharedStateManager shared;
     std::unique_ptr<runtime::Query> result;
-    short trackedTables = 1;
-    std::atomic<size_t>* processedTuples =
-            new std::atomic<size_t>[trackedTables];
+    std::atomic<size_t> processedTuples(0);
 
     std::unordered_map<int32_t, defs::hash_t> twHashFunction;
-    size_t* nrTuples = new size_t[trackedTables];
-    nrTuples[0] = db["customer"].nrTuples;
+    size_t nrTuples;
+    nrTuples = db["customer"].nrTuples;
 
     //Partial execution starts here
     //The parallel workers run until the particular blocking operation until
@@ -139,25 +137,26 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
         //Building hash table for hash join in customer-order relation
         {
             size_t found = 0;
+            // Step 1: creating hash table
             // building cutomer hash table from relation
             for (auto n = CustOrdHashJoin->left->next();
-                    n!= EndOfStream; n = CustOrdHashJoin->left->next()){
+                    n!= EndOfStream && !typerLib; n = CustOrdHashJoin->left->next()){
 
                 found +=n;
 
                 //Building hash tables
                 CustOrdHashJoin->buildHash.evaluate(n);
 
+                //CustOrdHashJoin->ht_entry_size is 24 bytes
                 // scatter hash, keys and values into ht entries
                 auto alloc = runtime::this_worker->allocator.allocate(
                         n * CustOrdHashJoin->ht_entry_size);
-
                 if (!alloc) throw std::runtime_error("malloc failed");
-                CustOrdHashJoin->allocations.push_back(std::make_pair(alloc,n));
+                CustOrdHashJoin->allocations.emplace_back(std::make_pair(alloc,n));
                 CustOrdHashJoin->scatterStart =
                         reinterpret_cast<decltype(CustOrdHashJoin->scatterStart)>(alloc);
                 CustOrdHashJoin->buildScatter.evaluate(n);
-                processedTuples[0].fetch_add(vectorSize);
+                processedTuples.fetch_add(vectorSize);
             }
 
             //Insertion of hashing entries
@@ -166,23 +165,20 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
                 auto globalFound = CustOrdHashJoin->shared.found.load();
                 if (globalFound)  CustOrdHashJoin->shared.ht.setSize(globalFound);
             });
-
             auto globalFound = CustOrdHashJoin->shared.found.load();
-
             if (globalFound != 0) {
-
                 insertAllEntriesHybridQ3(CustOrdHashJoin->allocations,
                                        CustOrdHashJoin->shared.ht,
-                                       CustOrdHashJoin->ht_entry_size, twHashFunction,
+                                       CustOrdHashJoin->ht_entry_size,
+                                       twHashFunction,
                                        extractKeyFromEntryq3);
             }
 
-            if (processedTuples[0].load() > nrTuples[0]) {
-                processedTuples[0].store(nrTuples[0]);
+            if (processedTuples.load() > nrTuples) {
+                processedTuples.store(nrTuples);
             }
             barrier(); // wait for all threads to finish build phase
         }
-
     });
 
     auto end = std::chrono::steady_clock::now();
@@ -190,7 +186,7 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
 
         std::cout   << "TW took "
                     <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-                    <<" milliseconds to process "<< processedTuples[0].load()
+                    <<" milliseconds to process "<< processedTuples.load()
                     << " tuples."<<std::endl;
      }
 
@@ -203,7 +199,7 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
         throw hybrid::HybridException("Could not load shared Typer library!");
     }
 
-    //Loading function into the runtime
+//    Loading function into the runtime
     const std::string& funcName =
             "_Z17compiled_typer_q3RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEEm";
 
@@ -217,26 +213,26 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
     // compute typer result
     result = std::move(typer_q3(
             db, nrThreads, shared.get<Hashjoin::Shared>(3).ht, twHashFunction,
-            processedTuples[0].load()));
+            processedTuples.load()));
 
     end = std::chrono::steady_clock::now();
+
+    std::cout<<"Called endl"<<std::endl;
     if (verbose) {
         std::cout << "Typer took "
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end -
                                                                            start)
                           .count()
                   << " milliseconds to process "
-                  << (long)nrTuples[0] - (long)processedTuples[0].load()
-                  << " and "
-                  << (long)nrTuples[1] - (long)processedTuples[1].load()
+                  << (long)nrTuples - (long)processedTuples.load()
                   << " tuples." << std::endl;
     }
 
-    // close shared library
+//     close shared library
     delete typerLib;
-    delete[] processedTuples;
+//    delete[] processedTuples;
 
-    //    printResultQ18(result.get());
+//        printResultQ18(result.get());
     return result;
 }
 

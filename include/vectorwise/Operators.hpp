@@ -584,7 +584,7 @@ void INTERPRET_SEPARATE insertAllEntriesHybridQ3(
             ht.insert_tagged(e, e->hash);
             twHashFunction[extractKeyFromEntryq3(e)] = e->hash;
             e = reinterpret_cast<runtime::Hashmap::EntryHeader*>(
-                    reinterpret_cast<uint8_t*>(e) + ht_entry_size);
+                    reinterpret_cast<uint32_t*>(e) + ht_entry_size);
         }
     }
 }

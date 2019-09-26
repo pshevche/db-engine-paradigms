@@ -61,8 +61,9 @@ typedef struct __attribute__((packed)) {
 
 
 typedef struct __attribute__((packed)) {
-//    uint8_t idk1[20];
+//    uint8_t idk1[16];
     int32_t o_orderkey;
+//    int32_t o_ordervalue;
 //    uint8_t idk2[1];
 //    char o_orderdate[25];
 //    uint8_t idk3[1];

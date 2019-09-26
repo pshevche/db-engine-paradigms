@@ -411,33 +411,34 @@ int main(int argc, char* argv[]) {
 //          repetitions);
 //   }
 //
-//   if (q.count("18hv")) {
-//      try {
-//         // generate Typer code for Q18
-//         const std::string& path_to_cpp =
-//             hybrid::CodeGenerator::instance().generateTyperQ18();
-//
-//         // compile llvm
-//         bool useLLVM = true;
-//         const std::string& path_to_ll =
-//             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
-//                                                                   useLLVM);
-//
-//         // run experiments
-//         e.timeAndProfile(
-//             "q18 hybrid   ",
-//             nrTuples(tpch, {"customer", "lineitem", "orders", "lineitem"}),
-//             [&]() {
-//                if (clearCaches) clearOsCaches();
-//                auto result = q18_hybrid(tpch, nrThreads, vectorSize,
-//                                         path_to_ll, useLLVM, verbose);
-//                escape(&result);
-//             },
-//             repetitions);
-//      } catch (hybrid::HybridException& exc) {
-//         std::cerr << exc.what() << std::endl;
-//      }
-//   }
+    std::cout<<"Running Q18 hybrid"<<std::endl;
+   if (q.count("18hv")) {
+      try {
+         // generate Typer code for Q18
+         const std::string& path_to_cpp =
+             hybrid::CodeGenerator::instance().generatePureTyperQ18();
+
+         // compile llvm
+         bool useLLVM = true;
+         const std::string& path_to_ll =
+             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                   useLLVM);
+
+         // run experiments
+         e.timeAndProfile(
+             "q18 hybrid   ",
+             nrTuples(tpch, {"customer", "lineitem", "orders", "lineitem"}),
+             [&]() {
+                if (clearCaches) clearOsCaches();
+                auto result = q18_hybrid(tpch, nrThreads, vectorSize,
+                                         path_to_ll, useLLVM, verbose);
+                escape(&result);
+             },
+             repetitions);
+      } catch (hybrid::HybridException& exc) {
+         std::cerr << "Error in exec: " << exc.what() << std::endl;
+      }
+   }
 
    // Q18
 //   if (q.count("18h")) {
@@ -489,6 +490,7 @@ std::cout<<"Running q3"<<std::endl;
              },
              repetitions);
       } catch (hybrid::HybridException& exc) {
+          std::cout<<"There is some error on the processing"<<std::endl;
          std::cerr << exc.what() << std::endl;
       }
    }
