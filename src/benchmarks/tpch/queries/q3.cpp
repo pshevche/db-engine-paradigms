@@ -49,7 +49,7 @@ using vectorwise::primitives::hash_t;
 int32_t extractKeyFromEntryq3(runtime::Hashmap::EntryHeader* entry) {
 
     auto t = reinterpret_cast<hybrid::Q3TWJoinTuple*>(entry);
-    return t->o_orderkey;
+    return t->orderdate;
 }
 
 
@@ -167,11 +167,8 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
             });
             auto globalFound = CustOrdHashJoin->shared.found.load();
             if (globalFound != 0) {
-                insertAllEntriesHybridQ3(CustOrdHashJoin->allocations,
-                                       CustOrdHashJoin->shared.ht,
-                                       CustOrdHashJoin->ht_entry_size,
-                                       twHashFunction,
-                                       extractKeyFromEntryq3);
+                insertAllEntries(CustOrdHashJoin->allocations,CustOrdHashJoin->shared.ht,
+                                 CustOrdHashJoin->ht_entry_size);
             }
 
             if (processedTuples.load() > nrTuples) {

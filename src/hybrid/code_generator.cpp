@@ -192,9 +192,9 @@ const std::string CodeGenerator::generatePureTyperQ6() {
    return filename;
 }
 
-const std::string CodeGenerator::generatePureTyperQ18() {
+const std::string CodeGenerator::generateTyperQ18() {
    // generate code
-   const std::string filename = "src/hybrid/pure_typer_q18";
+   const std::string filename = "src/hybrid/typer_q18";
    const std::string cppName = filename + ".cpp";
    std::ofstream f(cppName);
    f << "#include \"hybrid/minimal_api.hpp\"\n"
@@ -770,7 +770,7 @@ const std::string CodeGenerator::generateHybridTyperQ18() {
 
 const std::string CodeGenerator::generateHybridTyperQ3() {
    // generate code
-   const std::string filename = "src/hybrid/hybrid_typer_q18";
+   const std::string filename = "src/hybrid/hybrid_typer_q3";
    const std::string cppName = filename + ".cpp";
    std::ofstream f(cppName);
    f << "//\n"

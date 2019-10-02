@@ -169,6 +169,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
          });
          auto globalFound = customerJoin->shared.found.load();
          if (globalFound != 0) {
+
             insertAllEntries(customerJoin->allocations, customerJoin->shared.ht,
                              customerJoin->ht_entry_size);
          }
@@ -242,9 +243,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
 
    // get compiled function
    const std::string& funcName =
-       "_Z18compiled_typer_q18RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_"
-       "mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEERS4_INSt6thread2idENS_"
-       "16PartitionedDequeILm1024EEES5_ISG_ES7_ISG_ESaIS9_IKSG_SI_EEEm";
+       "_Z18compiled_typer_q18RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEERS4_INSt6thread2idENS_16PartitionedDequeILm1024EEES5_ISG_ES7_ISG_ESaIS9_IKSG_SI_EEEm";
 
    hybrid::CompiledTyperQ18 typer_q18 =
        typerLib.load()->getFunction<hybrid::CompiledTyperQ18>(funcName);
