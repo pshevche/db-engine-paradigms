@@ -465,35 +465,35 @@ int main(int argc, char* argv[]) {
 //          repetitions);
 //   }
 
-//std::cout<<"Running q3"<<std::endl;
-//   if (q.count("3hv")) {
-//      try {
-//         // generate Typer code for Q18
-//         const std::string& path_to_cpp =
-//                 hybrid::CodeGenerator::instance().generateHybridTyperQ3();
-//
-//         // compile llvm
-//         bool useLLVM = true;
-//         const std::string& path_to_ll =
-//             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
-//                                                                   useLLVM);
-//          std::cout<<"running q3 experiments"<<std::endl;
-//         // run experiments
-//         e.timeAndProfile(
-//             "q3 hybrid   ",
-//             nrTuples(tpch, {"customer", "orders"}),
-//             [&]() {
-//                if (clearCaches) clearOsCaches();
-//                auto result = q3_hybrid(tpch, nrThreads, vectorSize,
-//                                         path_to_ll, useLLVM, verbose);
-//                escape(&result);
-//             },
-//             repetitions);
-//      } catch (hybrid::HybridException& exc) {
-//          std::cout<<"There is some error on the processing"<<std::endl;
-//         std::cerr << exc.what() << std::endl;
-//      }
-//   }
+std::cout<<"Running q3"<<std::endl;
+   if (q.count("3hv")) {
+      try {
+         // generate Typer code for Q18
+         const std::string& path_to_cpp =
+                 hybrid::CodeGenerator::instance().generateHybridTyperQ3();
+
+         // compile llvm
+         bool useLLVM = true;
+         const std::string& path_to_ll =
+             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                   useLLVM);
+          std::cout<<"running q3 experiments"<<std::endl;
+         // run experiments
+         e.timeAndProfile(
+             "q3 hybrid   ",
+             nrTuples(tpch, {"customer", "orders"}),
+             [&]() {
+                if (clearCaches) clearOsCaches();
+                auto result = q3_hybrid(tpch, nrThreads, vectorSize,
+                                         path_to_ll, useLLVM, verbose);
+                escape(&result);
+             },
+             repetitions);
+      } catch (hybrid::HybridException& exc) {
+          std::cout<<"There is some error on the processing"<<std::endl;
+         std::cerr << exc.what() << std::endl;
+      }
+   }
 
    scheduler.terminate();
    return 0;
