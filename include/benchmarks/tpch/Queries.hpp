@@ -84,10 +84,9 @@ struct Q3Builder : private vectorwise::QueryBuilder {
 };
 
 std::unique_ptr<runtime::Query> q3_hybrid(runtime::Database& db,
-                   size_t nrThreads,
-                   size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
-                   bool verbose);
-
+                                          size_t nrThreads,
+                                          size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
+                                          bool verbose);
 std::unique_ptr<runtime::Query>
 q3_hyper(runtime::Database& db,
          size_t nrThreads = std::thread::hardware_concurrency());

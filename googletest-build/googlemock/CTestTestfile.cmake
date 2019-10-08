@@ -1,7 +1,7 @@
 # CMake generated Testfile for 
-# Source directory: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock
-# Build directory: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock
+# Source directory: /home/gurumurt/test code_pavlo/googletest-src/googlemock
+# Build directory: /home/gurumurt/test code_pavlo/googletest-build/googlemock
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
-subdirs("gtest")
+subdirs(gtest)

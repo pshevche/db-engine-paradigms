@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/src/gtest_main.cc
+/home/gurumurt/test code_pavlo/googletest-src/googletest/src/gtest_main.cc
 stdio.h
 -
 gtest/gtest.h
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/src/gtest/gtest.h
+/home/gurumurt/test code_pavlo/googletest-src/googletest/src/gtest/gtest.h
 
 googletest-src/googletest/include/gtest/gtest-death-test.h
 gtest/internal/gtest-death-test-internal.h

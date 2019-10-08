@@ -37,13 +37,6 @@ typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ18)(
     std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&,
     size_t);
 
-//Q3
-
-typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ3)(
-        runtime::Database&, size_t, runtime::Hashmap&,
-        std::unordered_map<int32_t, defs::hash_t>& twHashFunction,
-        size_t);
-
 typedef struct __attribute__((packed)) {
    uint8_t idk[8];
    int32_t l_orderkey;
@@ -59,13 +52,19 @@ typedef struct __attribute__((packed)) {
    uint8_t idk3[2];
 } Q18TWJoinTuple;
 
+//Adding information for Q3
+    typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ3)(
+            runtime::Database&, size_t, runtime::Hashmap&,
+            size_t
+            );
 
-typedef struct __attribute__((packed)) {
+    typedef struct __attribute__((packed)) {
 
-    int8_t hash[8];
-    int32_t orderdate;
-    int8_t custkey[8];
+        int8_t hash[8];
+        int32_t orderdate;
+        int32_t dummy;
+        int32_t custkey;
 
-} Q3TWJoinTuple;
+    } Q3TWJoinTuple;
 
 } // namespace hybrid

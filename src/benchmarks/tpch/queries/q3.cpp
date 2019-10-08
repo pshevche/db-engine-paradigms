@@ -1,10 +1,6 @@
 #include "benchmarks/tpch/Queries.hpp"
 #include "common/runtime/Hash.hpp"
 #include "common/runtime/Types.hpp"
-#include "hybrid/compilation_engine.hpp"
-#include "hybrid/hybrid_datatypes.hpp"
-#include "hybrid/hybrid_exception.hpp"
-#include "hybrid/shared_library.hpp"
 #include "hyper/GroupBy.hpp"
 #include "hyper/ParallelHelper.hpp"
 #include "tbb/tbb.h"
@@ -14,6 +10,10 @@
 #include "vectorwise/QueryBuilder.hpp"
 #include "vectorwise/VectorAllocator.hpp"
 #include <iostream>
+#include "hybrid/compilation_engine.hpp"
+#include "hybrid/hybrid_datatypes.hpp"
+#include "hybrid/hybrid_exception.hpp"
+#include "hybrid/shared_library.hpp"
 
 using namespace runtime;
 using namespace std;
@@ -40,23 +40,11 @@ using vectorwise::primitives::hash_t;
 //   o_orderdate,
 //   o_shippriority
 
-/*
- * Bala - Trying Q3 hybrid from Pavlo's work
- *
- */
-
-//This extracts the values from tectorwise hash table output
-int32_t extractKeyFromEntryq3(runtime::Hashmap::EntryHeader* entry) {
-
-    auto t = reinterpret_cast<hybrid::Q3TWJoinTuple*>(entry);
-    return t->orderdate;
-}
-
-
+//Bala:added hybrid execution for Q3
 std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
-                   size_t nrThreads,
-                   size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
-                   bool verbose){
+                                          size_t nrThreads,
+                                          size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
+                                          bool verbose){
 
     using namespace vectorwise;
     using namespace std::chrono_literals;
@@ -94,7 +82,6 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
     std::unique_ptr<runtime::Query> result;
     std::atomic<size_t> processedTuples(0);
 
-    std::unordered_map<int32_t, defs::hash_t> twHashFunction;
     size_t nrTuples;
     nrTuples = db["customer"].nrTuples;
 
@@ -140,7 +127,7 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
             // Step 1: creating hash table
             // building cutomer hash table from relation
             for (auto n = CustOrdHashJoin->left->next();
-                    n!= EndOfStream && !typerLib; n = CustOrdHashJoin->left->next()){
+                 n!= EndOfStream && !typerLib; n = CustOrdHashJoin->left->next()){
 
                 found +=n;
 
@@ -185,7 +172,7 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
                     <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
                     <<" milliseconds to process "<< processedTuples.load()
                     << " tuples."<<std::endl;
-     }
+    }
 
     //Start typer execution here
     compilationThread.join();
@@ -198,7 +185,7 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
 
 //    Loading function into the runtime
     const std::string& funcName =
-            "_Z17compiled_typer_q3RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_mapIimSt4hashIiESt8equal_toIiESaISt4pairIKimEEEm";
+            "_Z15hybrid_typer_q3RN7runtime8DatabaseEmRNS_7HashmapEm";
 
     hybrid::CompiledTyperQ3 typer_q3 = //here-> the compiled typer function definition has to be given properly
             typerLib.load()->getFunction<hybrid::CompiledTyperQ3>(funcName);
@@ -206,15 +193,18 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
         throw hybrid::HybridException(
                 "Could not find function for running Q3 in Typer!");
     }
-    std::cout<<"called function"<<std::endl;
+
     // compute typer result
     result = std::move(typer_q3(
-            db, nrThreads, shared.get<Hashjoin::Shared>(3).ht, twHashFunction,
-            processedTuples.load()));
+            db,
+            nrThreads
+            , shared.get<Hashjoin::Shared>(3).ht,
+            processedTuples.load()
+            ));
 
     end = std::chrono::steady_clock::now();
 
-    std::cout<<"Called endl"<<std::endl;
+
     if (verbose) {
         std::cout << "Typer took "
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end -
@@ -224,6 +214,7 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
                   << (long)nrTuples - (long)processedTuples.load()
                   << " tuples." << std::endl;
     }
+
 
 //     close shared library
     delete typerLib;
@@ -387,30 +378,17 @@ std::unique_ptr<Q3Builder::Q3> Q3Builder::getQuery() {
                              Buffer(sel_order, sizeof(pos_t)),           //
                              Column(order, "o_orderdate"),               //
                              Value(&r->c2)));
-    HashJoin(Buffer(cust_ord, sizeof(pos_t)))
-        .setProbeSelVector(Buffer(sel_order))
-        .addBuildKey(Column(customer, "c_custkey"),       //
-                     Buffer(sel_cust),                    //
-                     conf.hash_sel_int32_t_col(),         //
-                     primitives::scatter_sel_int32_t_col) //
-        .addProbeKey(Column(order, "o_custkey"),          //
-                     Buffer(sel_order),                   //
-                     conf.hash_sel_int32_t_col(),         //
-                     primitives::keys_equal_int32_t_col);
-
-
-//    HashJoin(Buffer(cust_ord, sizeof(pos_t)), conf.joinAll())
-//            .setProbeSelVector(Buffer(sel_order), conf.joinSel())
-//            .addBuildKey(Column(customer, "c_custkey"),       //
-//                         Buffer(sel_cust),                    //
-//                         conf.hash_sel_int32_t_col(),         //
-//                         primitives::scatter_sel_int32_t_col) //
-//            .addProbeKey(Column(order, "o_custkey"),          //
-//                         Buffer(sel_order),                   //
-//                         conf.hash_sel_int32_t_col(),         //
-//                         primitives::keys_equal_int32_t_col);
-
-    auto lineitem = Scan("lineitem");
+   HashJoin(Buffer(cust_ord, sizeof(pos_t)), conf.joinAll())
+       .setProbeSelVector(Buffer(sel_order), conf.joinSel())
+       .addBuildKey(Column(customer, "c_custkey"),       //
+                    Buffer(sel_cust),                    //
+                    conf.hash_sel_int32_t_col(),         //
+                    primitives::scatter_sel_int32_t_col) //
+       .addProbeKey(Column(order, "o_custkey"),          //
+                    Buffer(sel_order),                   //
+                    conf.hash_sel_int32_t_col(),         //
+                    primitives::keys_equal_int32_t_col);
+   auto lineitem = Scan("lineitem");
    Select(Expression().addOp(BF(primitives::sel_greater_Date_col_Date_val), //
                              Buffer(sel_lineitem, sizeof(pos_t)),           //
                              Column(lineitem, "l_shipdate"),                //

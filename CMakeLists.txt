@@ -244,7 +244,7 @@ add_executable(run_hybrid
   ${HYPER_TRANSLATORS}
   ${HYBRID_MODULES}
   src/hybrid/run.cpp
-        )
+  )
 target_include_directories(run_hybrid PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>

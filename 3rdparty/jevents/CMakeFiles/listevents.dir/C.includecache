@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/jevents.h
+/home/gurumurt/test code_pavlo/3rdparty/jevents/jevents.h
 sys/types.h
 -
 
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/listevents.c
+/home/gurumurt/test code_pavlo/3rdparty/jevents/listevents.c
 stdio.h
 -
 stdlib.h
@@ -22,5 +22,5 @@ fnmatch.h
 assert.h
 -
 jevents.h
-/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/jevents.h
+/home/gurumurt/test code_pavlo/3rdparty/jevents/jevents.h
 
