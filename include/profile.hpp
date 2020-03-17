@@ -270,6 +270,7 @@ size_t getCurrentRSS() {
 void PerfEvents::timeAndProfile(std::string s, uint64_t count,
                                 std::function<void()> fn, uint64_t repetitions,
                                 bool mem) {
+
    using namespace std;
    // warmup round
    double warumupStart = gettime();

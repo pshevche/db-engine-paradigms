@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <bitset>
 
 using namespace runtime;
 using namespace std;
@@ -119,6 +120,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    size_t liSize = db["lineitem"].nrTuples;
 
    WorkerGroup workers(nrThreads);
+
    vectorwise::SharedStateManager shared;
 
    std::unique_ptr<runtime::Query> result;
@@ -173,7 +175,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
          }
          barrier(); // wait for all threads to finish build phase
       }
-
+        cout<<customerJoin->ht_entry_size<<": Entry size"<<endl;
       // start lineitem grouping
       {
          runtime::Hashmap& ht = lineitemAggr->getHashTable();
@@ -212,7 +214,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
             if (groups >= maxFill) flushAndClear();
             processedTuples.fetch_add(vectorSize);
             //  FIXME: delay for debugging purposes
-            // std::this_thread::sleep_for(1ms);
+//             std::this_thread::sleep_for(1000ms);
          }
          flushAndClear(); // flush remaining entries into spillStorage
          if (processedTuples.load() > liSize) { processedTuples.store(liSize); }
@@ -230,9 +232,19 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                 << " lineitem tuples." << std::endl;
    }
 
+//   std::this_thread::sleep_for(2s);
+
    // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION
    // RESULTS
    compilationThread.join();
+
+   //testing if two threads are processing here even after join is done
+//    std::mutex g_display_mutex;
+//    std::thread::id this_id = std::this_thread::get_id();
+//    g_display_mutex.lock();
+//    std::cout << "thread " << this_id << " sleeping...\n";
+//    g_display_mutex.unlock();
+
    start = std::chrono::steady_clock::now();
    // load library
    if (!typerLib) {
@@ -271,9 +283,10 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    // close shared library
    delete typerLib;
 
-   //    printResultQ18(result.get());
+   printResultQ18(result.get());
    return result;
 }
+
 
 NOVECTORIZE std::unique_ptr<runtime::Query> q18_hyper(Database& db,
                                                       size_t nrThreads) {
@@ -431,7 +444,7 @@ NOVECTORIZE std::unique_ptr<runtime::Query> q18_hyper(Database& db,
    });
 
    leaveQuery(nrThreads);
-   //    printResultQ18(resources.query.get());
+       printResultQ18(resources.query.get());
    return move(resources.query);
 }
 
@@ -581,6 +594,7 @@ std::unique_ptr<runtime::Query> q18_vectorwise(Database& db, size_t nrThreads,
                                                size_t vectorSize) {
    using namespace vectorwise;
    WorkerGroup workers(nrThreads);
+
    // TODO: move into resources?
    vectorwise::SharedStateManager shared;
 
@@ -662,6 +676,6 @@ q18group_vectorwise(Database& db, size_t nrThreads, size_t vectorSize) {
                            ->shared.result);
    });
 
-   //    printResultQ18(result.get());
+       printResultQ18(result.get());
    return result;
 }

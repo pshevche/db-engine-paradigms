@@ -1,4 +1,4 @@
-# Install script for directory: /home/gurumurt/test code_pavlo
+# Install script for directory: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -32,10 +32,15 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   set(CMAKE_INSTALL_SO_NO_EXE "1")
 endif()
 
+# Is this installation the result of a crosscompile?
+if(NOT DEFINED CMAKE_CROSSCOMPILING)
+  set(CMAKE_CROSSCOMPILING "FALSE")
+endif()
+
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/gurumurt/test code_pavlo/googletest-build/cmake_install.cmake")
-  include("/home/gurumurt/test code_pavlo/3rdparty/jevents/cmake_install.cmake")
+  include("/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/cmake_install.cmake")
+  include("/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/cmake_install.cmake")
 
 endif()
 
@@ -47,5 +52,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/gurumurt/test code_pavlo/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

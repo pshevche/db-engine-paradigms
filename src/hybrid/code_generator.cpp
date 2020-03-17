@@ -794,6 +794,7 @@ const std::string CodeGenerator::generateHybridTyperQ3() {
              "    auto resources = initQuery(nrThreads);\n"
              "    // --- aggregates\n"
              "\n"
+             "std::cout<<\"This is a test for aggregates\"<<std::endl;\n"
              "    // --- constants\n"
              "    auto c1 = types::Date::castString(\"1995-03-15\");\n"
              "    auto c2 = types::Date::castString(\"1995-03-15\");\n"

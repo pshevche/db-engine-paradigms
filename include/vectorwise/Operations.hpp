@@ -163,7 +163,7 @@ struct F3_Op : public Op
    void* outputSelectionV;
    void* param1;
    void* param2;
-   primitives::F3 operation;
+   primitives::F3 operation; //using F3 = pos_t (*)(pos_t n, void* result, void* param1, void* param2);
    F3_Op(void* out, void* p1, void* p2, primitives::F3 o)
        : outputSelectionV(out), param1(p1), param2(p2), operation(o) {}
    virtual pos_t run(pos_t n) override;

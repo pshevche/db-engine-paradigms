@@ -1,12 +1,18 @@
-/home/gurumurt/clion/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/home/gurumurt/test code_pavlo"
-CMake Error: The current CMakeCache.txt directory /home/gurumurt/test code_pavlo/googletest-download/CMakeCache.txt is different than the directory /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-download where CMakeCache.txt was created. This may result in binaries being created in the wrong place. If you are not sure, reedit the CMakeCache.txt
-CMake Error: The current CMakeCache.txt directory /home/gurumurt/test code_pavlo/googletest-download/CMakeCache.txt is different than the directory /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-download where CMakeCache.txt was created. This may result in binaries being created in the wrong place. If you are not sure, reedit the CMakeCache.txt
+/home/gurumurt/clion/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/gurumurt/Student-Files/hiwi/db-engine-paradigms
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-download
-[ 11%] Performing update step for 'googletest'
-[ 22%] No configure step for 'googletest'
-[ 33%] Completed 'googletest'
+Scanning dependencies of target googletest
+[ 11%] Creating directories for 'googletest'
+[ 22%] Performing download step (git clone) for 'googletest'
+-- Avoiding repeated git clone, stamp file is up to date: '/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-download/googletest-prefix/src/googletest-stamp/googletest-gitclone-lastrun.txt'
+[ 33%] No patch step for 'googletest'
+[ 44%] Performing update step for 'googletest'
+[ 55%] No configure step for 'googletest'
+[ 66%] No build step for 'googletest'
+[ 77%] No install step for 'googletest'
+[ 88%] No test step for 'googletest'
+[100%] Completed 'googletest'
 [100%] Built target googletest
 -- The C compiler identification is GNU 5.4.0
 -- The CXX compiler identification is GNU 5.4.0
@@ -44,7 +50,7 @@ CMake Warning (dev) at CMakeLists.txt:106 (project):
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
 -- setting datadir to proj dir 
--- /home/gurumurt/test code_pavlo/data
+-- /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data
 -- Found TBB: /usr/include (found version "4.4")  
 -- Boost version: 1.58.0
 -- Found the following Boost libraries:
@@ -63,4 +69,4 @@ This warning is for project developers.  Use -Wno-dev to suppress it.
 --   log_setup
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/gurumurt/test code_pavlo
+-- Build files have been written to: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms

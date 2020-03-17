@@ -53,18 +53,18 @@ int main(int argc, char* argv[]) {
    importTPCH(argv[2], tpch);
 
    // run queries
-   auto repetitions = atoi(argv[1]);
+   auto repetitions = atoi(argv[1]); //No. of iterations
    size_t nrThreads = std::thread::hardware_concurrency();
-   size_t vectorSize = 1024;
+   size_t vectorSize = 1024; // Pre-defined vectorsize, can be overwritten
    bool clearCaches = false;
    bool verbose = false;
    if (argc > 3) { nrThreads = atoi(argv[3]); }
    if (argc > 4) { verbose = atoi(argv[4]); }
+    std::unordered_set<std::string> q = {"1h",  "1v",  "1hv", "6h",  "6v",
+                                        "6hv", "18h", "18v", "18hv", "3v", "3hv"};
 
-   std::unordered_set<std::string> q = {"1h",  "1v",  "1hv", "6h",  "6v",
-                                        "6hv", "18h", "18v", "18hv","3hv"};
-
-   if (auto v = std::getenv("vectorSize")) vectorSize = atoi(v);
+   //Configures other environment variables
+   if (auto v = std::getenv("vectorSize")) vectorSize = atoi(v); //overwrites vectorsize in case available in command-line
    if (auto v = std::getenv("SIMDhash")) conf.useSimdHash = atoi(v);
    if (auto v = std::getenv("SIMDjoin")) conf.useSimdJoin = atoi(v);
    if (auto v = std::getenv("SIMDsel")) conf.useSimdSel = atoi(v);
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
    if (auto v = std::getenv("clearCaches")) clearCaches = atoi(v);
    if (auto v = std::getenv("q")) {
       using namespace std;
-      istringstream iss((string(v)));
+      istringstream iss(( string(v)));
       q.clear();
       copy(istream_iterator<string>(iss), istream_iterator<string>(),
            insert_iterator<decltype(q)>(q, q.begin()));
@@ -214,6 +214,10 @@ int main(int argc, char* argv[]) {
 //                       repetitions);
 //   }
 //
+    /*
+     * Q6 is executed with tectorwise until the end of query pipeline. The thread for tectorwise is interuppted and tper gets executed once the compilation is done
+     * Here, any point during interupt, tectorwise would have partially generated the results for the query and typer finishes the result set by processing the remaining input
+     */
 //   if (q.count("6hv")) {
 //      try {
 //         // generate Typer code for Q6
@@ -241,7 +245,7 @@ int main(int argc, char* argv[]) {
 //      }
 //   }
 //
-//   // Q18
+   // Q18
 //   if (q.count("18h")) {
 //      try {
 //         // generate Typer code for Q18
@@ -282,6 +286,8 @@ int main(int argc, char* argv[]) {
 //         std::cerr << exc.what() << std::endl;
 //      }
 //   }
+
+
 //
 //   if (q.count("18v")) {
 //      e.timeAndProfile(
@@ -296,6 +302,7 @@ int main(int argc, char* argv[]) {
 //   }
 //
 //   if (q.count("18hv")) {
+//
 //      try {
 //         // generate Typer code for Q18
 //         const std::string& path_to_cpp =
@@ -306,7 +313,7 @@ int main(int argc, char* argv[]) {
 //         const std::string& path_to_ll =
 //             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
 //                                                                   useLLVM);
-//
+//         std::cout<<"After compilation"<<std::endl;
 //         // run experiments
 //         e.timeAndProfile(
 //             "q18 hybrid   ",
@@ -322,11 +329,23 @@ int main(int argc, char* argv[]) {
 //         std::cerr << exc.what() << std::endl;
 //      }
 //   }
-
    std::cout<<"Executing Q3"<<std::endl;
+
+//   std::cout<<"Total number of input tuples: "<<nrTuples(tpch, {"customer", "orders", "lineitem"})<<std::endl;
+//
+//    if (q.count("3v"))
+//        e.timeAndProfile(
+//                "q3 vectorwise", nrTuples(tpch, {"customer", "orders", "lineitem"}),
+//                [&]() {
+//                    if (clearCaches) clearOsCaches();
+//                    auto result = q3_vectorwise(tpch, nrThreads, vectorSize);
+//                    escape(&result);
+//                },
+//                repetitions);
+
     if (q.count("3hv")) {
         try {
-            // generate Typer code for Q18
+            // generate Typer code for Q3
             const std::string& path_to_cpp =
                     hybrid::CodeGenerator::instance().generateHybridTyperQ3();
 
@@ -345,6 +364,7 @@ int main(int argc, char* argv[]) {
                         auto result = q3_hybrid(tpch, nrThreads, vectorSize,
                                                 path_to_ll, useLLVM, verbose);
                         escape(&result);
+                        exit(0);
                     },
                     repetitions);
         } catch (hybrid::HybridException& exc) {
@@ -352,6 +372,7 @@ int main(int argc, char* argv[]) {
             std::cerr << exc.what() << std::endl;
         }
     }
+
    scheduler.terminate();
    return 0;
 }

@@ -284,14 +284,20 @@ QueryBuilder::HashJoinBuilder::addBuildKey(DS col, DS sel, primitives::F3 hash,
    join->ht_entry_size += col.dataSize;
 
    // create hash primitive for build side
-   auto hash_build = make_unique<F3_Op>(sel, buildHashBuffer, col, hash);
+   auto hash_build = make_unique<F3_Op>(sel, buildHashBuffer, col, hash); //F3_Op(void* out, void* p1, void* p2, primitives::F3 o):
+                                                                                // outputSelectionV(out)=Buffer(sel_cust),
+                                                                                // param1(p1)=<<void pointer>> created within
+                                                                                // param2(p2)=Column(customer, "c_custkey")
+                                                                                // , conf.hash_sel_int32_t_col() {}
    sel.registerDS(&hash_build->outputSelectionV);
    col.registerDS(&hash_build->param2);
    join->buildHash.ops.push_back(move(hash_build));
 
    // build scatter
-   auto scatter_build = make_unique<FScatterSelOp>(
-       scatter, sel, col, reinterpret_cast<void**>(&join->scatterStart),
+   auto scatter_build = make_unique<FScatterSelOp>(                           //pos_t (*)(pos_t n, pos_t* RES inSel, void* RES input,
+                                                                              //              void** RES start, size_t* step, size_t offset);
+
+           scatter, sel, col, reinterpret_cast<void**>(&join->scatterStart),
        &join->ht_entry_size, entryOffset);
    col.registerDS(&scatter_build->get<1>());
    join->buildScatter += move(scatter_build);

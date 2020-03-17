@@ -17,7 +17,7 @@ typedef std::tuple<types::Numeric<12, 2>, types::Numeric<12, 2>,
 
 typedef struct {
    long idk; // PS: I don't know what this entry means, it doesn't correspond to
-             // any of the expected values
+             // any of the expected values --> this is the next pointer value in the EntryHeader. This can be ignored if we cast the hash value directly
    char returnflag[1];
    char linestatus[1];
    long sum_disc_price;
@@ -44,7 +44,7 @@ typedef struct __attribute__((packed)) {
    uint8_t idk2[4];
 } Q18TWAggrTuple;
 
-typedef struct __attribute__((packed)) {
+typedef struct __attribute__((packed)) { //48 Bytes in total
    uint8_t idk1[16];
    int32_t c_custkey;
    uint8_t idk2[1];
@@ -53,18 +53,23 @@ typedef struct __attribute__((packed)) {
 } Q18TWJoinTuple;
 
 //Adding information for Q3
-    typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ3)(
-            runtime::Database&, size_t, runtime::Hashmap&,
-            size_t
-            );
+typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ3)(
+        runtime::Database&, size_t, runtime::Hashmap&,
+        size_t
+        );
 
-    typedef struct __attribute__((packed)) {
+typedef struct __attribute__((packed)) {
 
-        int8_t hash[8];
-        int32_t orderdate;
-        int32_t dummy;
-        int32_t custkey;
+    long idk[1]; //This is because the hash is packed as 64 byte values <- 4 bytes
+    int32_t custkey; //remaining 4 bytes here
+    long idk2[4];
+} Q3TWJoinTuple;
 
-    } Q3TWJoinTuple;
+typedef struct __attribute__((packed)) {
+    long zero; //4
+    char idk2[8];// 8
+    int32_t custkey; //4
+    long idk3[2];//8
+} Q3TWJoinTupleExtended;
 
 } // namespace hybrid
