@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
    if (argc > 3) { nrThreads = atoi(argv[3]); }
    if (argc > 4) { verbose = atoi(argv[4]); }
     std::unordered_set<std::string> q = {"1h",  "1v",  "1hv", "6h",  "6v",
-                                        "6hv", "18h", "18v", "18hv", "3v", "3hv"};
+                                        "6hv", "18h", "18v", "18hv", "3v", "3h", "3hv"};
 
    //Configures other environment variables
    if (auto v = std::getenv("vectorSize")) vectorSize = atoi(v); //overwrites vectorsize in case available in command-line
@@ -331,7 +331,6 @@ int main(int argc, char* argv[]) {
 //   }
    std::cout<<"Executing Q3"<<std::endl;
 
-//   std::cout<<"Total number of input tuples: "<<nrTuples(tpch, {"customer", "orders", "lineitem"})<<std::endl;
 //
 //    if (q.count("3v"))
 //        e.timeAndProfile(
@@ -342,6 +341,62 @@ int main(int argc, char* argv[]) {
 //                    escape(&result);
 //                },
 //                repetitions);
+
+//   if (q.count("3h")) {
+//      try {
+//         // generate Typer code for Q18
+//         const std::string& path_to_cpp =
+//             hybrid::CodeGenerator::instance().generateHybridTyperQ3();
+//
+//         // compile llvm
+//         bool useLLVM = true;
+//         const std::string& path_to_ll =
+//             hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+//                                                                   useLLVM);
+//
+//         // run experiments
+//         e.timeAndProfile(
+//             "q3 hyper     ",
+//             nrTuples(tpch, {"customer", "lineitem", "orders", "lineitem"}),
+//             [&]() {
+//                auto start = std::chrono::steady_clock::now();
+//                // link library
+//                const std::string& path_to_lib =
+//                    hybrid::CompilationEngine::instance().linkQueryLib(
+//                        path_to_ll, useLLVM);
+//                auto end = std::chrono::steady_clock::now();
+//                if (verbose) {
+//                   std::cout
+//                       << "Compilation took "
+//                       << std::chrono::duration_cast<std::chrono::milliseconds>(
+//                              end - start)
+//                              .count()
+//                       << " milliseconds." << std::endl;
+//                }
+//                if (clearCaches) clearOsCaches();
+//                auto result = q3_hyper(tpch, nrThreads);
+//                escape(&result);
+//             },
+//             repetitions);
+//      } catch (hybrid::HybridException& exc) {
+//         std::cerr << exc.what() << std::endl;
+//      }
+//   }
+
+    if (q.count("3v")) {
+        auto result = q3_vectorwise(tpch, nrThreads, vectorSize);
+        escape(&result);
+    }
+
+    if (q.count("3h")) {
+        try {
+
+            auto result = q3_hyper(tpch, nrThreads);
+            escape(&result);
+        } catch (hybrid::HybridException& exc) {
+            std::cerr << exc.what() << std::endl;
+        }
+    }
 
     if (q.count("3hv")) {
         try {
@@ -354,7 +409,6 @@ int main(int argc, char* argv[]) {
             const std::string& path_to_ll =
                     hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
                                                                           useLLVM);
-            std::cout<<"running q3 experiments"<<std::endl;
             // run experiments
             e.timeAndProfile(
                     "q3 hybrid   ",

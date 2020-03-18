@@ -58,18 +58,18 @@ typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ3)(
         size_t
         );
 
-typedef struct __attribute__((packed)) {
-
-    long idk[1]; //This is because the hash is packed as 64 byte values <- 4 bytes
-    int32_t custkey; //remaining 4 bytes here
-    long idk2[4];
-} Q3TWJoinTuple;
-
-typedef struct __attribute__((packed)) {
-    long zero; //4
-    char idk2[8];// 8
-    int32_t custkey; //4
-    long idk3[2];//8
-} Q3TWJoinTupleExtended;
+//typedef struct __attribute__((packed)) {
+//
+//    long idk[1]; //This is because the hash is packed as 64 byte values <- 4 bytes
+//    int32_t custkey; //remaining 4 bytes here
+//    long idk2[4];
+//} Q3TWJoinTuple;
+//
+//typedef struct __attribute__((packed)) {
+//    long zero; //4
+//    char idk2[8];// 8
+//    int32_t custkey; //4
+//    long idk3[2];//8
+//} Q3TWJoinTupleExtended;
 
 } // namespace hybrid
