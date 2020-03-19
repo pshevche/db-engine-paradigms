@@ -283,7 +283,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    // close shared library
    delete typerLib;
 
-   printResultQ18(result.get());
+//   printResultQ18(result.get());
    return result;
 }
 
@@ -444,7 +444,7 @@ NOVECTORIZE std::unique_ptr<runtime::Query> q18_hyper(Database& db,
    });
 
    leaveQuery(nrThreads);
-       printResultQ18(resources.query.get());
+//       printResultQ18(resources.query.get());
    return move(resources.query);
 }
 
@@ -676,6 +676,6 @@ q18group_vectorwise(Database& db, size_t nrThreads, size_t vectorSize) {
                            ->shared.result);
    });
 
-       printResultQ18(result.get());
+//       printResultQ18(result.get());
    return result;
 }

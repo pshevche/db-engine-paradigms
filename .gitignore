@@ -50,3 +50,5 @@ src/hybrid/typer_q*
 src/hybrid/pure_typer_q*
 src/hybrid/hybrid_typer_q*
 CMakeFiles/
+
+reHybrid\.csv
