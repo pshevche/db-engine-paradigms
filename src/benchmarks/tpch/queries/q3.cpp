@@ -155,43 +155,47 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
      * Starting TectorWise execution
      * build hash table for customer and order relation
      */
-    {
-        size_t found = 0;
-        // --- build phase 1: materialize ht entries
-        for (auto n = CustOrdHashJoin->left->next();
-             n != EndOfStream && !typerLib; n = CustOrdHashJoin->left->next()) {
-            found += n;
 
-            // build hashes
-            CustOrdHashJoin->buildHash.evaluate(n);
+    workers.run([&]() {
+        {
+            size_t found = 0;
+            // --- build phase 1: materialize ht entries
+            for (auto n = CustOrdHashJoin->left->next();
+                 n != EndOfStream && !typerLib; n = CustOrdHashJoin->left->next()) {
+                found += n;
 
-            // scatter hash, keys and values into ht entries
-            auto alloc = runtime::this_worker->allocator.allocate(
-                    n * CustOrdHashJoin->ht_entry_size);
-            if (!alloc) throw std::runtime_error("malloc failed");
+                // build hashes
+                CustOrdHashJoin->buildHash.evaluate(n);
 
-            CustOrdHashJoin->allocations.push_back(std::make_pair(alloc, n));
-            CustOrdHashJoin->scatterStart =
-                    reinterpret_cast<decltype(CustOrdHashJoin->scatterStart)>(alloc);
-            CustOrdHashJoin->buildScatter.evaluate(n);
+                // scatter hash, keys and values into ht entries
+                auto alloc = runtime::this_worker->allocator.allocate(
+                        n * CustOrdHashJoin->ht_entry_size);
+                if (!alloc) throw std::runtime_error("malloc failed");
 
-        }
+                CustOrdHashJoin->allocations.push_back(std::make_pair(alloc, n));
+                CustOrdHashJoin->scatterStart =
+                        reinterpret_cast<decltype(CustOrdHashJoin->scatterStart)>(alloc);
+                CustOrdHashJoin->buildScatter.evaluate(n);
 
-        // --- build phase 2: insert ht entries
-        CustOrdHashJoin->shared.found.fetch_add(found);
-        barrier([&]() {
+            }
+
+            // --- build phase 2: insert ht entries
+            CustOrdHashJoin->shared.found.fetch_add(found);
+            barrier([&]() {
+                auto globalFound = CustOrdHashJoin->shared.found.load();
+
+                if (globalFound) CustOrdHashJoin->shared.ht.setSize(globalFound);
+            });
             auto globalFound = CustOrdHashJoin->shared.found.load();
-
-            if (globalFound) CustOrdHashJoin->shared.ht.setSize(globalFound);
-        });
-        auto globalFound = CustOrdHashJoin->shared.found.load();
-        if (globalFound != 0) {
-            insertAllEntries(CustOrdHashJoin->allocations, CustOrdHashJoin->shared.ht,
-                             CustOrdHashJoin->ht_entry_size);
+            if (globalFound != 0) {
+                insertAllEntries(CustOrdHashJoin->allocations, CustOrdHashJoin->shared.ht,
+                                 CustOrdHashJoin->ht_entry_size);
+            }
+            barrier(); // wait for all threads to finish build phase
         }
-        barrier(); // wait for all threads to finish build phase
-    }
+    });
 
+    processedTuples.fetch_add(CustOrdHashJoin->shared.found.load());
     auto end = std::chrono::steady_clock::now();
     if(verbose){
 

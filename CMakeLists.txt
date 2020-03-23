@@ -164,6 +164,7 @@ set(HYBRID_MODULES
   src/hybrid/code_generator.cpp
   src/hybrid/compilation_engine.cpp
   src/hybrid/hybrid_exception.cpp
+  src/hybrid/hybrid_execution.cpp
   src/hybrid/shared_library.cpp
   )
 add_library(hybrid
@@ -214,7 +215,7 @@ target_link_libraries(vectorwise common)
 add_executable(bench
   ${HYPER_TRANSLATORS}
   src/bench.cpp
-  )
+        )
 target_include_directories(bench PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
@@ -244,7 +245,7 @@ add_executable(run_hybrid
   ${HYPER_TRANSLATORS}
   ${HYBRID_MODULES}
   src/hybrid/run.cpp
-  )
+        )
 target_include_directories(run_hybrid PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>

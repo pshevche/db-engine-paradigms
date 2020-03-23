@@ -175,7 +175,7 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
          }
          barrier(); // wait for all threads to finish build phase
       }
-        cout<<customerJoin->ht_entry_size<<": Entry size"<<endl;
+
       // start lineitem grouping
       {
          runtime::Hashmap& ht = lineitemAggr->getHashTable();
