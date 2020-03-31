@@ -773,11 +773,7 @@ const std::string CodeGenerator::generateHybridTyperQ3() {
         const std::string filename = "src/hybrid/hybrid_typer_q3";
         const std::string cppName = filename + ".cpp";
         std::ofstream f(cppName);
-        f << "//\n"
-             "// Created by gurumurt on 12/09/19.\n"
-             "//\n"
-             "\n"
-             "#include \"hybrid/minimal_api.hpp\"\n"
+        f << "#include \"hybrid/minimal_api.hpp\"\n"
              "using namespace runtime;\n"
              "using namespace std;\n"
              "using namespace types;\n"

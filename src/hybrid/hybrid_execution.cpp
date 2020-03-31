@@ -23,12 +23,36 @@
 
 namespace hybrid {
 
-    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
+    size_t num_Tuples(Database& db, std::vector<std::string> tables) {
+        size_t sum = 0;
+        for (auto& table : tables) sum += db[table].nrTuples;
+        return sum;
+    }
 
-    void HybridExecution::compile(const std::string& path_to_lib_src,
-                                  bool fromLLVM,
-                                  bool verbose) {
+    void HybridExecution::hybrid_join(){
 
+        std::cout<<"execute hash join"<<std::endl;
+        return;
+    }
+
+    template<class T>
+    std::unique_ptr<runtime::Query> HybridExecution::compile_and_execute(   Database& db, //Pointer to data
+                                size_t nrThreads,bool verbose,
+                                const std::string& path_to_lib_src, bool fromLLVM, // Compilation parameter
+                                size_t nrTuples,size_t vectorSize, std::unique_ptr<T>& vwOperator, //TectorWise parameter
+                                hybrid::connector type, const std::string& LLVMfuncName //Connection parameter
+    ){
+
+        using namespace vectorwise;
+        using namespace std::chrono_literals;
+
+        /**
+         * Typer compilation - Required variable from outside
+         * const string& path_to_lib - src path
+         * bool fromLLVM - switches whether to commile using LLVM or NOT (currently it is always comiled in LLVM)
+         */
+
+        std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
         std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
                                               &verbose] {
             try {
@@ -52,95 +76,84 @@ namespace hybrid {
                 std::cerr << exc.what() << std::endl;
             }
         });
-    }
 
-    void tectorwise_hash_build( std::unique_ptr<Hashjoin> hashBuild,
-                                size_t nrTuples,
-                                size_t nrThreads,
-                                bool verbose){
         /*
-         * Starting TectorWise execution
-         * build hash table for customer and order relation
+         * TODO - Execute TectorWise
+         *
+         * Tectorwise - Required variables and values
+         * size_t nrThreads - no of threads to be used
+         * size_t  nrTuples - no of tuples to initialized
+         * unique_ptr< Hash_Join | Hash_Group > connector - unique_ptr to hook vectorwise with hyper
+         * unique_ptr<Qx> query - ptr to the target query to run (optional)
+         * -- these are the results pipelined into typer execution --
+         * vectorwise::SharedStateManager shared - this result will be provided to compiled execution
+         * std::atomic<size_t> processedTuples - this provides how much has been completed in vectorwise
          *
          */
 
-        auto start = std::chrono::steady_clock::now();
-        WorkerGroup workers(nrThreads);
         vectorwise::SharedStateManager shared;
-        std::atomic<size_t> processedTuples(0);
+        std::atomic<size_t> processedTuples;
+        switch(type){
 
-        workers.run([&]() {
-            size_t found = 0;
-            // --- build phase 1: materialize ht entries
-            for (auto n = hashBuild->left->next();
-                 n != EndOfStream && !typerLib; n = hashBuild->left->next()) {
-                found += n;
+            case hybrid::connector::hash_join : //Executing hash join
+                                                break;
 
-                // build hashes
-                hashBuild->buildHash.evaluate(n);
+            case hybrid::connector::hash_aggregate :    //Execute hash Aggregate
+                                                        break;
 
-                // scatter hash, keys and values into ht entries
-                auto alloc = runtime::this_worker->allocator.allocate(
-                        n * hashBuild->ht_entry_size);
-                if (!alloc) throw std::runtime_error("malloc failed");
-
-                hashBuild->allocations.push_back(std::make_pair(alloc, n));
-                hashBuild->scatterStart =
-                        reinterpret_cast<decltype(hashBuild->scatterStart)>(alloc);
-                hashBuild->buildScatter.evaluate(n);
-
-            }
-
-            // --- build phase 2: insert ht entries
-            hashBuild->shared.found.fetch_add(found);
-            barrier([&]() {
-                auto globalFound = hashBuild->shared.found.load();
-
-                if (globalFound) hashBuild->shared.ht.setSize(globalFound);
-            });
-            auto globalFound = hashBuild->shared.found.load();
-            if (globalFound != 0) {
-                insertAllEntries(hashBuild->allocations, hashBuild->shared.ht,
-                                 hashBuild->ht_entry_size);
-            }
-            barrier(); // wait for all threads to finish build phase
-        });
-
-        auto end = std::chrono::steady_clock::now();
-        if(verbose){
-
-            std::cout   << "TW took "
-                        <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-                        <<" milliseconds to process "<< processedTuples.load()
-                        << " tuples."<<std::endl;
+            case hybrid::connector::hash_join_and_aggregate :   //Execute hash join and aggregate
+                                                                break;
         }
 
-    }
+        compilationThread.join();
+        auto start = std::chrono::steady_clock::now();
 
-    void HybridExecution::compute_hybrid(   Database& db,
-                                            size_t nrThreads,
-                                            size_t vectorSize,
-                                            const std::string& path_to_src,
-                                            bool fromLLVM,
+        //load typer library
+        if(!typerLib){
 
-                                            std::unique_ptr<Hashjoin> hashBuild,
-                                            size_t nrTuples,
-                                            bool verbose) {
+            throw hybrid::HybridException("Could not load shared Typer library!");
+        }
 
-        /*
-         * call compilation
+        /**
+         * Connection - Required variable and values
+         * const string& funcName
          */
-        compile(path_to_src,fromLLVM,verbose);
+         //TODO - IMPORTANT - find right data type
+        auto typer_query = typerLib.load()->getFunction<hybrid::GenericHashJoin>(LLVMfuncName);
 
-        /*
-         * call tectorwise hashing
-         */
-        hybrid::tectorwise_hash_build(
-                nrTuples,
+        switch(type){
+
+            case hybrid::connector::hash_join : typer_query =//here-> the compiled typer function definition has to be given properly
+                                                        typerLib.load()->getFunction<hybrid::GenericHashJoin>(LLVMfuncName);
+                                                break;
+
+            case hybrid::connector::hash_aggregate :   typer_query = //here-> the compiled typer function definition has to be given properly
+                        typerLib.load()->getFunction<hybrid::GenericHashGroup>(LLVMfuncName);//Execute hash Aggregate
+                break;
+
+            case hybrid::connector::hash_join_and_aggregate :// typer_query = //here-> the compiled typer function definition has to be given properly
+                            //typerLib.load()->getFunction<hybrid::GenericHashJoinGroup>(LLVMfuncName);   //Execute hash join and aggregate
+                break;
+        }
+
+        //loading function into the runtime
+
+
+        if(!typer_query) {
+            throw hybrid::HybridException(
+                    "Could not find function for running Query in Typer!");
+        }
+
+        //get final computed result
+        std::unique_ptr<runtime::Query> result = std::move(typer_query(
+                db,
                 nrThreads,
-                verbose)
-        /*
-         * combine them together
-         */
+                shared.get<Hashjoin::Shared>(0).ht,
+                processedTuples.load()
+        ));
+        delete typerLib;
+
+        return; //result
+
     }
 }

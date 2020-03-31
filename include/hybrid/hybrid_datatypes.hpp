@@ -58,6 +58,21 @@ typedef std::unique_ptr<runtime::Query> (*CompiledTyperQ3)(
         size_t
         );
 
+//Generic hash join connector
+typedef std::unique_ptr<runtime::Query> (*GenericHashJoin)(
+        runtime::Database&, size_t, runtime::Hashmap&, size_t
+        );
+
+//Generic hash group connector
+typedef std::unique_ptr<runtime::Query> (*GenericHashGroup)(
+        runtime::Database&, size_t, runtime::Hashmap&, size_t
+        );
+
+//Generic hash join and hash group connector
+typedef std::unique_ptr<runtime::Query> (*GenericHashJoinGroup)(
+        runtime::Database&, size_t, runtime::Hashmap&, size_t, runtime::Hashmap&, size_t
+        );
+
 //typedef struct __attribute__((packed)) {
 //
 //    long idk[1]; //This is because the hash is packed as 64 byte values <- 4 bytes

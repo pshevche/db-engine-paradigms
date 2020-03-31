@@ -8,6 +8,7 @@
 #include <sstream>
 #include <thread>
 #include <unordered_set>
+#include <hybrid/hybrid_execution.hpp>
 
 #include "benchmarks/tpch/Queries.hpp"
 #include "common/runtime/Import.hpp"
@@ -83,7 +84,7 @@ int main(int argc, char* argv[]) {
    // precompile header for all evaluations
    hybrid::CompilationEngine::instance().precompileAPIHeader();
 
-   // Q1
+/*   // Q1
    if (q.count("1h")) {
       try {
          // generate Typer code for Q1
@@ -214,10 +215,10 @@ int main(int argc, char* argv[]) {
                        repetitions);
    }
 
-    /*
+    *//*
      * Q6 is executed with tectorwise until the end of query pipeline. The thread for tectorwise is interuppted and tper gets executed once the compilation is done
      * Here, any point during interupt, tectorwise would have partially generated the results for the query and typer finishes the result set by processing the remaining input
-     */
+     *//*
    if (q.count("6hv")) {
       try {
          // generate Typer code for Q6
@@ -381,7 +382,7 @@ int main(int argc, char* argv[]) {
       } catch (hybrid::HybridException& exc) {
          std::cerr << exc.what() << std::endl;
       }
-   }
+   }*/
 
     if (q.count("3hv")) {
         try {
@@ -410,6 +411,66 @@ int main(int argc, char* argv[]) {
             std::cerr << exc.what() << std::endl;
         }
     }
+
+    /**
+     * Calling hybrid execution using hybirdExecution stubs
+     */
+
+    if (q.count("3hv")) {
+        try {
+            // generate Typer code for Q3
+            const std::string& path_to_cpp =
+                    hybrid::CodeGenerator::instance().generateHybridTyperQ3();
+
+            // compile llvm
+            /* Compilation parameter to pass */
+            bool useLLVM = true;
+            const std::string& path_to_ll =
+                    hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                          useLLVM); //Compiles CPP into LLVM code | this is outside the execution time
+                                                                                   //Final codegen will directly prepare code from IR to LLVM
+            /* TectorWise parameter to pass */
+            size_t tectorwiseTuples = nrTuples(tpch, {"customer"});
+
+            vectorwise::SharedStateManager shared;
+            Q3Builder builder(tpch, shared, vectorSize);
+            auto query = builder.getQuery();
+            std::unique_ptr<vectorwise::ResultWriter> printOp(
+                    static_cast<vectorwise::ResultWriter*>(query->rootOp.release()));
+            std::unique_ptr<vectorwise::HashGroup> finalAggregates(
+                    static_cast<vectorwise::HashGroup*>(printOp->child.release()));
+            std::unique_ptr<vectorwise::Project> projectExpression(
+                    static_cast<vectorwise::Project*>(finalAggregates->child.release()));
+            std::unique_ptr<vectorwise::Hashjoin> lineItemHashJoin(
+                    static_cast<vectorwise::Hashjoin*>(projectExpression->child.release()));
+            std::unique_ptr<vectorwise::Hashjoin> CustOrdHashJoin(
+                    static_cast<vectorwise::Hashjoin*>(lineItemHashJoin->left.release())); //parameter to pass
+
+            hybrid::connector type = hybrid::connector::hash_join;
+
+            /* Connection parameter required */
+            const std::string& LLVMfuncName = "_Z15hybrid_typer_q3RN7runtime8DatabaseEmRNS_7HashmapEm";
+
+            // run experiments
+            e.timeAndProfile(
+                    "q3 hybrid   ",
+                    tectorwiseTuples,
+                    [&]() {
+                        if (clearCaches) clearOsCaches();
+                        hybrid::HybridExecution execute;
+                        auto result = execute.compile_and_execute<vectorwise::Hashjoin>(tpch, nrThreads, verbose,
+                                                    path_to_ll, useLLVM,
+                                                    tectorwiseTuples, vectorSize, CustOrdHashJoin,
+                                                    type, LLVMfuncName);
+                        escape(&result);
+                    },
+                    repetitions);
+        } catch (hybrid::HybridException& exc) {
+            std::cout<<"There is some error on the processing"<<std::endl;
+            std::cerr << exc.what() << std::endl;
+        }
+    }
+
 
    scheduler.terminate();
    return 0;
