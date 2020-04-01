@@ -11,10 +11,10 @@
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gmock_main">
@@ -30,20 +30,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock_main"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock_main"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gmock_main/fast">
@@ -59,20 +51,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock_main/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock_main/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gmock">
@@ -88,20 +72,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gmock/fast">
@@ -117,20 +93,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gtest_main">
@@ -144,20 +112,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest_main"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest_main"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gtest_main/fast">
@@ -171,20 +131,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest_main/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest_main/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gtest">
@@ -198,20 +150,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gtest/fast">
@@ -225,20 +169,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>

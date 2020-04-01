@@ -11,30 +11,30 @@
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="install">
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 install"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="list_install_components">
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 list_install_components"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="tpch">
@@ -49,20 +49,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 tpch"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 tpch"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="tpch/fast">
@@ -77,20 +69,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 tpch/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 tpch/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="vectorwise">
@@ -105,20 +89,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 vectorwise"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 vectorwise"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="vectorwise/fast">
@@ -133,20 +109,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 vectorwise/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 vectorwise/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="benchmark_config">
@@ -161,20 +129,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 benchmark_config"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 benchmark_config"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="benchmark_config/fast">
@@ -189,20 +149,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 benchmark_config/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 benchmark_config/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="hybrid">
@@ -217,20 +169,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 hybrid"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 hybrid"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="hybrid/fast">
@@ -245,20 +189,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 hybrid/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 hybrid/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="hyper">
@@ -273,20 +209,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 hyper"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 hyper"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="hyper/fast">
@@ -301,20 +229,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 hyper/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 hyper/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="run_hybrid">
@@ -330,20 +250,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_hybrid"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_hybrid"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="run_hybrid/fast">
@@ -359,30 +271,22 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_hybrid/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_hybrid/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="install/strip">
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 install/strip"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="run_tpch">
@@ -398,20 +302,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_tpch"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_tpch"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="run_tpch/fast">
@@ -427,30 +323,22 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_tpch/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_tpch/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="install/local">
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 install/local"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="run_ssb">
@@ -466,20 +354,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_ssb"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_ssb"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="run_ssb/fast">
@@ -495,20 +375,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_ssb/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_ssb/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="common">
@@ -523,20 +395,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 common"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 common"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="common/fast">
@@ -551,20 +415,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 common/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 common/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ssb">
@@ -579,20 +435,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 ssb"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 ssb"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ssb/fast">
@@ -607,20 +455,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 ssb/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 ssb/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="test_all">
@@ -635,20 +475,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 test_all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 test_all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="test_all/fast">
@@ -663,20 +495,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 test_all/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 test_all/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="run_prim">
@@ -692,20 +516,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_prim"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_prim"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="run_prim/fast">
@@ -721,30 +537,22 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_prim/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 run_prim/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="test">
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 test"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 test"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="bench">
@@ -759,20 +567,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 bench"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 bench"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="bench/fast">
@@ -787,40 +587,32 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 bench/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 bench/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gmock_main">
@@ -836,20 +628,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock_main"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock_main"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gmock_main/fast">
@@ -865,20 +649,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock_main/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock_main/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gmock">
@@ -894,20 +670,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gmock/fast">
@@ -923,20 +691,12 @@
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 gmock/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gtest_main">
@@ -950,20 +710,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest_main"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest_main"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gtest_main/fast">
@@ -977,20 +729,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest_main/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest_main/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gtest">
@@ -1004,20 +748,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gtest/fast">
@@ -1031,20 +767,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/include"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 gtest/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="listevents">
@@ -1058,20 +786,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 listevents"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 listevents"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="listevents/fast">
@@ -1085,20 +805,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 listevents/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 listevents/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="jevents">
@@ -1113,20 +825,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 jevents"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 jevents"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="jevents/fast">
@@ -1141,20 +845,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 jevents/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 jevents/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>

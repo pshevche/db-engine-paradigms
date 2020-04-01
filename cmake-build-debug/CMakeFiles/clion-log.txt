@@ -2,12 +2,29 @@
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-download
-[ 11%] Performing update step for 'googletest'
-[ 22%] No configure step for 'googletest'
-[ 33%] No build step for 'googletest'
-[ 44%] No install step for 'googletest'
-[ 55%] No test step for 'googletest'
-[ 66%] Completed 'googletest'
+Scanning dependencies of target googletest
+[ 11%] Creating directories for 'googletest'
+[ 22%] Performing download step (git clone) for 'googletest'
+Cloning into 'googletest-src'...
+Note: checking out 'f1a87d73fc604c5ab8fbb0cc6fa9a86ffd845530'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b <new-branch-name>
+
+HEAD is now at f1a87d7... Merge pull request #1249 from stkhapugin/master
+[ 33%] No patch step for 'googletest'
+[ 44%] Performing update step for 'googletest'
+[ 55%] No configure step for 'googletest'
+[ 66%] No build step for 'googletest'
+[ 77%] No install step for 'googletest'
+[ 88%] No test step for 'googletest'
+[100%] Completed 'googletest'
 [100%] Built target googletest
 CMake Warning (dev) at CMakeLists.txt:106 (project):
   Policy CMP0048 is not set: project() command manages VERSION variables.

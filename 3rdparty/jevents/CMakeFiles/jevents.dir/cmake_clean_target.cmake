@@ -1,3 +1,3 @@
 file(REMOVE_RECURSE
-  "libjevents.a"
+  "libjeventsd.a"
 )

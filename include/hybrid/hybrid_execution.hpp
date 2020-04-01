@@ -15,15 +15,17 @@ using namespace runtime;
     class HybridExecution{
 
     public:
-        template <class T>
-        std::unique_ptr<runtime::Query> compile_and_execute(   Database& db, //Pointer to data
-                                    size_t nrThreads,
-                                    bool verbose,
-                                    const std::string& path_to_lib_src, bool fromLLVM, // Compilation parameter
-                                    size_t nrTuples,size_t vectorSize, std::unique_ptr<T>& vwOperator, //TectorWise parameter
-                                    hybrid::connector type, const std::string& LLVMfuncName //Connection parameter
-                                 );
-        void hybrid_join();
-        void hybrid_aggregate();
+
+        std::unique_ptr<runtime::Query>
+                compile_and_execute_hash_join(Database &db, size_t nrThreads, bool verbose,
+                                              const std::string &path_to_lib_src, bool fromLLVM,
+                                              size_t nrTuples, size_t vectorSize, std::unique_ptr<Hashjoin> &vwOperator,
+                                              const std::string &LLVMfuncName);
+
+        std::unique_ptr<runtime::Query>
+        compile_and_execute_hash_group(Database &db, size_t nrThreads, bool verbose,
+                                      const std::string &path_to_lib_src, bool fromLLVM,
+                                      size_t nrTuples, size_t vectorSize, std::unique_ptr<vectorwise::HashGroup> &vwOperator,
+                                      const std::string &LLVMfuncName);
     };
 }

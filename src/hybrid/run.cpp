@@ -18,6 +18,7 @@
 #include "hybrid/code_generator.hpp"
 #include "hybrid/compilation_engine.hpp"
 #include "hybrid/hybrid_exception.hpp"
+#include "hybrid/hybrid_execution.hpp"
 
 using namespace runtime;
 
@@ -219,6 +220,7 @@ int main(int argc, char* argv[]) {
      * Q6 is executed with tectorwise until the end of query pipeline. The thread for tectorwise is interuppted and tper gets executed once the compilation is done
      * Here, any point during interupt, tectorwise would have partially generated the results for the query and typer finishes the result set by processing the remaining input
      *//*
+
    if (q.count("6hv")) {
       try {
          // generate Typer code for Q6
@@ -384,33 +386,33 @@ int main(int argc, char* argv[]) {
       }
    }*/
 
-    if (q.count("3hv")) {
-        try {
-            // generate Typer code for Q3
-            const std::string& path_to_cpp =
-                    hybrid::CodeGenerator::instance().generateHybridTyperQ3();
-
-            // compile llvm
-            bool useLLVM = true;
-            const std::string& path_to_ll =
-                    hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
-                                                                          useLLVM);
-            // run experiments
-            e.timeAndProfile(
-                    "q3 hybrid   ",
-                    nrTuples(tpch, {"customer", "orders"}),
-                    [&]() {
-                        if (clearCaches) clearOsCaches();
-                        auto result = q3_hybrid(tpch, nrThreads, vectorSize,
-                                                path_to_ll, useLLVM, verbose);
-                        escape(&result);
-                    },
-                    repetitions);
-        } catch (hybrid::HybridException& exc) {
-            std::cout<<"There is some error on the processing"<<std::endl;
-            std::cerr << exc.what() << std::endl;
-        }
-    }
+//    if (q.count("3hv")) {
+//        try {
+//            // generate Typer code for Q3
+//            const std::string& path_to_cpp =
+//                    hybrid::CodeGenerator::instance().generateHybridTyperQ3();
+//
+//            // compile llvm
+//            bool useLLVM = true;
+//            const std::string& path_to_ll =
+//                    hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+//                                                                          useLLVM);
+//            // run experiments
+//            e.timeAndProfile(
+//                    "q3 hybrid   ",
+//                    nrTuples(tpch, {"customer", "orders"}),
+//                    [&]() {
+//                        if (clearCaches) clearOsCaches();
+//                        auto result = q3_hybrid(tpch, nrThreads, vectorSize,
+//                                                path_to_ll, useLLVM, verbose);
+//                        escape(&result);
+//                    },
+//                    repetitions);
+//        } catch (hybrid::HybridException& exc) {
+//            std::cout<<"There is some error on the processing"<<std::endl;
+//            std::cerr << exc.what() << std::endl;
+//        }
+//    }
 
     /**
      * Calling hybrid execution using hybirdExecution stubs
@@ -458,10 +460,13 @@ int main(int argc, char* argv[]) {
                     [&]() {
                         if (clearCaches) clearOsCaches();
                         hybrid::HybridExecution execute;
-                        auto result = execute.compile_and_execute<vectorwise::Hashjoin>(tpch, nrThreads, verbose,
-                                                    path_to_ll, useLLVM,
-                                                    tectorwiseTuples, vectorSize, CustOrdHashJoin,
-                                                    type, LLVMfuncName);
+                        auto result =
+                                execute.compile_and_execute_hash_join(
+                                        tpch, nrThreads, verbose,
+                                        path_to_ll, useLLVM,
+                                        tectorwiseTuples, vectorSize, CustOrdHashJoin, LLVMfuncName
+                                );
+//                                exit(0);
                         escape(&result);
                     },
                     repetitions);

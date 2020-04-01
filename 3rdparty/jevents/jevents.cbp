@@ -11,10 +11,10 @@
 				<Option working_dir="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="listevents">
@@ -28,20 +28,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 listevents"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 listevents"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="listevents/fast">
@@ -55,20 +47,12 @@
 					<Add option="-DHASH_SIZE=64"/>
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 listevents/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 listevents/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="jevents">
@@ -83,20 +67,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 jevents"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 jevents"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="jevents/fast">
@@ -111,20 +87,12 @@
 					<Add option="-DDATADIR=&quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data&quot;"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents"/>
 					<Add directory="/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/src"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 jevents/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 jevents/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/3rdparty/jevents/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>

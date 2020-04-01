@@ -12,8 +12,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/jevents.dir/measure.c.o"
   "CMakeFiles/jevents.dir/perf_event_open.c.o"
   "CMakeFiles/jevents.dir/session.c.o"
-  "libjevents.pdb"
-  "libjevents.a"
+  "libjeventsd.pdb"
+  "libjeventsd.a"
 )
 
 # Per-language clean rules from dependency scanning.
