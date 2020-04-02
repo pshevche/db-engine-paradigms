@@ -65,13 +65,20 @@ typedef std::unique_ptr<runtime::Query> (*GenericHashJoin)(
 
 //Generic hash group connector
 typedef std::unique_ptr<runtime::Query> (*GenericHashGroup)(
-        runtime::Database&, size_t, runtime::Hashmap&, size_t
+        runtime::Database&, size_t, size_t,
+        std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>>&
         );
 
 //Generic hash join and hash group connector
 typedef std::unique_ptr<runtime::Query> (*GenericHashJoinGroup)(
         runtime::Database&, size_t, runtime::Hashmap&, size_t, runtime::Hashmap&, size_t
         );
+
+//Generic fixed aggregation connector
+//TODO: change the return type from runtime::Relation to std::unique_ptr<runtime::Query>
+typedef runtime::Relation (*GenericGroup)(
+            runtime::Database&, size_t, size_t, int64_t
+);
 
 //typedef struct __attribute__((packed)) {
 //

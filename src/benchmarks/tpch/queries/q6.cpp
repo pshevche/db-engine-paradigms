@@ -86,6 +86,7 @@ Relation q6_hybrid(Database& db, size_t nrThreads, size_t vectorSize,
       // store result from this thread
       aggr.fetch_add(query->aggregator);
    });
+
    auto end = std::chrono::steady_clock::now();
    if (verbose) {
       std::cout << "TW took "

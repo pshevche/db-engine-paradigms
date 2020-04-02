@@ -23,9 +23,15 @@ using namespace runtime;
                                               const std::string &LLVMfuncName);
 
         std::unique_ptr<runtime::Query>
-        compile_and_execute_hash_group(Database &db, size_t nrThreads, bool verbose,
+                compile_and_execute_hash_group(Database &db, size_t nrThreads, bool verbose,
                                       const std::string &path_to_lib_src, bool fromLLVM,
                                       size_t nrTuples, size_t vectorSize, std::unique_ptr<vectorwise::HashGroup> &vwOperator,
                                       const std::string &LLVMfuncName);
+
+        Relation
+                compile_and_execute_group(Database &db, size_t nrThreads, bool verbose,
+                                       const std::string &path_to_lib_src, bool fromLLVM,
+                                       size_t nrTuples, size_t vectorSize, std::unique_ptr<vectorwise::FixedAggr> &vwOperator, int64_t *aggregate,
+                                       const std::string &LLVMfuncName);
     };
 }

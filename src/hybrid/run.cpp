@@ -384,39 +384,7 @@ int main(int argc, char* argv[]) {
       } catch (hybrid::HybridException& exc) {
          std::cerr << exc.what() << std::endl;
       }
-   }*/
-
-//    if (q.count("3hv")) {
-//        try {
-//            // generate Typer code for Q3
-//            const std::string& path_to_cpp =
-//                    hybrid::CodeGenerator::instance().generateHybridTyperQ3();
-//
-//            // compile llvm
-//            bool useLLVM = true;
-//            const std::string& path_to_ll =
-//                    hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
-//                                                                          useLLVM);
-//            // run experiments
-//            e.timeAndProfile(
-//                    "q3 hybrid   ",
-//                    nrTuples(tpch, {"customer", "orders"}),
-//                    [&]() {
-//                        if (clearCaches) clearOsCaches();
-//                        auto result = q3_hybrid(tpch, nrThreads, vectorSize,
-//                                                path_to_ll, useLLVM, verbose);
-//                        escape(&result);
-//                    },
-//                    repetitions);
-//        } catch (hybrid::HybridException& exc) {
-//            std::cout<<"There is some error on the processing"<<std::endl;
-//            std::cerr << exc.what() << std::endl;
-//        }
-//    }
-
-    /**
-     * Calling hybrid execution using hybirdExecution stubs
-     */
+   }
 
     if (q.count("3hv")) {
         try {
@@ -425,49 +393,214 @@ int main(int argc, char* argv[]) {
                     hybrid::CodeGenerator::instance().generateHybridTyperQ3();
 
             // compile llvm
+            bool useLLVM = true;
+            const std::string& path_to_ll =
+                    hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                          useLLVM);
+            // run experiments
+            e.timeAndProfile(
+                    "q3 hybrid   ",
+                    nrTuples(tpch, {"customer", "orders"}),
+                    [&]() {
+                        if (clearCaches) clearOsCaches();
+                        auto result = q3_hybrid(tpch, nrThreads, vectorSize,
+                                                path_to_ll, useLLVM, verbose);
+                        escape(&result);
+                    },
+                    repetitions);
+        } catch (hybrid::HybridException& exc) {
+            std::cout<<"There is some error on the processing"<<std::endl;
+            std::cerr << exc.what() << std::endl;
+        }
+    }
+*/
+
+    /**
+     * hybrid execution using hybirdExecution class
+     */
+
+//    if (q.count("3hv")) {
+//        try {
+//            // generate Typer code for Q3
+//            const std::string& path_to_cpp =
+//                    hybrid::CodeGenerator::instance().generateHybridTyperQ3();
+//
+//            // compile llvm
+//            /* Compilation parameter to pass */
+//            bool useLLVM = true;
+//            const std::string& path_to_ll =
+//                    hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+//                                                                          useLLVM); //Compiles CPP into LLVM code | this is outside the execution time
+//                                                                                   //Final codegen will directly prepare code from IR to LLVM
+//            /* TectorWise parameter to pass */
+//            size_t tectorwiseTuples = nrTuples(tpch, {"customer"});
+//
+//            vectorwise::SharedStateManager shared;
+//            Q3Builder builder(tpch, shared, vectorSize);
+//            auto query = builder.getQuery();
+//            std::unique_ptr<vectorwise::ResultWriter> printOp(
+//                    static_cast<vectorwise::ResultWriter*>(query->rootOp.release()));
+//            std::unique_ptr<vectorwise::HashGroup> finalAggregates(
+//                    static_cast<vectorwise::HashGroup*>(printOp->child.release()));
+//            std::unique_ptr<vectorwise::Project> projectExpression(
+//                    static_cast<vectorwise::Project*>(finalAggregates->child.release()));
+//            std::unique_ptr<vectorwise::Hashjoin> lineItemHashJoin(
+//                    static_cast<vectorwise::Hashjoin*>(projectExpression->child.release()));
+//            std::unique_ptr<vectorwise::Hashjoin> CustOrdHashJoin(
+//                    static_cast<vectorwise::Hashjoin*>(lineItemHashJoin->left.release())); //parameter to pass
+//
+//            hybrid::connector type = hybrid::connector::hash_join;
+//
+//            /* Connection parameter required */
+//            const std::string& LLVMfuncName = "_Z15hybrid_typer_q3RN7runtime8DatabaseEmRNS_7HashmapEm";
+//
+//            // run experiments
+//            e.timeAndProfile(
+//                    "q3 hybrid   ",
+//                    tectorwiseTuples,
+//                    [&]() {
+//                        if (clearCaches) clearOsCaches();
+//                        hybrid::HybridExecution execute;
+//                        auto result =
+//                                execute.compile_and_execute_hash_join(
+//                                        tpch, nrThreads, verbose,
+//                                        path_to_ll, useLLVM,
+//                                        tectorwiseTuples, vectorSize, CustOrdHashJoin, LLVMfuncName
+//                                );
+////                                exit(0);
+//                        escape(&result);
+//                    },
+//                    repetitions);
+//        } catch (hybrid::HybridException& exc) {
+//            std::cout<<"There is some error on the processing"<<std::endl;
+//            std::cerr << exc.what() << std::endl;
+//        }
+//    }
+//
+//    if (q.count("1hv")) {
+//        try {
+//            // generate Typer code for Q1
+//            const std::string& path_to_cpp =
+//                    hybrid::CodeGenerator::instance().generateHybridTyperQ1();
+//
+//            // compile llvm
+//            /* Compilation parameter to pass */
+//            bool useLLVM = true;
+//            const std::string& path_to_ll =
+//                    hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+//                                                                          useLLVM); //Compiles CPP into LLVM code | this is outside the execution time
+//            //Final codegen will directly prepare code from IR to LLVM
+//            /* TectorWise parameter to pass */
+//            size_t tectorwiseTuples = nrTuples(tpch, {"lineitem"});
+//
+//            vectorwise::SharedStateManager shared;
+//            Q1Builder builder(tpch, shared, vectorSize);
+//            auto query = builder.getQuery();
+//            std::unique_ptr<vectorwise::ResultWriter> printOp(
+//                    static_cast<vectorwise::ResultWriter*>(query->rootOp.release()));
+//            std::unique_ptr<vectorwise::HashGroup> groupOp(
+//                    static_cast<vectorwise::HashGroup*>(printOp->child.release()));
+//
+//            hybrid::connector type = hybrid::connector::hash_join;
+//
+//            /* Connection parameter required */
+//            const std::string& LLVMfuncName = "_Z15hybrid_typer_q1RN7runtime8DatabaseEmmRSt13unordered_mapINSt6thread2idENS_16PartitionedDequeILm1024EEESt4hashIS4_ESt8equal_toIS4_ESaISt4pairIKS4_S6_EEE";
+//
+//            // run experiments
+//            e.timeAndProfile(
+//                    "q1 hybrid   ",
+//                    tectorwiseTuples,
+//                    [&]() {
+//                        if (clearCaches) clearOsCaches();
+//                        hybrid::HybridExecution execute;
+//                        auto result =
+//                                execute.compile_and_execute_hash_group(
+//                                        tpch, nrThreads, verbose,
+//                                        path_to_ll, useLLVM,
+//                                        tectorwiseTuples, vectorSize, groupOp, LLVMfuncName
+//                                );
+//                        escape(&result);
+//
+//                    },
+//                    repetitions);
+//        } catch (hybrid::HybridException& exc) {
+//            std::cout<<"There is some error on the processing"<<std::endl;
+//            std::cerr << exc.what() << std::endl;
+//        }
+//    }
+
+    if (q.count("6hv")) {
+        try {
+            // generate Typer code for Q6
+            const std::string& path_to_cpp =
+                    hybrid::CodeGenerator::instance().generateHybridTyperQ6();
+
+            // compile LLVM
+            bool useLLVM = true;
+            const std::string& path_to_ll =
+                    hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
+                                                                          useLLVM);
+
+            // run experiments
+            e.timeAndProfile("q6 hybrid    ", tpch["lineitem"].nrTuples,
+                             [&]() {
+                                 if (clearCaches) clearOsCaches();
+                                 auto result =
+                                         q6_hybrid(tpch, nrThreads, vectorSize,
+                                                   path_to_ll, useLLVM, verbose);
+                                 escape(&result);
+                             },
+                             repetitions);
+        } catch (hybrid::HybridException& exc) {
+            std::cerr << exc.what() << std::endl;
+        }
+    }
+
+    if (q.count("6hv")) {
+        try {
+            // generate Typer code for Q1
+            const std::string& path_to_cpp =
+                    hybrid::CodeGenerator::instance().generateHybridTyperQ6();
+
+            // compile llvm
             /* Compilation parameter to pass */
             bool useLLVM = true;
             const std::string& path_to_ll =
                     hybrid::CompilationEngine::instance().compileQueryCPP(path_to_cpp,
                                                                           useLLVM); //Compiles CPP into LLVM code | this is outside the execution time
-                                                                                   //Final codegen will directly prepare code from IR to LLVM
+            //Final codegen will directly prepare code from IR to LLVM
             /* TectorWise parameter to pass */
-            size_t tectorwiseTuples = nrTuples(tpch, {"customer"});
 
             vectorwise::SharedStateManager shared;
-            Q3Builder builder(tpch, shared, vectorSize);
-            auto query = builder.getQuery();
-            std::unique_ptr<vectorwise::ResultWriter> printOp(
-                    static_cast<vectorwise::ResultWriter*>(query->rootOp.release()));
-            std::unique_ptr<vectorwise::HashGroup> finalAggregates(
-                    static_cast<vectorwise::HashGroup*>(printOp->child.release()));
-            std::unique_ptr<vectorwise::Project> projectExpression(
-                    static_cast<vectorwise::Project*>(finalAggregates->child.release()));
-            std::unique_ptr<vectorwise::Hashjoin> lineItemHashJoin(
-                    static_cast<vectorwise::Hashjoin*>(projectExpression->child.release()));
-            std::unique_ptr<vectorwise::Hashjoin> CustOrdHashJoin(
-                    static_cast<vectorwise::Hashjoin*>(lineItemHashJoin->left.release())); //parameter to pass
+            Q6Builder queryBuilder(tpch, shared, vectorSize);
+            auto query = queryBuilder.getQuery();
+
+            std::unique_ptr<vectorwise::FixedAggr> topAggr(
+                    static_cast<vectorwise::FixedAggr*>(query->rootOp.release()));
 
             hybrid::connector type = hybrid::connector::hash_join;
 
             /* Connection parameter required */
-            const std::string& LLVMfuncName = "_Z15hybrid_typer_q3RN7runtime8DatabaseEmRNS_7HashmapEm";
+            const std::string& LLVMfuncName = "_Z15hybrid_typer_q6RN7runtime8DatabaseEmml";
+            size_t tectorwiseTuples = nrTuples(tpch, {"lineitem"});
 
             // run experiments
             e.timeAndProfile(
-                    "q3 hybrid   ",
+                    "q6 hybrid   ",
                     tectorwiseTuples,
                     [&]() {
                         if (clearCaches) clearOsCaches();
                         hybrid::HybridExecution execute;
+                        query->aggregator = 0;
+
                         auto result =
-                                execute.compile_and_execute_hash_join(
+                                execute.compile_and_execute_group(
                                         tpch, nrThreads, verbose,
                                         path_to_ll, useLLVM,
-                                        tectorwiseTuples, vectorSize, CustOrdHashJoin, LLVMfuncName
+                                        tectorwiseTuples, vectorSize, topAggr, &query->aggregator, LLVMfuncName
                                 );
-//                                exit(0);
                         escape(&result);
+                        return;
                     },
                     repetitions);
         } catch (hybrid::HybridException& exc) {
@@ -477,6 +610,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-   scheduler.terminate();
+    scheduler.terminate();
    return 0;
+
 }
