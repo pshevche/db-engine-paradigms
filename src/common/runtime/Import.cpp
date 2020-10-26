@@ -189,8 +189,11 @@ void parseColumns(runtime::Relation& r, std::vector<ColumnConfigOwning>& cols,
 
    bool allColumnsMMaped = true;
    string cachedir = dir + "/cached/";
-   if (!mkdir((dir + "/cached/").c_str(), 0777))
-      throw runtime_error("Could not create dir 'cached': " + dir + "/cached/");
+
+    mkdir((dir + "/cached/").c_str(), 0666);
+//    std::cout<<"V : "<<v<<std::endl;
+//   if (v)
+//      throw runtime_error("Could not create dir 'cached': " + dir + "/cached/");
    for (auto& col : colsC)
       if (!std::ifstream(cachedir + fileName + "_" + col.name))
          allColumnsMMaped = false;
@@ -198,7 +201,7 @@ void parseColumns(runtime::Relation& r, std::vector<ColumnConfigOwning>& cols,
    if (!allColumnsMMaped) {
       std::vector<std::vector<void*>> attributes;
       attributes.assign(colsC.size(), {});
-      ifstream relationFile(dir + fileName + ".tbl");
+      ifstream relationFile(dir + "/" + fileName + ".tbl");
       if (!relationFile.is_open())
          throw runtime_error("csv file not found: " + dir);
       string line;

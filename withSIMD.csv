@@ -1,0 +1,23 @@
+SF {1,2,3,4,5,10,20}
+Compilation took 938.538 new milliseconds.
+                name,      time,      CPUs,       IPC,       GHz, Bandwidth,    cycles,LLC-misses,LLC-misses2, l1-misses,    instr.,br. misses,    all_rd,br. misses,    stores,     loads, mem_stall,task-clock,
+       q1 hyper     ,     0.423,     1.000,     0.717,     3.296,     0.000,232501.179,     0.173,     0.000,   162.782,166733.696,    19.018,     0.000,    19.018,     0.000,     0.000,     0.000, 70518.272,
+       q1 vectorwise,    26.476,     0.865,     0.818,     0.118,     0.000,452726.673,   138.794,     0.000,  2145.047,370305.164,  1742.233,     0.000,  1742.233,     0.000,     0.000,     0.000,3814895.640,
+TW took 1 milliseconds to process 1024 tuples.
+Compilation took 1213 milliseconds.
+Typer took 0 milliseconds to process 0 tuples.
+TW took 1 milliseconds to process 1024 tuples.
+Compilation took 1228 milliseconds.
+Typer took 0 milliseconds to process 0 tuples.
+       q1 hybrid    ,  1260.009,     0.847,     1.598,     2.886,     0.000,515032002.207,281490.724,     0.000,7221918.830,823008280.329,4391720.193,     0.000,4391720.193,     0.000,     0.000,     0.000,177808328.167,
+Compilation took 322.049 milliseconds.
+       q6 hyper     ,    22.763,     0.870,     0.003,     0.054,     0.000,178786.086,   177.239,     0.000,    55.364,   568.396,   553.209,     0.000,   553.209,     0.000,     0.000,     0.000,3300961.114,
+       q6 vectorwise,    23.446,     0.833,     0.259,     0.105,     0.000,343457.032,   192.089,     0.000,  1499.934, 89085.147,  2886.739,     0.000,  2886.739,     0.000,     0.000,     0.000,3254562.773,
+TW took 0 milliseconds to process 0 tuples.
+Compilation took 499 milliseconds.
+Typer took 0 milliseconds to process 6 tuples.
+TW took 0 milliseconds to process 0 tuples.
+Compilation took 492 milliseconds.
+Typer took 0 milliseconds to process 6 tuples.
+       q6 hybrid    ,   525.330,     0.685,     1.551,     1.766,     0.000,107078614.185,119716.556,     0.000,1872481.582,166063000.374,1156574.660,     0.000,1156574.660,     0.000,     0.000,     0.000,60007781.667,
+Compilation took 1717.945 new milliseconds.

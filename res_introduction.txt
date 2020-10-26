@@ -1,0 +1,210 @@
+SF 5
+Compilation took 959.368 new milliseconds.
+                name,      time,      CPUs,       IPC,       GHz, Bandwidth,    cycles,LLC-misses,LLC-misses2, l1-misses,    instr.,br. misses,    all_rd,br. misses,    stores,     loads, mem_stall,task-clock,
+       q1 hyper     ,  6809.553,     0.999,     1.691,     3.687,     0.000,   836.525,     0.593,     0.000,     0.634,  1414.186,     0.014,     0.000,     0.014,     0.000,     0.000,     0.000,   226.863,
+       q1 vectorwise,  3003.486,     0.999,     2.379,     3.387,     0.000,   338.707,     0.595,     0.000,     2.173,   805.651,     0.037,     0.000,     0.037,     0.000,     0.000,     0.000,    99.979,
+Compilation took 1208 milliseconds.
+TW took 1208 milliseconds to process 12406784 tuples.
+Typer took 135 milliseconds to process 17593011 tuples.
+Compilation took 1172 milliseconds.
+TW took 1172 milliseconds to process 12596224 tuples.
+Typer took 135 milliseconds to process 17403571 tuples.
+       q1 hybrid    ,  1543.624,     1.642,     1.992,     3.151,     0.000,   266.562,     0.684,     0.000,     2.682,   530.905,     0.895,     0.000,     0.895,     0.000,     0.000,     0.000,    84.483,
+Compilation took 311.677 milliseconds.
+       q6 hyper     ,   643.075,     0.996,     2.569,     2.821,     0.000,    60.249,     0.362,     0.000,     0.331,   154.754,     0.020,     0.000,     0.020,     0.000,     0.000,     0.000,    21.352,
+       q6 vectorwise,   464.320,     0.994,     1.800,     2.375,     0.000,    36.566,     0.339,     0.000,     0.208,    65.828,     0.010,     0.000,     0.010,     0.000,     0.000,     0.000,    15.386,
+TW took 359 milliseconds to process 30000128 tuples.
+Compilation took 426 milliseconds.
+Typer took 0 milliseconds to process 0 tuples.
+TW took 311 milliseconds to process 30000128 tuples.
+Compilation took 492 milliseconds.
+Typer took 0 milliseconds to process 0 tuples.
+       q6 hybrid    ,   726.861,     1.204,     1.905,     1.889,     0.000,    55.278,     0.330,     0.000,     0.590,   105.309,     0.220,     0.000,     0.220,     0.000,     0.000,     0.000,    29.166,
+Compilation took 1706.962 new milliseconds.
+      q18 hyper     ,  5149.788,     0.999,     1.477,     3.483,     0.000,   262.595,     0.336,     0.000,     0.731,   387.964,     0.162,     0.000,     0.162,     0.000,     0.000,     0.000,    75.385,
+      q18 vectorwise,  6806.184,     0.999,     1.550,     3.525,     0.000,   351.308,     0.315,     0.000,     2.100,   544.394,     0.339,     0.000,     0.339,     0.000,     0.000,     0.000,    99.646,
+Compilation took 1919 milliseconds.
+TW took 1919 milliseconds to process 14137344 lineitem tuples.
+Typer took 598 milliseconds to process 15862451 lineitem tuples.
+Compilation took 1923 milliseconds.
+TW took 1923 milliseconds to process 14323712 lineitem tuples.
+Typer took 605 milliseconds to process 15676083 lineitem tuples.
+       q18 hybrid   ,  2770.276,     1.627,     1.505,     3.242,     0.000,   214.299,     0.418,     0.000,     2.194,   322.612,     0.894,     0.000,     0.894,     0.000,     0.000,     0.000,    66.050,
+       q3 vectorwise,  2410.207,     0.998,     1.208,     3.443,     0.000,   216.702,     0.187,     0.000,     0.906,   261.759,     0.110,     0.000,     0.110,     0.000,     0.000,     0.000,    62.916,
+Compilation took 1138.793 new milliseconds.
+       q3 hyper     ,  1365.940,     0.998,     1.456,     3.164,     0.000,    63.184,     0.099,     0.000,     0.259,    92.025,     0.145,     0.000,     0.145,     0.000,     0.000,     0.000,    19.967,
+TW took 41 milliseconds to process 150297 tuples.
+Compilation took 1329 milliseconds.
+Typer took 378 milliseconds to process 599703 tuples.
+TW took 30 milliseconds to process 150297 tuples.
+Compilation took 1299 milliseconds.
+Typer took 429 milliseconds to process 599703 tuples.
+        q3 hybrid   ,  1966.615,     0.923,     1.476,     2.437,     0.000,   537.085,     1.033,     0.000,     8.168,   792.782,     4.789,     0.000,     4.789,     0.000,     0.000,     0.000,   219.919,
+SF 10
+Compilation took 1034.89 new milliseconds.
+                name,      time,      CPUs,       IPC,       GHz, Bandwidth,    cycles,LLC-misses,LLC-misses2, l1-misses,    instr.,br. misses,    all_rd,br. misses,    stores,     loads, mem_stall,task-clock,
+       q1 hyper     , 13616.459,     1.000,     1.689,     3.688,     0.000,   836.835,     0.594,     0.000,     0.626,  1413.819,     0.014,     0.000,     0.014,     0.000,     0.000,     0.000,   226.891,
+       q1 vectorwise,  5904.403,     0.999,     2.382,     3.442,     0.000,   338.644,     0.594,     0.000,     2.182,   806.702,     0.039,     0.000,     0.039,     0.000,     0.000,     0.000,    98.353,
+Compilation took 1160 milliseconds.
+TW took 1160 milliseconds to process 11815936 tuples.
+Typer took 360 milliseconds to process 48170116 tuples.
+Compilation took 1223 milliseconds.
+TW took 1223 milliseconds to process 13065216 tuples.
+Typer took 352 milliseconds to process 46920836 tuples.
+       q1 hybrid    ,  1870.045,     1.559,     2.099,     3.024,     0.000,   147.063,     0.626,     0.000,     1.726,   308.733,     0.474,     0.000,     0.474,     0.000,     0.000,     0.000,    48.586,
+Compilation took 266.509 milliseconds.
+       q6 hyper     ,  1257.130,     0.997,     2.661,     2.819,     0.000,    58.935,     0.359,     0.000,     0.335,   156.805,     0.019,     0.000,     0.019,     0.000,     0.000,     0.000,    20.898,
+       q6 vectorwise,  1037.593,     0.997,     1.862,     2.077,     0.000,    35.817,     0.333,     0.000,     0.209,    66.704,     0.010,     0.000,     0.010,     0.000,     0.000,     0.000,    17.238,
+Compilation took 497 milliseconds.
+TW took 497 milliseconds to process 45331456 tuples.
+Typer took 31 milliseconds to process 14654596 tuples.
+Compilation took 478 milliseconds.
+TW took 478 milliseconds to process 46936064 tuples.
+Typer took 31 milliseconds to process 13049988 tuples.
+       q6 hybrid    ,   881.310,     1.356,     1.816,     1.962,     0.000,    39.192,     0.350,     0.000,     0.397,    71.187,     0.107,     0.000,     0.107,     0.000,     0.000,     0.000,    19.927,
+Compilation took 1714.073 new milliseconds.
+      q18 hyper     , 10550.916,     0.999,     1.420,     3.516,     0.000,   271.749,     0.430,     0.000,     0.698,   385.810,     0.150,     0.000,     0.150,     0.000,     0.000,     0.000,    77.265,
+      q18 vectorwise, 14547.395,     0.999,     1.473,     3.556,     0.000,   378.899,     0.426,     0.000,     2.137,   558.154,     0.328,     0.000,     0.328,     0.000,     0.000,     0.000,   106.533,
+Compilation took 1917 milliseconds.
+TW took 1918 milliseconds to process 13450240 lineitem tuples.
+Typer took 1352 milliseconds to process 46535812 lineitem tuples.
+Compilation took 1936 milliseconds.
+TW took 1936 milliseconds to process 13551616 lineitem tuples.
+Typer took 1360 milliseconds to process 46434436 lineitem tuples.
+       q18 hybrid   ,  3665.415,     1.476,     1.515,     3.148,     0.000,   124.903,     0.446,     0.000,     1.511,   189.233,     0.532,     0.000,     0.532,     0.000,     0.000,     0.000,    39.649,
+       q3 vectorwise,  5006.478,     0.999,     1.176,     3.417,     0.000,   223.489,     0.214,     0.000,     0.907,   262.790,     0.103,     0.000,     0.103,     0.000,     0.000,     0.000,    65.393,
+Compilation took 1243.110 new milliseconds.
+       q3 hyper     ,  2881.743,     0.999,     1.336,     3.206,     0.000,    67.613,     0.114,     0.000,     0.254,    90.311,     0.145,     0.000,     0.145,     0.000,     0.000,     0.000,    21.086,
+TW took 70 milliseconds to process 300276 tuples.
+Compilation took 1254 milliseconds.
+Typer took 732 milliseconds to process 1199724 tuples.
+TW took 48 milliseconds to process 300276 tuples.
+Compilation took 1299 milliseconds.
+Typer took 749 milliseconds to process 1199724 tuples.
+        q3 hybrid   ,  2422.125,     0.946,     1.213,     2.644,     0.000,   367.721,     1.107,     0.000,     5.159,   446.150,     3.208,     0.000,     3.208,     0.000,     0.000,     0.000,   138.795,
+SF 20
+Compilation took 916.078 new milliseconds.
+                name,      time,      CPUs,       IPC,       GHz, Bandwidth,    cycles,LLC-misses,LLC-misses2, l1-misses,    instr.,br. misses,    all_rd,br. misses,    stores,     loads, mem_stall,task-clock,
+       q1 hyper     , 27380.016,     1.000,     1.690,     3.669,     0.000,   836.837,     0.596,     0.000,     0.649,  1414.175,     0.014,     0.000,     0.014,     0.000,     0.000,     0.000,   228.071,
+       q1 vectorwise, 12578.149,     0.999,     2.219,     3.460,     0.000,   362.524,     0.597,     0.000,     2.173,   804.551,     0.039,     0.000,     0.039,     0.000,     0.000,     0.000,   104.756,
+Compilation took 1225 milliseconds.
+TW took 1225 milliseconds to process 12541952 tuples.
+Typer took 812 milliseconds to process 107452656 tuples.
+Compilation took 1218 milliseconds.
+TW took 1219 milliseconds to process 13029376 tuples.
+Typer took 808 milliseconds to process 106965232 tuples.
+       q1 hybrid    ,  2663.326,     1.389,     2.101,     2.863,     0.000,    88.336,     0.597,     0.000,     1.202,   185.590,     0.241,     0.000,     0.241,     0.000,     0.000,     0.000,    30.825,
+Compilation took 263.572 milliseconds.
+       q6 hyper     ,  2491.727,     0.999,     2.631,     2.860,     0.000,    59.332,     0.360,     0.000,     0.334,   156.085,     0.019,     0.000,     0.019,     0.000,     0.000,     0.000,    20.737,
+       q6 vectorwise,  1752.906,     0.998,     1.895,     2.442,     0.000,    35.625,     0.331,     0.000,     0.212,    67.507,     0.009,     0.000,     0.009,     0.000,     0.000,     0.000,    14.583,
+Compilation took 506 milliseconds.
+TW took 506 milliseconds to process 49442816 tuples.
+Typer took 155 milliseconds to process 70551792 tuples.
+Compilation took 508 milliseconds.
+TW took 508 milliseconds to process 48804864 tuples.
+Typer took 157 milliseconds to process 71189744 tuples.
+       q6 hybrid    ,  1304.432,     1.254,     1.533,     1.792,     0.000,    24.460,     0.348,     0.000,     0.369,    37.491,     0.050,     0.000,     0.050,     0.000,     0.000,     0.000,    13.627,
+Compilation took 1706.563 new milliseconds.
+      q18 hyper     , 22254.100,     0.999,     1.350,     3.519,     0.000,   286.758,     0.464,     0.000,     0.762,   387.238,     0.175,     0.000,     0.175,     0.000,     0.000,     0.000,    81.474,
+      q18 vectorwise, 28013.338,     0.999,     1.492,     3.549,     0.000,   364.027,     0.431,     0.000,     2.148,   543.216,     0.353,     0.000,     0.353,     0.000,     0.000,     0.000,   102.559,
+Compilation took 1906 milliseconds.
+TW took 1906 milliseconds to process 11281408 lineitem tuples.
+Typer took 3166 milliseconds to process 108713200 lineitem tuples.
+Compilation took 1935 milliseconds.
+TW took 1935 milliseconds to process 11799552 lineitem tuples.
+Typer took 3149 milliseconds to process 108195056 lineitem tuples.
+       q18 hybrid   ,  5729.825,     1.305,     1.404,     3.108,     0.000,    85.189,     0.509,     0.000,     1.170,   119.593,     0.369,     0.000,     0.369,     0.000,     0.000,     0.000,    27.392,
+       q3 vectorwise, 10572.200,     0.999,     1.109,     3.441,     0.000,   237.638,     0.292,     0.000,     0.911,   263.440,     0.110,     0.000,     0.110,     0.000,     0.000,     0.000,    69.057,
+Compilation took 1243.384 new milliseconds.
+       q3 hyper     ,  6366.284,     0.999,     1.189,     3.279,     0.000,    76.423,     0.151,     0.000,     0.256,    90.834,     0.144,     0.000,     0.144,     0.000,     0.000,     0.000,    23.300,
+TW took 137 milliseconds to process 600888 tuples.
+Compilation took 1283 milliseconds.
+Typer took 1772 milliseconds to process 2399112 tuples.
+TW took 90 milliseconds to process 600888 tuples.
+Compilation took 1297 milliseconds.
+Typer took 1808 milliseconds to process 2399112 tuples.
+        q3 hybrid   ,  3740.803,     0.975,     0.961,     2.755,     0.000,   304.760,     1.500,     0.000,     3.809,   292.764,     2.191,     0.000,     2.191,     0.000,     0.000,     0.000,   110.522,
+SF 50
+Compilation took 884.779 new milliseconds.
+                name,      time,      CPUs,       IPC,       GHz, Bandwidth,    cycles,LLC-misses,LLC-misses2, l1-misses,    instr.,br. misses,    all_rd,br. misses,    stores,     loads, mem_stall,task-clock,
+       q1 hyper     , 69281.560,     1.000,     1.688,     3.626,     0.000,   837.218,     0.595,     0.000,     0.622,  1413.401,     0.014,     0.000,     0.014,     0.000,     0.000,     0.000,   230.826,
+       q1 vectorwise, 29700.296,     0.999,     2.375,     3.430,     0.000,   339.455,     0.595,     0.000,     2.175,   806.193,     0.038,     0.000,     0.038,     0.000,     0.000,     0.000,    98.944,
+Compilation took 1219 milliseconds.
+TW took 1220 milliseconds to process 12416000 tuples.
+Typer took 2194 milliseconds to process 287589811 tuples.
+Compilation took 1243 milliseconds.
+TW took 1244 milliseconds to process 13276160 tuples.
+Typer took 2192 milliseconds to process 286729651 tuples.
+       q1 hybrid    ,  4908.794,     1.215,     2.220,     2.600,     0.000,    51.750,     0.599,     0.000,     0.884,   114.881,     0.103,     0.000,     0.103,     0.000,     0.000,     0.000,    19.888,
+Compilation took 296.667 milliseconds.
+       q6 hyper     ,  6386.145,     0.999,     2.646,     2.778,     0.000,    59.101,     0.358,     0.000,     0.335,   156.357,     0.019,     0.000,     0.019,     0.000,     0.000,     0.000,    21.269,
+       q6 vectorwise,  4523.945,     0.999,     1.856,     2.398,     0.000,    36.126,     0.329,     0.000,     0.211,    67.045,     0.009,     0.000,     0.009,     0.000,     0.000,     0.000,    15.063,
+Compilation took 503 milliseconds.
+TW took 503 milliseconds to process 39302144 tuples.
+Typer took 767 milliseconds to process 260703667 tuples.
+Compilation took 510 milliseconds.
+TW took 510 milliseconds to process 37967872 tuples.
+Typer took 819 milliseconds to process 262037939 tuples.
+       q6 hybrid    ,  2804.033,     1.117,     0.763,     1.671,     0.000,    17.466,     0.344,     0.000,     0.354,    13.334,     0.018,     0.000,     0.018,     0.000,     0.000,     0.000,    10.440,
+Compilation took 2001.269 new milliseconds.
+      q18 hyper     , 56394.879,     0.999,     1.329,     3.494,     0.000,   288.626,     0.477,     0.000,     0.894,   383.520,     0.166,     0.000,     0.166,     0.000,     0.000,     0.000,    82.581,
+      q18 vectorwise, 73159.057,     0.999,     1.459,     3.524,     0.000,   377.579,     0.466,     0.000,     2.304,   550.797,     0.323,     0.000,     0.323,     0.000,     0.000,     0.000,   107.126,
+Compilation took 1976 milliseconds.
+TW took 1977 milliseconds to process 5817344 lineitem tuples.
+Typer took 8342 milliseconds to process 294188467 lineitem tuples.
+Compilation took 1906 milliseconds.
+TW took 1906 milliseconds to process 5641216 lineitem tuples.
+Typer took 8401 milliseconds to process 294364595 lineitem tuples.
+       q18 hybrid   , 11801.620,     1.146,     1.304,     3.001,     0.000,    59.483,     0.521,     0.000,     1.082,    77.586,     0.238,     0.000,     0.238,     0.000,     0.000,     0.000,    19.811,
+       q3 vectorwise, 28315.543,     0.999,     1.034,     3.435,     0.000,   254.139,     0.404,     0.000,     0.911,   262.888,     0.096,     0.000,     0.096,     0.000,     0.000,     0.000,    73.977,
+Compilation took 1253.650 new milliseconds.
+       q3 hyper     , 18497.879,     0.999,     1.006,     3.324,     0.000,    90.044,     0.206,     0.000,     0.253,    90.594,     0.140,     0.000,     0.140,     0.000,     0.000,     0.000,    27.086,
+TW took 318 milliseconds to process 1500036 tuples.
+Compilation took 1340 milliseconds.
+Typer took 5431 milliseconds to process 5999964 tuples.
+TW took 307 milliseconds to process 1500036 tuples.
+Compilation took 1352 milliseconds.
+Typer took 5504 milliseconds to process 5999964 tuples.
+        q3 hybrid   ,  8343.308,     1.015,     0.650,     2.848,     0.000,   292.367,     2.030,     0.000,     2.975,   189.948,     1.591,     0.000,     1.591,     0.000,     0.000,     0.000,   102.610,
+SF 100
+Compilation took 1017.23 new milliseconds.
+                name,      time,      CPUs,       IPC,       GHz, Bandwidth,    cycles,LLC-misses,LLC-misses2, l1-misses,    instr.,br. misses,    all_rd,br. misses,    stores,     loads, mem_stall,task-clock,
+       q1 hyper     ,140106.619,     1.000,     1.696,     3.577,     0.000,   834.859,     0.595,     0.000,     0.650,  1415.697,     0.014,     0.000,     0.014,     0.000,     0.000,     0.000,   233.387,
+       q1 vectorwise, 59932.943,     0.999,     2.366,     3.413,     0.000,   340.830,     0.596,     0.000,     2.172,   806.272,     0.037,     0.000,     0.037,     0.000,     0.000,     0.000,    99.831,
+Compilation took 1226 milliseconds.
+TW took 1226 milliseconds to process 12657664 tuples.
+Typer took 4504 milliseconds to process 587380238 tuples.
+Compilation took 1209 milliseconds.
+TW took 1209 milliseconds to process 12449792 tuples.
+Typer took 4521 milliseconds to process 587588110 tuples.
+       q1 hybrid    ,  8568.264,     1.120,     2.232,     2.470,     0.000,    39.504,     0.602,     0.000,     0.771,    88.185,     0.061,     0.000,     0.061,     0.000,     0.000,     0.000,    15.987,
+Compilation took 316.116 milliseconds.
+       q6 hyper     , 12822.445,     0.999,     2.584,     2.801,     0.000,    59.833,     0.363,     0.000,     0.329,   154.592,     0.019,     0.000,     0.019,     0.000,     0.000,     0.000,    21.354,
+       q6 vectorwise,  9020.297,     0.999,     1.833,     2.429,     0.000,    36.500,     0.330,     0.000,     0.213,    66.890,     0.009,     0.000,     0.009,     0.000,     0.000,     0.000,    15.021,
+Compilation took 508 milliseconds.
+TW took 509 milliseconds to process 39810048 tuples.
+Typer took 1384 milliseconds to process 560227854 tuples.
+Compilation took 513 milliseconds.
+TW took 513 milliseconds to process 36303872 tuples.
+Typer took 1416 milliseconds to process 563734030 tuples.
+       q6 hybrid    ,  4778.714,     1.070,     0.626,     1.430,     0.000,    12.193,     0.353,     0.000,     0.337,     7.630,     0.010,     0.000,     0.010,     0.000,     0.000,     0.000,     8.518,
+Compilation took 1769.001 new milliseconds.
+      q18 hyper     ,112374.447,     0.999,     1.337,     3.470,     0.000,   285.550,     0.470,     0.000,     0.908,   381.922,     0.148,     0.000,     0.148,     0.000,     0.000,     0.000,    82.274,
+      q18 vectorwise,140830.432,     0.999,     1.498,     3.493,     0.000,   360.171,     0.440,     0.000,     2.305,   539.646,     0.324,     0.000,     0.324,     0.000,     0.000,     0.000,   103.107,
+Compilation took 1899 milliseconds.
+TW took 2543 milliseconds to process 0 lineitem tuples.
+Typer took 16161 milliseconds to process 600037902 lineitem tuples.
+Compilation took 1934 milliseconds.
+TW took 2451 milliseconds to process 0 lineitem tuples.
+Typer took 15984 milliseconds to process 600037902 lineitem tuples.
+       q18 hybrid   , 21308.611,     1.082,     1.326,     2.934,     0.000,    49.571,     0.501,     0.000,     1.016,    65.724,     0.182,     0.000,     0.182,     0.000,     0.000,     0.000,    16.889,
+       q3 vectorwise, 58701.290,     0.999,     1.013,     3.371,     0.000,   258.540,     0.434,     0.000,     0.904,   261.853,     0.093,     0.000,     0.093,     0.000,     0.000,     0.000,    76.682,
+Compilation took 1171.814 new milliseconds.
+       q3 hyper     , 38560.978,     0.999,     0.967,     3.307,     0.000,    93.375,     0.223,     0.000,     0.251,    90.253,     0.138,     0.000,     0.138,     0.000,     0.000,     0.000,    28.233,
+TW took 608 milliseconds to process 3000188 tuples.
+Compilation took 1372 milliseconds.
+Typer took 11702 milliseconds to process 11999812 tuples.
+TW took 631 milliseconds to process 3000188 tuples.
+Compilation took 1322 milliseconds.
+Typer took 11572 milliseconds to process 11999812 tuples.
+        q3 hybrid   , 15754.663,     1.028,     0.565,     2.890,     0.000,   283.758,     2.203,     0.000,     2.734,   160.321,     1.423,     0.000,     1.423,     0.000,     0.000,     0.000,    98.166,

@@ -1,0 +1,6 @@
+Error resolving perf event cpu/cpu-cycles/
+Error resolving perf event mem_load_retired.l3_miss
+Error resolving perf event offcore_requests.all_data_rd
+Error resolving perf event mem_inst_retired.all_stores
+Error resolving perf event mem_inst_retired.all_loads
+Error resolving perf event cycle_activity.stalls_mem_any

@@ -10,6 +10,7 @@
 
 namespace vectorwise {
 
+std::atomic<size_t> total_values_scanned(0);
 using runtime::barrier;
 
 size_t Select::next() {
@@ -78,7 +79,8 @@ size_t Scan::next() {
       *cons.first = (void*)(*(uint8_t**)cons.first + step * cons.second);
    lastOffset = nextBegin;
    vecInChunk++;
-   return nextBatchSize;
+    total_values_scanned.fetch_add(nextBatchSize);
+    return nextBatchSize;
 }
 
 ResultWriter::Input::Input(void* d, size_t size,

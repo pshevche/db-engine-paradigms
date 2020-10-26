@@ -1,0 +1,4 @@
+SF {1,2,3,4,5,10,20,30,40,50,100,150}
+64 : No. of threads
+q1 hybrid,TW took ,48 milliseconds, 1024,Compilation time, 1155 milliseconds,Typer took, 9 milliseconds,0 tuples,hybrid time, 1165
+q6 hybrid,TW took, 4 milliseconds, 0 tuples,Compilation took, 492 milliseconds,Typer took, 0 milliseconds,6,hybrid time, 493

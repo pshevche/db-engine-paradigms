@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/listevents.dir/listevents.c.o"
-  "listevents.pdb"
   "listevents"
+  "listevents.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

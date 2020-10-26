@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms
-# Build directory: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms
+# Source directory: /home/gurumurt/db-engine-paradigms
+# Build directory: /home/gurumurt/db-engine-paradigms
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

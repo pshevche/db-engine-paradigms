@@ -18,6 +18,7 @@
 namespace vectorwise {
 
 const size_t EndOfStream = 0;
+extern std::atomic<size_t> total_values_scanned;
 
 class Operator {
  public:

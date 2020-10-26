@@ -58,6 +58,7 @@ using namespace std;
 // Display query results
 void printResultQ18(runtime::Query* result) {
    // display some results for debugging
+   int totalSum = 0;
    for (auto iter = result->result->begin(); iter != result->result->end();
         ++iter) {
       auto block = *iter;
@@ -72,11 +73,13 @@ void printResultQ18(runtime::Query* result) {
       long* sum = reinterpret_cast<long*>(
           block.data(result->result->getAttribute("sum")));
       for (unsigned i = 0; i < block.size(); ++i) {
-         std::cout << c_custkey[i] << " | " << o_orderkey[i] << " | "
+          totalSum++;
+          std::cout << c_custkey[i] << " | " << o_orderkey[i] << " | "
                    << o_orderdate[i] << " | " << o_totalprice[i] << " | "
                    << sum[i] << std::endl;
       }
    }
+   std::cout<<"Total values: "<<totalSum<<std::endl;
 }
 
 // Execute Q18 using hybrid approach
@@ -87,34 +90,36 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
    using namespace vectorwise;
    using namespace std::chrono_literals;
 
+    std::cout<<"Q18,"<<std::endl;
+    auto start_hybrid = std::chrono::steady_clock::now();
    // 1. START COMPILING Q18 IN TYPER
    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
-   std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
-                                  &verbose] {
+//   std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
+//                                  &verbose] {
       try {
-         auto start = std::chrono::steady_clock::now();
+         auto start_compile = std::chrono::steady_clock::now();
          // link library
          const std::string& path_to_lib =
              hybrid::CompilationEngine::instance().linkQueryLib(path_to_lib_src,
                                                                 fromLLVM);
          // open library
          typerLib = hybrid::SharedLibrary::load(path_to_lib + ".so");
-         auto end = std::chrono::steady_clock::now();
+         auto end_compile = std::chrono::steady_clock::now();
          if (verbose) {
-            std::cout << "Compilation took "
+            std::cout << "Compilation took, "
                       << std::chrono::duration_cast<std::chrono::milliseconds>(
-                             end - start)
+                             end_compile - start_compile)
                              .count()
-                      << " milliseconds." << std::endl;
+                      << " milliseconds,"<<std::endl;
          }
 
       } catch (hybrid::HybridException& exc) {
          std::cerr << exc.what() << std::endl;
       }
-   });
-
+//   });
+    exit(0);
    // 2. WHILE Q18 IS COMPILING, START TECTORWISE
-   auto start = std::chrono::steady_clock::now();
+   auto start_TW = std::chrono::steady_clock::now();
    // processed fraction of relations of interest
    std::atomic<size_t> processedTuples(0);
    size_t liSize = db["lineitem"].nrTuples;
@@ -123,6 +128,8 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
 
    vectorwise::SharedStateManager shared;
 
+    std::cout<<"Running worker"<<std::endl;
+    runtime::Hashmap *customer_res, *lineitem_res;
    std::unique_ptr<runtime::Query> result;
    workers.run([&]() {
       using runtime::Hashmap;
@@ -138,153 +145,361 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
           static_cast<Hashjoin*>(topJoin->left.release()));
       std::unique_ptr<Hashjoin> lineitemJoin(
           static_cast<Hashjoin*>(customerJoin->right.release()));
-      std::unique_ptr<vectorwise::Select> lineitemSelect(
-          static_cast<vectorwise::Select*>(lineitemJoin->left.release()));
-      std::unique_ptr<vectorwise::HashGroup> lineitemAggr(
-          static_cast<vectorwise::HashGroup*>(lineitemSelect->child.release()));
 
-      // build customer hash table
-      {
-         size_t found = 0;
-         // --- build phase 1: materialize ht entries
-         for (auto n = customerJoin->left->next();
-              n != EndOfStream && !typerLib; n = customerJoin->left->next()) {
-            found += n;
-            // build hashes
-            customerJoin->buildHash.evaluate(n);
-            // scatter hash, keys and values into ht entries
-            auto alloc = runtime::this_worker->allocator.allocate(
-                n * customerJoin->ht_entry_size);
-            if (!alloc) throw std::runtime_error("malloc failed");
-            customerJoin->allocations.push_back(std::make_pair(alloc, n));
-            customerJoin->scatterStart =
-                reinterpret_cast<decltype(customerJoin->scatterStart)>(alloc);
-            customerJoin->buildScatter.evaluate(n);
-         }
+       runtime::Hashmap *lineitem_res;
+       runtime::Hashmap *customer_res;
 
-         // --- build phase 2: insert ht entries
-         customerJoin->shared.found.fetch_add(found);
-         barrier([&]() {
-            auto globalFound = customerJoin->shared.found.load();
-            if (globalFound) customerJoin->shared.ht.setSize(globalFound);
-         });
-         auto globalFound = customerJoin->shared.found.load();
-         if (globalFound != 0) {
-            insertAllEntries(customerJoin->allocations, customerJoin->shared.ht,
-                             customerJoin->ht_entry_size);
-         }
-         barrier(); // wait for all threads to finish build phase
-      }
+      //build hash table from lineitem
+       {
+           std::atomic<size_t>  found{0};
+           // --- build phase 1: materialize ht entries
+           for (auto n =lineitemJoin->left->next();
+                n != EndOfStream && !typerLib; n = lineitemJoin->left->next()) {
+               found += n;
 
-      // start lineitem grouping
-      {
-         runtime::Hashmap& ht = lineitemAggr->getHashTable();
-         size_t maxFill = lineitemAggr->getMaxFill();
-         using header_t = runtime::Hashmap::EntryHeader;
-         size_t groups = 0;
-         auto& spill = lineitemAggr->shared.spillStorage.local();
-         auto entry_size = lineitemAggr->preAggregation.ht_entry_size;
+               // build hashes
+               lineitemJoin->buildHash.evaluate(n);
+               // scatter hash, keys and values into ht entries
+               auto alloc = runtime::this_worker->allocator.allocate(
+                       n * lineitemJoin->ht_entry_size);
+               if (!alloc) {std::cout<<"Error in allocation"<<std::endl; throw std::runtime_error("malloc failed");}
+               lineitemJoin->allocations.push_back(std::make_pair(alloc, n));
+               lineitemJoin->scatterStart =
+                       reinterpret_cast<decltype(lineitemJoin->scatterStart)>(alloc);
+               lineitemJoin->buildScatter.evaluate(n);
+           }
 
-         // stores thread-local aggregation results in shared store (i.e.
-         // SharedStateManager from above)
-         auto flushAndClear = [&]() INTERPRET_SEPARATE {
-            assert(offsetof(header_t, next) + sizeof(header_t::next) ==
-                   offsetof(header_t, hash));
-            // flush ht entries into spillStorage
-            for (auto& alloc : lineitemAggr->preAggregation.allocations) {
-               for (auto entry = reinterpret_cast<header_t*>(alloc.first),
-                         end = addBytes(entry, alloc.second * entry_size);
-                    entry < end; entry = addBytes(entry, entry_size)) {
-                  spill.push_back(&entry->hash, entry->hash);
-               }
-            }
-            lineitemAggr->preAggregation.allocations.clear();
-            lineitemAggr->preAggregation.clearHashtable(ht);
-         };
+           // --- build phase 2: insert ht entries
+           lineitemJoin->shared.found.fetch_add(found);
+           barrier([&]() {
+               auto globalFound = lineitemJoin->shared.found.load();
+               processedTuples.fetch_add(globalFound);
+               if (globalFound) lineitemJoin->shared.ht.setSize(globalFound);
 
-         // process relation data in chunks
-         for (pos_t n = lineitemAggr->child->next();
-              n != EndOfStream && !typerLib; n = lineitemAggr->child->next()) {
-            lineitemAggr->groupHash.evaluate(n);
-            lineitemAggr->preAggregation.findGroups(n, ht);
-            auto groupsCreated =
-                lineitemAggr->preAggregation.createMissingGroups(ht, false);
-            lineitemAggr->updateGroups.evaluate(n);
-            groups += groupsCreated;
-            if (groups >= maxFill) flushAndClear();
-            processedTuples.fetch_add(vectorSize);
-            //  FIXME: delay for debugging purposes
-//             std::this_thread::sleep_for(1000ms);
-         }
-         flushAndClear(); // flush remaining entries into spillStorage
-         if (processedTuples.load() > liSize) { processedTuples.store(liSize); }
-         barrier(); // Wait until all workers have finished phase 1
-      }
+               lineitem_res = &lineitemJoin->shared.ht;
+           });
+           auto globalFound = lineitemJoin->shared.found.load();
+           if (globalFound != 0) {
+
+               lineitemJoin->shared.ht.setSize(globalFound);
+               insertAllEntries(lineitemJoin->allocations, lineitemJoin->shared.ht,
+                                lineitemJoin->ht_entry_size);
+           }
+//           barrier();
+       }
+       // build customer hash table
+       {
+           size_t found = 0;
+           // --- build phase 1: materialize ht entries
+           for (auto n = customerJoin->left->next();
+                n != EndOfStream && !typerLib; n = customerJoin->left->next()) {
+               found += n;
+               // build hashes
+               customerJoin->buildHash.evaluate(n);
+               // scatter hash, keys and values into ht entries
+               auto alloc = runtime::this_worker->allocator.allocate(
+                       n * customerJoin->ht_entry_size);
+               if (!alloc) throw std::runtime_error("malloc failed");
+               customerJoin->allocations.push_back(std::make_pair(alloc, n));
+               customerJoin->scatterStart =
+                       reinterpret_cast<decltype(customerJoin->scatterStart)>(alloc);
+               customerJoin->buildScatter.evaluate(n);
+           }
+
+           // --- build phase 2: insert ht entries
+           customerJoin->shared.found.fetch_add(found);
+           barrier([&]() {
+               auto globalFound = customerJoin->shared.found.load();
+               if (globalFound) customerJoin->shared.ht.setSize(globalFound);
+               customer_res = &customerJoin->shared.ht;
+//               partial_res_lineitem = &lineitemJoin->shared.ht;
+           });
+           auto globalFound = customerJoin->shared.found.load();
+           if (globalFound != 0) {
+               insertAllEntries(customerJoin->allocations, customerJoin->shared.ht,
+                                customerJoin->ht_entry_size);
+           }
+
+       }
+
    });
 
-   auto end = std::chrono::steady_clock::now();
+   auto end_TW = std::chrono::steady_clock::now();
    if (verbose) {
-      std::cout << "TW took "
-                << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                         start)
+      std::cout << "partial TW took, "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(end_TW -
+                                                                         start_TW)
                        .count()
-                << " milliseconds to process " << processedTuples.load()
-                << " lineitem tuples." << std::endl;
+                << " milliseconds, " << processedTuples.load()
+                << " tuples,"<<std::endl;
    }
 
-//   std::this_thread::sleep_for(2s);
+//   compilationThread.join();
 
-   // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION
-   // RESULTS
-   compilationThread.join();
-
-   //testing if two threads are processing here even after join is done
-//    std::mutex g_display_mutex;
-//    std::thread::id this_id = std::this_thread::get_id();
-//    g_display_mutex.lock();
-//    std::cout << "thread " << this_id << " sleeping...\n";
-//    g_display_mutex.unlock();
-
-   start = std::chrono::steady_clock::now();
+   auto start_typer = std::chrono::steady_clock::now();
    // load library
    if (!typerLib) {
+       std::cout<<"library error"<<std::endl;
       throw hybrid::HybridException("Could not load shared Typer library!");
    }
 
+    std::cout<<"Calling hyper"<<std::endl;
    // get compiled function
    const std::string& funcName =
-       "_Z16hybrid_typer_q18RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_"
-       "mapINSt6thread2idENS_16PartitionedDequeILm1024EEESt4hashIS6_ESt8equal_"
-       "toIS6_ESaISt4pairIKS6_S8_EEEm";
-   hybrid::CompiledTyperQ18 typer_q18 =
-       typerLib.load()->getFunction<hybrid::CompiledTyperQ18>(funcName);
+       "_Z16hybrid_typer_q18RN7runtime8DatabaseEmRNS_7HashmapES3_m";
+   hybrid::CompiledAnotherTyperQ18 typer_q18 =
+       typerLib.load()->getFunction<hybrid::CompiledAnotherTyperQ18>(funcName);
    if (!typer_q18) {
+
+       std::cout<<"Could not find function for running Q1 in Typer!"<<std::endl;
       throw hybrid::HybridException(
           "Could not find function for running Q1 in Typer!");
    }
 
-   // compute typer result
+//   // compute typer result
    result = std::move(
-       typer_q18(db, nrThreads, shared.get<Hashjoin::Shared>(6).ht,
-                 shared.get<HashGroup::Shared>(3).spillStorage.threadData,
+       typer_q18(db, nrThreads, *lineitem_res,
+                 *customer_res,
                  processedTuples.load()));
 
-   end = std::chrono::steady_clock::now();
+   auto end_typer = std::chrono::steady_clock::now();
    if (verbose) {
       std::cout << "Typer took "
-                << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                         start)
+                << std::chrono::duration_cast<std::chrono::milliseconds>(end_typer -
+                                                                         start_typer)
                        .count()
-                << " milliseconds to process "
+                << " milliseconds,"
                 << (long)liSize - (long)processedTuples.load()
-                << " lineitem tuples." << std::endl;
+                << "tuples,";
    }
+    delete typerLib;
 
-   // close shared library
-   delete typerLib;
+   auto end_hybrid = std::chrono::steady_clock::now();
+         std::cout << "hybrid time "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(end_hybrid -
+                                                                         start_hybrid)
+                       .count()<<",";
 
-//   printResultQ18(result.get());
+//    q18_hyper(db,nrThreads);
+    q18_vectorwise(db,nrThreads,vectorSize);
    return result;
+}
+
+
+// Execute Q18 using hybrid approach
+std::unique_ptr<runtime::Query> q18_another_hybrid(runtime::Database& db,
+                                           size_t nrThreads, size_t vectorSize,
+                                           const std::string& path_to_lib_src,
+                                           bool fromLLVM, bool verbose) {
+//    using namespace vectorwise;
+//    using namespace std::chrono_literals;
+//
+//    std::cout<<"Q18,";
+//    auto start_hybrid = std::chrono::steady_clock::now();
+//    // 1. START COMPILING Q18 IN TYPER
+//    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
+//    std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
+//                                          &verbose] {
+//        try {
+//            auto start_compile = std::chrono::steady_clock::now();
+//            // link library
+//            const std::string& path_to_lib =
+//                    hybrid::CompilationEngine::instance().linkQueryLib(path_to_lib_src,
+//                                                                       fromLLVM);
+//            // open library
+//            typerLib = hybrid::SharedLibrary::load(path_to_lib + ".so");
+//            auto end_compile = std::chrono::steady_clock::now();
+//            if (verbose) {
+//                std::cout << "Compilation took, "
+//                          << std::chrono::duration_cast<std::chrono::milliseconds>(
+//                                  end_compile - start_compile)
+//                                  .count()
+//                          << " milliseconds,"<<std::endl;
+//            }
+//
+//        } catch (hybrid::HybridException& exc) {
+//            std::cerr << exc.what() << std::endl;
+//        }
+//    });
+//
+//    // 2. WHILE Q18 IS COMPILING, START TECTORWISE
+//    auto start_TW = std::chrono::steady_clock::now();
+//    // processed fraction of relations of interest
+//    std::atomic<size_t> processedTuples(0);
+//    size_t liSize = db["lineitem"].nrTuples;
+//    std::cout<<"running another Q18"<<std::endl;
+//    WorkerGroup workers(nrThreads);
+//
+//    vectorwise::SharedStateManager shared;
+//    runtime::Hashmap *partial_res, *partial_res_lineitem;
+//    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>> *groupResult;
+//
+    std::unique_ptr<runtime::Query> result;
+//    workers.run([&]() {
+//        using runtime::Hashmap;
+//        Q18Builder builder(db, shared, vectorSize);
+//        auto query = builder.getQuery();
+//        std::unique_ptr<ResultWriter> printOp(
+//                static_cast<ResultWriter*>(query->rootOp.release()));
+//        std::unique_ptr<vectorwise::HashGroup> groupOp(
+//                static_cast<vectorwise::HashGroup*>(printOp->child.release()));
+//
+////        {
+////        runtime::Hashmap& ht = groupOp->getHashTable();
+////        size_t maxFill = groupOp->getMaxFill();
+////        using header_t = runtime::Hashmap::EntryHeader;
+////        size_t groups = 0;
+////        auto& spill = groupOp->shared.spillStorage.local();
+////        auto entry_size = groupOp->preAggregation.ht_entry_size;
+////
+////        auto flushAndClear = [&]() INTERPRET_SEPARATE {
+////            assert(offsetof(header_t, next) + sizeof(header_t::next) ==
+////                   offsetof(header_t, hash));
+////            // flush ht entries into spillStorage
+////            for (auto& alloc : groupOp->preAggregation.allocations) {
+////                for (auto entry = reinterpret_cast<header_t*>(alloc.first),
+////                             end = addBytes(entry, alloc.second * entry_size);
+////                     entry < end; entry = addBytes(entry, entry_size)) {
+////                    spill.push_back(&entry->hash, entry->hash);
+////                }
+////            }
+////            groupOp->preAggregation.allocations.clear();
+////            groupOp->preAggregation.clearHashtable(ht);
+////        };
+////
+////        // process relation data in chunks
+////        for (pos_t n = groupOp->child->next(); n != EndOfStream && !typerLib;
+////             n = groupOp->child->next()) {
+////            groupOp->groupHash.evaluate(n);
+////            groupOp->preAggregation.findGroups(n, ht);
+////            auto groupsCreated =
+////                    groupOp->preAggregation.createMissingGroups(ht, false);
+////            groupOp->updateGroups.evaluate(n);
+////            groups += groupsCreated;
+////            if (groups >= maxFill) flushAndClear();
+////            processedTuples.fetch_add(vectorSize);
+////        }
+////        flushAndClear(); // flush remaining entries into spillStorage
+////
+////        barrier([&]() {       // Wait until all workers have finished phase 1
+////
+////            std::unique_ptr<Hashjoin> topJoin(
+////                    static_cast<Hashjoin*>(groupOp->child.release()));
+////            auto globalFound = topJoin->shared.found.load();
+////            processedTuples.fetch_add(globalFound);
+////            if (globalFound) topJoin->shared.ht.setSize(globalFound);
+////            partial_res_lineitem = &topJoin->shared.ht;
+////            groupResult = &groupOp->shared.spillStorage.threadData;
+////        });
+////        }
+//
+//            std::unique_ptr<Hashjoin> topJoin(
+//                    static_cast<Hashjoin*>(groupOp->child.release()));
+//        std::unique_ptr<Hashjoin> customerJoin(
+//                static_cast<Hashjoin*>(topJoin->left.release()));
+//        std::unique_ptr<Hashjoin> CustOrdHashJoin(
+//                static_cast<Hashjoin*>(customerJoin->right.release()));
+//        {
+//            size_t found = 0;
+//            // --- build phase 1: materialize ht entries
+//            for (auto n = CustOrdHashJoin->left->next();
+//                 n != EndOfStream && !typerLib; n = CustOrdHashJoin->left->next()) {
+//                found += n;
+//
+//                // build hashes
+//                CustOrdHashJoin->buildHash.evaluate(n);
+//
+//                // scatter hash, keys and values into ht entries
+//                auto alloc = runtime::this_worker->allocator.allocate(
+//                        n * CustOrdHashJoin->ht_entry_size);
+//                if (!alloc) throw std::runtime_error("malloc failed");
+//
+//                CustOrdHashJoin->allocations.push_back(std::make_pair(alloc, n));
+//                CustOrdHashJoin->scatterStart =
+//                        reinterpret_cast<decltype(CustOrdHashJoin->scatterStart)>(alloc);
+//                CustOrdHashJoin->buildScatter.evaluate(n);
+//
+//            }
+//
+//            // --- build phase 2: insert ht entries
+//            CustOrdHashJoin->shared.found.fetch_add(found);
+////            barrier(); // wait for all threads to finish build phase
+//            barrier([&]() {       // Wait until all workers have finished phase 1
+//
+//                std::unique_ptr<vectorwise::Select> lineitemSelect(
+//                        static_cast<vectorwise::Select*>(CustOrdHashJoin->left.release()));
+//                std::unique_ptr<vectorwise::HashGroup> lineitemAggr(
+//                        static_cast<vectorwise::HashGroup*>(lineitemSelect->child.release()));
+//                auto globalFound = CustOrdHashJoin->shared.found.load();
+//                processedTuples.fetch_add(globalFound);
+//                if (globalFound) CustOrdHashJoin->shared.ht.setSize(globalFound);
+//                partial_res = &CustOrdHashJoin->shared.ht;
+//                groupResult = &lineitemAggr->shared.spillStorage.threadData;
+//            });
+//
+//        }
+//
+//
+//
+//    });
+//
+//    auto end_TW = std::chrono::steady_clock::now();
+//    if (verbose) {
+//        std::cout << "partial TW took, "
+//                  << std::chrono::duration_cast<std::chrono::milliseconds>(end_TW -
+//                                                                           start_TW)
+//                          .count()
+//                  << " milliseconds, " << processedTuples.load()
+//                  << " tuples,"<<std::endl;
+//    }
+//
+//    // 3. PROCESS REMAINING TUPLES WITH TYPER + MERGE-IN TW'S AGGREGATION
+//    // RESULTS
+//    compilationThread.join();
+//    return result;
+//    auto start_typer = std::chrono::steady_clock::now();
+//    // load library
+//    if (!typerLib) {
+//        throw hybrid::HybridException("Could not load shared Typer library!");
+//    }
+//
+//    // get compiled function
+//    const std::string& funcName =
+//            "_Z24hybrid_another_typer_q18RN7runtime8DatabaseEmRNS_7HashmapES3_m";
+//    hybrid::CompiledAnotherTyperQ18 typer_q18 =
+//            typerLib.load()->getFunction<hybrid::CompiledAnotherTyperQ18>(funcName);
+//    if (!typer_q18) {
+//        throw hybrid::HybridException(
+//                "Could not find function for running Q1 in Typer!");
+//    }
+//
+//    // compute typer result
+//    result = std::move(
+//            typer_q18(db, nrThreads, *partial_res, *groupResult,
+//                      processedTuples.load()));
+//
+//    auto end_typer = std::chrono::steady_clock::now();
+//    if (verbose) {
+//        std::cout << "Typer took "
+//                  << std::chrono::duration_cast<std::chrono::milliseconds>(end_typer -
+//                                                                           start_typer)
+//                          .count()
+//                  << " milliseconds,"
+//                  << (long)liSize - (long)processedTuples.load()
+//                  << "tuples,";
+//    }
+//    delete typerLib;
+//
+//    auto end_hybrid = std::chrono::steady_clock::now();
+//    std::cout << "hybrid time "
+//              << std::chrono::duration_cast<std::chrono::milliseconds>(end_hybrid -
+//                                                                       start_hybrid)
+//                      .count()<<",";
+//
+////    q18_hyper(db,nrThreads);
+//    q18_vectorwise(db,nrThreads,vectorSize);
+    return result;
+
 }
 
 
@@ -292,6 +507,8 @@ NOVECTORIZE std::unique_ptr<runtime::Query> q18_hyper(Database& db,
                                                       size_t nrThreads) {
    using namespace types;
    using namespace std;
+
+    auto q18_hyper_start = std::chrono::steady_clock::now();
 
    using hash = runtime::CRC32Hash;
 
@@ -324,6 +541,7 @@ NOVECTORIZE std::unique_ptr<runtime::Query> q18_hyper(Database& db,
                         }
                      });
 
+   //H1 is the hash table for lineitem join order
    Hashset<types::Integer, hash> ht1;
    tbb::enumerable_thread_specific<runtime::Stack<decltype(ht1)::Entry>>
        entries1;
@@ -444,8 +662,55 @@ NOVECTORIZE std::unique_ptr<runtime::Query> q18_hyper(Database& db,
    });
 
    leaveQuery(nrThreads);
-//       printResultQ18(resources.query.get());
+
+    auto q18_hyper_stop = std::chrono::steady_clock::now();
+    std::cout << "hyper time: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(q18_hyper_stop -
+                                                                       q18_hyper_start)
+                      .count()<<",";
+//    std::cout<<std::endl;
+//   printResultQ18(resources.query.get());
+//    std::cout<<std::endl;
    return move(resources.query);
+}
+
+std::unique_ptr<runtime::Query> q18_hyper_LLVM(Database& db,const std::string& path_to_lib_src,
+                                               size_t nrThreads) {
+
+    auto q1_hyper_start = std::chrono::steady_clock::now();
+
+    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
+    typerLib = hybrid::SharedLibrary::load(path_to_lib_src + ".so");
+
+
+    const std::string& funcName =
+            "_Z14pure_typer_q18RN7runtime8DatabaseEm";
+    hybrid::PureTyperQ18 typer_q18 =
+            typerLib.load()->getFunction<hybrid::PureTyperQ18>(funcName);
+
+    if (!typer_q18) {
+        std::cout<<
+                "Could not find function for running Q18 in Typer!"<<std::endl;
+    }
+
+//    std::cout<<"Hyper LLVM 18 "<<std::endl;
+
+    // compute typer result
+    std::unique_ptr<runtime::Query> result = std::move(
+            typer_q18(db,nrThreads));
+
+    auto q1_hyper_stop = std::chrono::steady_clock::now();
+
+    std::cout << "hyper LLVM time: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(q1_hyper_stop -
+                                                                       q1_hyper_start)
+                      .count()<<",";
+
+//    std::cout<<std::endl;
+//    printResultQ18(result.get());
+//    std::cout<<std::endl;
+    return result;
+
 }
 
 std::unique_ptr<Q18Builder::Q18> Q18Builder::getQuery() {
@@ -592,6 +857,9 @@ std::unique_ptr<Q18Builder::Q18> Q18Builder::getQuery() {
 
 std::unique_ptr<runtime::Query> q18_vectorwise(Database& db, size_t nrThreads,
                                                size_t vectorSize) {
+
+    auto q18_vectorized_start = std::chrono::steady_clock::now();
+
    using namespace vectorwise;
    WorkerGroup workers(nrThreads);
 
@@ -609,7 +877,13 @@ std::unique_ptr<runtime::Query> q18_vectorwise(Database& db, size_t nrThreads,
                            ->shared.result);
    });
 
-   //    printResultQ18(result.get());
+    auto q18_vectorized_stop = std::chrono::steady_clock::now();
+    std::cout << "vectorized time: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(q18_vectorized_stop -
+                                                                       q18_vectorized_start)
+                      .count()<<std::endl;
+
+//       printResultQ18(result.get());
    return result;
 }
 
@@ -659,6 +933,7 @@ std::unique_ptr<Q18Builder::Q18> Q18Builder::getGroupQuery() {
 }
 
 std::unique_ptr<runtime::Query>
+
 q18group_vectorwise(Database& db, size_t nrThreads, size_t vectorSize) {
    using namespace vectorwise;
    WorkerGroup workers(nrThreads);

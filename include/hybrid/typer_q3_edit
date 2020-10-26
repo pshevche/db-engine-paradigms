@@ -1,0 +1,23 @@
+//
+// Created by gurumurt on 12/09/19.
+//
+
+#include "hybrid/minimal_api.hpp"
+using namespace runtime;
+using namespace std;
+using namespace types;
+std::unique_ptr<runtime::Query> compiled_typer_q3(Database & db, size_t nrThreads,
+                                                  runtime::Hashmap & twCustomerHT,
+                                                  std::unordered_map<int32_t, defs::hash_t>& twHashFunction,
+                                                  size_t firstTuple) {
+
+    using namespace types;
+    using namespace std;
+    using hash = runtime::CRC32Hash;
+    // --- aggregates
+
+    auto resources = initQuery(nrThreads);
+
+
+    return move(resources.query);
+}

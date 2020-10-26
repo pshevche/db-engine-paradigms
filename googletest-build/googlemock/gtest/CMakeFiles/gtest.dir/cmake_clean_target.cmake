@@ -1,3 +1,3 @@
 file(REMOVE_RECURSE
-  "libgtestd.a"
+  "libgtest.a"
 )

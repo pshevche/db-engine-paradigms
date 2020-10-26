@@ -1,4 +1,4 @@
-# Install script for directory: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock
+# Install script for directory: /home/gurumurt/db-engine-paradigms/googletest-src/googlemock
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Debug")
+    set(CMAKE_INSTALL_CONFIG_NAME "")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -38,27 +38,27 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/libgmockd.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/home/gurumurt/db-engine-paradigms/googletest-build/googlemock/libgmock.a")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/libgmock_maind.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/home/gurumurt/db-engine-paradigms/googletest-build/googlemock/libgmock_main.a")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock/include/gmock")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "/home/gurumurt/db-engine-paradigms/googletest-src/googlemock/include/gmock")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES
-    "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/gmock.pc"
-    "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/gmock_main.pc"
+    "/home/gurumurt/db-engine-paradigms/gmock.pc"
+    "/home/gurumurt/db-engine-paradigms/gmock_main.pc"
     )
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/gtest/cmake_install.cmake")
+  include("/home/gurumurt/db-engine-paradigms/googletest-build/googlemock/gtest/cmake_install.cmake")
 
 endif()
 

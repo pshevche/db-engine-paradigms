@@ -4,10 +4,10 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googletest/src/gtest-all.cc" "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/CMakeFiles/gmock.dir/__/googletest/src/gtest-all.cc.o"
-  "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-src/googlemock/src/gmock-all.cc" "/home/gurumurt/Student-Files/hiwi/db-engine-paradigms/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o"
+  "/home/gurumurt/db-engine-paradigms/googletest-src/googletest/src/gtest-all.cc" "/home/gurumurt/db-engine-paradigms/googletest-build/googlemock/CMakeFiles/gmock.dir/__/googletest/src/gtest-all.cc.o"
+  "/home/gurumurt/db-engine-paradigms/googletest-src/googlemock/src/gmock-all.cc" "/home/gurumurt/db-engine-paradigms/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "Clang")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX

@@ -1,0 +1,14 @@
+SF {seq
+Running with 4 parallel threads
+SF 1
+Running with 4 parallel threads
+Q3-another Pipeline,partial TW took, 35 milliseconds, 147126 tuples,Compilation took 1148 milliseconds,Typer took 46 milliseconds,1352874 tuples,hybrid time, 1196,hyper time: 123,vectorized time: 172
+Q3,TW took, 7 milliseconds, 30142 ,Compilation time1335 milliseconds,Typer took 49 milliseconds,119858 tuples,hybrid time, 1385hyper time: 122,vectorized time: 163
+SF 0.5
+Running with 4 parallel threads
+Q3-another Pipeline,partial TW took, 24 milliseconds, 73792 tuples,Compilation took 1153 milliseconds,Typer took 24 milliseconds,676208 tuples,hybrid time, 1179,hyper time: 57,vectorized time: 54
+Q3,TW took, 5 milliseconds, 15018 ,Compilation time1431 milliseconds,Typer took 32 milliseconds,59982 tuples,hybrid time, 1464hyper time: 62,vectorized time: 62
+SF 10}
+Running with 4 parallel threads
+Q3-another Pipeline,partial TW took, 262 milliseconds, 1461923 tuples,Compilation took 1147 milliseconds,Typer took 314 milliseconds,13538077 tuples,hybrid time, 1462,hyper time: 773,vectorized time: 1255
+Q3,TW took, 24 milliseconds, 300276 ,Compilation time1327 milliseconds,Typer took 335 milliseconds,1199724 tuples,hybrid time, 1662hyper time: 770,vectorized time: 1265

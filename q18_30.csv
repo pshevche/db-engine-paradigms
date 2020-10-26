@@ -1,0 +1,34 @@
+SF 30
+[  9%] Built target common
+[ 19%] Built target vectorwise
+[ 20%] Built target benchmark_config
+[ 25%] Built target hybrid
+[ 28%] Built target hyper
+Scanning dependencies of target tpch
+[ 29%] Building CXX object CMakeFiles/tpch.dir/src/benchmarks/tpch/queries/q6.cpp.o
+[ 29%] Linking CXX static library libtpch.a
+[ 34%] Built target tpch
+[ 45%] Built target jevents
+[ 45%] Linking CXX executable run_hybrid
+[ 53%] Built target run_hybrid
+[ 54%] Linking CXX executable run_tpch
+[ 57%] Built target run_tpch
+[ 69%] Built target ssb
+[ 73%] Built target run_ssb
+[ 75%] Built target gtest
+[ 76%] Built target gtest_main
+[ 77%] Linking CXX executable test_all
+[ 86%] Built target test_all
+[ 88%] Built target run_prim
+[ 92%] Built target bench
+[ 95%] Built target gmock_main
+[ 98%] Built target gmock
+[100%] Built target listevents
+64 : No. of threads
+q1 hybrid,TW took 732 milliseconds to process 4 tuples.
+Compilation took 1568 milliseconds.
+q6 hybrid,TW took 82 milliseconds to process 179998720 tuples.
+Compilation took 461 milliseconds.
+Typer took 0 milliseconds to process 0 tuples.
+q18 hybrid,TW took, 854 milliseconds, 179998372 tuples,Compilation took, 2230 milliseconds,Typer took 1406 milliseconds,0tuples,hybrid time 3636
+q3 hybrid,TW took, 74 milliseconds, 900509 ,Compilation time1537 milliseconds,Typer took 190 milliseconds,3599491 tuples,hybrid time, 1728

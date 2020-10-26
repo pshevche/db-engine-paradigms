@@ -3,12 +3,11 @@
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="exec_engine_comparison" targetName="test_all" />
-      <config projectName="exec_engine_comparison" targetName="run_hybrid" />
       <config projectName="exec_engine_comparison" targetName="ssb" />
-      <config projectName="exec_engine_comparison" targetName="jevents" />
+      <config projectName="exec_engine_comparison" targetName="gtest_main" />
       <config projectName="exec_engine_comparison" targetName="bench" />
       <config projectName="exec_engine_comparison" targetName="hybrid" />
-      <config projectName="exec_engine_comparison" targetName="gtest_main" />
+      <config projectName="exec_engine_comparison" targetName="run_hybrid" />
       <config projectName="exec_engine_comparison" targetName="run_prim" />
       <config projectName="exec_engine_comparison" targetName="tpch" />
       <config projectName="exec_engine_comparison" targetName="vectorwise" />
@@ -16,6 +15,7 @@
       <config projectName="exec_engine_comparison" targetName="benchmark_config" />
       <config projectName="exec_engine_comparison" targetName="gtest" />
       <config projectName="exec_engine_comparison" targetName="gmock" />
+      <config projectName="exec_engine_comparison" targetName="jevents" />
       <config projectName="exec_engine_comparison" targetName="gmock_main" />
       <config projectName="exec_engine_comparison" targetName="listevents" />
       <config projectName="exec_engine_comparison" targetName="run_tpch" />
@@ -31,12 +31,27 @@
   <component name="ChangeListManager">
     <list default="true" id="e43a0728-3076-4296-b503-9f53d9674c85" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/3rdparty/jevents/jevents.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/3rdparty/jevents/jevents.cbp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bench" beforeDir="false" afterPath="$PROJECT_DIR$/bench" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec_engine_comparison.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/exec_engine_comparison.cbp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/googletest-build/googlemock/CMakeFiles/gmock.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/googletest-build/googlemock/CMakeFiles/gmock.dir/flags.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/googletest-build/googlemock/CMakeFiles/gmock_main.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/googletest-build/googlemock/CMakeFiles/gmock_main.dir/flags.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/googletest-build/googlemock/gmock.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/googletest-build/googlemock/gmock.cbp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/googletest-build/googlemock/gtest/CMakeFiles/gtest.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/googletest-build/googlemock/gtest/CMakeFiles/gtest.dir/flags.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/googletest-build/googlemock/gtest/CMakeFiles/gtest_main.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/googletest-build/googlemock/gtest/CMakeFiles/gtest_main.dir/flags.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/googletest-build/googlemock/gtest/gtest.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/googletest-build/googlemock/gtest/gtest.cbp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/googletest-build/googletest-distribution.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/googletest-build/googletest-distribution.cbp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/hybrid/hybrid_execution.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hybrid/hybrid_execution.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_hybrid" beforeDir="false" afterPath="$PROJECT_DIR$/run_hybrid" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_prim" beforeDir="false" afterPath="$PROJECT_DIR$/run_prim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_ssb" beforeDir="false" afterPath="$PROJECT_DIR$/run_ssb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_tpch" beforeDir="false" afterPath="$PROJECT_DIR$/run_tpch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/benchmarks/tpch/queries/q6.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/benchmarks/tpch/queries/q6.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hybrid/hybrid_execution.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/hybrid/hybrid_execution.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/runtime/Import.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/runtime/Import.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hybrid/code_generator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/hybrid/code_generator.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/hybrid/run.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/hybrid/run.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_all" beforeDir="false" afterPath="$PROJECT_DIR$/test_all" afterDir="false" />
     </list>
@@ -66,108 +81,16 @@
     <expand />
     <select />
   </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/hybrid/run.cpp">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="1359">
-                    <caret line="602" column="31" selection-start-line="602" selection-start-column="31" selection-end-line="602" selection-end-column="31" />
-                    <folding>
-                      <element signature="e#0#20#0" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/hybrid/code_generator.cpp">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="378">
-                    <caret line="371" column="34" selection-start-line="371" selection-start-column="27" selection-end-line="371" selection-end-column="34" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="473">
-                    <caret line="77" column="88" selection-start-line="77" selection-start-column="88" selection-end-line="77" selection-end-column="88" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/include/benchmarks/tpch/Queries.hpp">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="-1165">
-                    <caret line="156" column="14" selection-start-line="156" selection-start-column="14" selection-end-line="156" selection-end-column="14" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/include/common/runtime/Database.hpp">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="307">
-                    <caret line="60" column="6" selection-start-line="60" selection-start-column="6" selection-end-line="60" selection-end-column="6" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/src/hybrid/hybrid_typer_q6.cpp">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="252">
-                    <caret line="14" column="74" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="74" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/hybrid/hybrid_execution.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="30" column="16" selection-start-line="30" selection-start-column="16" selection-end-line="30" selection-end-column="16" />
-              <folding>
-                <element signature="e#14#31#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/queries/q1.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4356">
-              <caret line="281" column="15" selection-start-line="281" selection-start-column="8" selection-end-line="281" selection-end-column="15" />
-              <folding>
-                <element signature="e#0#38#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/hybrid/hybrid_execution.cpp">
+        <entry file="file://$PROJECT_DIR$/src/hybrid/run.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="701">
-              <caret line="468" column="9" lean-forward="true" selection-start-line="468" selection-start-column="9" selection-end-line="468" selection-end-column="9" />
+            <state relative-caret-position="478">
+              <caret line="411" column="33" selection-start-line="411" selection-start-column="33" selection-end-line="411" selection-end-column="33" />
               <folding>
-                <element signature="e#661#839#0" />
-                <element signature="e#845#6993#0" />
+                <element signature="e#0#20#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -182,6 +105,13 @@
       <find>retAttr</find>
       <find>result</find>
       <find>firstTuple</find>
+      <find>fixedAggregation</find>
+      <find>__AVX512F__</find>
+      <find>_Z15hybrid_typer_q6RN7runtime8DatabaseEmml</find>
+      <find>verbose</find>
+      <find>after compilation</find>
+      <find>clearCaches</find>
+      <find>there is some error</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -193,22 +123,26 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/hybrid/code_generator.cpp" />
         <option value="$PROJECT_DIR$/src/benchmarks/tpch/queries/q1.cpp" />
-        <option value="$PROJECT_DIR$/src/benchmarks/tpch/queries/q6.cpp" />
-        <option value="$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp" />
         <option value="$PROJECT_DIR$/include/hybrid/hybrid_execution.hpp" />
-        <option value="$PROJECT_DIR$/src/hybrid/run.cpp" />
         <option value="$PROJECT_DIR$/src/hybrid/hybrid_execution.cpp" />
+        <option value="$PROJECT_DIR$/src/vectorwise/Operations.cpp" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/hybrid/code_generator.cpp" />
+        <option value="$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp" />
+        <option value="$PROJECT_DIR$/src/benchmarks/tpch/queries/q6.cpp" />
+        <option value="$PROJECT_DIR$/src/common/runtime/Import.cpp" />
+        <option value="$PROJECT_DIR$/src/benchmarks/tpch/run.cpp" />
+        <option value="$PROJECT_DIR$/src/hybrid/run.cpp" />
       </list>
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="3409" />
-    <option name="y" value="1046" />
-    <option name="width" value="1631" />
-    <option name="height" value="1054" />
+    <option name="x" value="-228" />
+    <option name="y" value="24" />
+    <option name="width" value="1680" />
+    <option name="height" value="1026" />
   </component>
   <component name="ProjectId" id="1ZqB09YqRcPiWglqANXCcgwVDLG" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -219,6 +153,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -235,13 +170,25 @@
               <item name="exec_engine_comparison" type="b2602c69:ProjectViewProjectNode" />
               <item name="db-engine-paradigms" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="hybrid" type="462c0819:PsiDirectoryNode" />
+              <item name="benchmarks" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="exec_engine_comparison" type="b2602c69:ProjectViewProjectNode" />
+              <item name="db-engine-paradigms" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="benchmarks" type="462c0819:PsiDirectoryNode" />
+              <item name="tpch" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="exec_engine_comparison" type="b2602c69:ProjectViewProjectNode" />
+              <item name="db-engine-paradigms" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="hyper" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="ProjectViewState">
@@ -442,17 +389,35 @@
       <workItem from="1585658242299" duration="14513000" />
       <workItem from="1585811993384" duration="8014000" />
       <workItem from="1585821320035" duration="6388000" />
+      <workItem from="1589459937977" duration="930000" />
+      <workItem from="1589537044205" duration="3871000" />
+      <workItem from="1589541250517" duration="1370000" />
+      <workItem from="1589551543972" duration="34000" />
+      <workItem from="1589879972591" duration="11458000" />
+      <workItem from="1589962743646" duration="730000" />
+      <workItem from="1589991133102" duration="666000" />
+      <workItem from="1590409890728" duration="1577000" />
+      <workItem from="1590417869159" duration="491000" />
+      <workItem from="1590425409546" duration="34000" />
+      <workItem from="1590565987208" duration="392000" />
+      <workItem from="1590567207889" duration="470000" />
+      <workItem from="1590567703435" duration="1025000" />
+      <workItem from="1590571144806" duration="602000" />
+      <workItem from="1590586107821" duration="3000" />
+      <workItem from="1590595098146" duration="13000" />
+      <workItem from="1590670781249" duration="4859000" />
+      <workItem from="1590687342151" duration="2054000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="282869000" />
+    <option name="totallyTimeSpent" value="314525000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="49" y="-4" width="1631" height="1054" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.16088328" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13817035" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -463,11 +428,11 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
-      <window_info anchor="bottom" id="Messages" order="8" />
-      <window_info active="true" anchor="bottom" x="1680" y="24" width="1680" height="1026" id="Terminal" maximized="true" order="9" type="WINDOWED" visible="true" weight="0.32912722" />
+      <window_info active="true" anchor="bottom" id="Messages" order="8" visible="true" weight="0.32912722" />
+      <window_info anchor="bottom" x="1680" y="24" width="1680" height="1026" id="Terminal" maximized="true" order="9" type="WINDOWED" weight="0.32912722" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="11" />
-      <window_info anchor="bottom" id="CMake" order="12" weight="0.31230283" />
+      <window_info anchor="bottom" id="CMake" order="12" weight="0.20925342" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -544,29 +509,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/vectorwise/Operators.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1018">
-          <caret line="57" column="8" selection-start-line="57" selection-start-column="8" selection-end-line="57" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="473">
-          <caret line="77" column="88" selection-start-line="77" selection-start-column="88" selection-end-line="77" selection-end-column="88" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/hybrid/pure_typer_q6.cpp">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/hybrid/hybrid_typer_q6.cpp.orig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="25" column="37" lean-forward="true" selection-end-line="44" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/common/runtime/Query.hpp">
       <provider selected="true" editor-type-id="text-editor">
@@ -579,47 +523,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
           <caret line="258" column="38" lean-forward="true" selection-start-line="258" selection-start-column="38" selection-end-line="258" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/hybrid/hybrid_execution.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="30" column="16" selection-start-line="30" selection-start-column="16" selection-end-line="30" selection-end-column="16" />
-          <folding>
-            <element signature="e#14#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/benchmarks/tpch/Queries.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1165">
-          <caret line="156" column="14" selection-start-line="156" selection-start-column="14" selection-end-line="156" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/queries/q6.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="102" column="45" selection-start-line="102" selection-start-column="45" selection-end-line="102" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/hybrid/run.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1359">
-          <caret line="602" column="31" selection-start-line="602" selection-start-column="31" selection-end-line="602" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/hybrid/code_generator.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="371" column="34" selection-start-line="371" selection-start-column="27" selection-end-line="371" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -647,13 +550,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/hybrid/hybrid_typer_q6.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="74" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/hybrid/hybrid_execution.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="701">
@@ -661,6 +557,200 @@
           <folding>
             <element signature="e#661#839#0" />
             <element signature="e#845#6993#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/vectorwise/Operators.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1026">
+          <caret line="57" column="6" selection-start-line="57" selection-start-column="6" selection-end-line="57" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/benchmarks/tpch/Queries.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="573">
+          <caret line="156" column="24" selection-start-line="156" selection-start-column="24" selection-end-line="156" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/vectorwise/QueryBuilder.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="87" column="35" selection-start-line="87" selection-start-column="19" selection-end-line="87" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/vectorwise/primitives/Aggregation.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/vectorwise/Operations.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1422">
+          <caret line="79" column="28" selection-start-line="79" selection-start-column="23" selection-end-line="79" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/hybrid/hybrid_typer_q6.cpp.orig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="109" selection-start-line="3" selection-start-column="109" selection-end-line="3" selection-end-column="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/hybrid/minimal_api.hpp">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/vectorwise/Primitives.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6462">
+          <caret line="1" column="9" lean-forward="true" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
+          <folding>
+            <element signature="e#13#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/benchmarks/config.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="7" selection-start-line="7" selection-start-column="7" selection-end-line="7" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+            <element signature="e#190#256#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/vectorwise/Operators.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2052">
+          <caret line="222" column="18" selection-start-line="222" selection-start-column="7" selection-end-line="222" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+            <element signature="e#7064#13295#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/benchmarks/Config.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="7" selection-start-line="7" selection-start-column="7" selection-end-line="7" selection-end-column="7" />
+          <folding>
+            <element signature="e#13#48#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/hybrid/hybrid_typer_q6.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="21" column="73" selection-start-line="21" selection-start-column="73" selection-end-line="21" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/hybrid/code_generator.hpp">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/hybrid/compilation_engine.hpp">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/hybrid/hybrid_exception.hpp">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/hybrid/hybrid_execution.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="34" column="16" selection-start-line="34" selection-start-column="16" selection-end-line="34" selection-end-column="16" />
+          <folding>
+            <element signature="e#14#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/queries/q6.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="109" column="27" lean-forward="true" selection-start-line="109" selection-start-column="27" selection-end-line="109" selection-end-column="27" />
+          <folding>
+            <element signature="e#526#780#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/hybrid/hybrid_datatypes.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="558">
+          <caret line="31" column="97" selection-start-line="31" selection-start-column="97" selection-end-line="31" selection-end-column="97" />
+          <folding>
+            <element signature="e#575#971#0" />
+            <element signature="e#1306#1425#0" />
+            <element signature="e#1451#1608#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/hybrid/hybrid_typer_q6.ll">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="126" column="40" lean-forward="true" selection-start-line="126" selection-start-column="40" selection-end-line="126" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/hybrid/code_generator.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="532" column="81" lean-forward="true" selection-start-line="532" selection-start-column="81" selection-end-line="532" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bench.cpp">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="575">
+          <caret line="35" column="67" selection-start-line="35" selection-start-column="67" selection-end-line="35" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/common/runtime/Import.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="15" selection-start-line="6" selection-start-column="15" selection-end-line="6" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/runtime/Import.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="277">
+          <caret line="257" column="70" selection-start-line="257" selection-start-column="70" selection-end-line="257" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/benchmarks/tpch/run.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-648">
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/hybrid/run.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="478">
+          <caret line="411" column="33" selection-start-line="411" selection-start-column="33" selection-end-line="411" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>

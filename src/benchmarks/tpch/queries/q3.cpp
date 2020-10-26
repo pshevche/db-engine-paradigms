@@ -77,6 +77,7 @@ void printResultQ3(runtime::Query* result) {
     auto iter= result->result->begin();
     for (; iter != result->result->end();
          ++iter) {
+
         auto block = *iter;
         int32_t* l_orderkey = reinterpret_cast<int32_t*>(
                 block.data(result->result->getAttribute("l_orderkey")));
@@ -87,11 +88,17 @@ void printResultQ3(runtime::Query* result) {
         int32_t* o_shippriority = reinterpret_cast<int32_t*>(
                 block.data(result->result->getAttribute("o_shippriority")));
         for (unsigned i = 0; i < block.size(); ++i) {
-            std::cout << l_orderkey[i] << " | " << revenue[i] << " | "
-                      << o_orderdate[i] << " | "
-                      << revenue[i] << std::endl;
+            totalSum++;
+            if(totalSum<10){
+                std::cout << l_orderkey[i] << " | " << revenue[i] << " | "
+                          << o_orderdate[i] << " | "
+                          << revenue[i] << std::endl;
+            }
+
         }
     }
+
+    std::cout<<"Total values: "<<totalSum<<std::endl;
 }
 
 //Bala:added hybrid execution for Q3
@@ -99,36 +106,39 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
                                           size_t nrThreads,
                                           size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
                                           bool verbose){
-//    cout<<"Executing hybrid model"<<endl;
+    cout<<"Q3,";
     using namespace vectorwise;
     using namespace std::chrono_literals;
 
+    auto start_hybrid = std::chrono::steady_clock::now();
+
     //START COMPILING Q3 IN HYPER
     std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
-    std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
-                                          &verbose] {
+//    std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
+//                                          &verbose] {
         try {
-            auto start = std::chrono::steady_clock::now();
+            auto start_compile = std::chrono::steady_clock::now();
             // link library
             const std::string& path_to_lib =
                     hybrid::CompilationEngine::instance().linkQueryLib(path_to_lib_src,
                                                                        fromLLVM);
             // open library
             typerLib = hybrid::SharedLibrary::load(path_to_lib + ".so");
-            auto end = std::chrono::steady_clock::now();
+            auto end_compile = std::chrono::steady_clock::now();
             if (verbose) {
-                std::cout << "Compilation took "
+                std::cout << "Compilation time"
                           << std::chrono::duration_cast<std::chrono::milliseconds>(
-                                  end - start)
+                                  end_compile - start_compile)
                                   .count()
-                          << " milliseconds." << std::endl;
+                          << " milliseconds,";
             }
         } catch (hybrid::HybridException& exc) {
             std::cout<<"error in compilation"<<std::endl;
             std::cerr << exc.what() << std::endl;
         }
-    });
-
+//    });
+    exit(0);
+        
     //STARTING EXECUTION USING TECTORWISE
     auto start = std::chrono::steady_clock::now();
     WorkerGroup workers(nrThreads);
@@ -138,26 +148,27 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
     size_t nrTuples;
     nrTuples = db["customer"].nrTuples;
     std::unique_ptr<runtime::Query> result; //the result data type
-    Q3Builder builder(db, shared, vectorSize);
-    auto query = builder.getQuery();
-    std::unique_ptr<ResultWriter> printOp(
-            static_cast<ResultWriter*>(query->rootOp.release()));
-    std::unique_ptr<vectorwise::HashGroup> finalAggregates(
-            static_cast<vectorwise::HashGroup*>(printOp->child.release()));
-    std::unique_ptr<Project> projectExpression(
-            static_cast<Project*>(finalAggregates->child.release()));
-    std::unique_ptr<Hashjoin> lineItemHashJoin(
-            static_cast<Hashjoin*>(projectExpression->child.release()));
-    std::unique_ptr<Hashjoin> CustOrdHashJoin(
-            static_cast<Hashjoin*>(lineItemHashJoin->left.release())); //Is the customer_ord hash join in left or in the right?
-
+    runtime::Hashmap *partial_res;
     /*
      * Starting TectorWise execution
      * build hash table for customer and order relation
      */
-
     workers.run([&]() {
         {
+            using runtime::Hashmap;
+            Q3Builder builder(db, shared, vectorSize);
+            auto query = builder.getQuery();
+            std::unique_ptr<ResultWriter> printOp(
+                    static_cast<ResultWriter*>(query->rootOp.release()));
+            std::unique_ptr<vectorwise::HashGroup> finalAggregates(
+                    static_cast<vectorwise::HashGroup*>(printOp->child.release()));
+            std::unique_ptr<Project> projectExpression(
+                    static_cast<Project*>(finalAggregates->child.release()));
+            std::unique_ptr<Hashjoin> lineItemHashJoin(
+                    static_cast<Hashjoin*>(projectExpression->child.release()));
+            std::unique_ptr<Hashjoin> CustOrdHashJoin(
+                    static_cast<Hashjoin*>(lineItemHashJoin->left.release())); //Is the customer_ord hash join in left or in the right?
+
             size_t found = 0;
             // --- build phase 1: materialize ht entries
             for (auto n = CustOrdHashJoin->left->next();
@@ -183,8 +194,9 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
             CustOrdHashJoin->shared.found.fetch_add(found);
             barrier([&]() {
                 auto globalFound = CustOrdHashJoin->shared.found.load();
-
+                processedTuples.fetch_add(globalFound);
                 if (globalFound) CustOrdHashJoin->shared.ht.setSize(globalFound);
+                partial_res = &CustOrdHashJoin->shared.ht;
             });
             auto globalFound = CustOrdHashJoin->shared.found.load();
             if (globalFound != 0) {
@@ -194,20 +206,20 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
             barrier(); // wait for all threads to finish build phase
         }
     });
+//    processedTuples.fetch_add(CustOrdHashJoin->shared.found.load());
 
-    processedTuples.fetch_add(CustOrdHashJoin->shared.found.load());
     auto end = std::chrono::steady_clock::now();
     if(verbose){
 
-        std::cout   << "TW took "
+        std::cout   << "TW took, "
                     <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-                    <<" milliseconds to process "<< processedTuples.load()
-                    << " tuples."<<std::endl;
+                    <<" milliseconds, "<< processedTuples.load()
+                    << " ,";
     }
 
     //Start typer execution here
-    compilationThread.join();
-    start = std::chrono::steady_clock::now();
+//    compilationThread.join();
+    auto start_typer = std::chrono::steady_clock::now();
 
     // load library
     if (!typerLib) {
@@ -231,36 +243,415 @@ std::unique_ptr<runtime::Query> q3_hybrid(Database& db,
     result = std::move(typer_q3(
             db,
             nrThreads,
-            CustOrdHashJoin->shared.ht,
+            *partial_res,
             processedTuples.load()
     ));
 
-    end = std::chrono::steady_clock::now();
+    auto end_typer = std::chrono::steady_clock::now();
 
 
     if (verbose) {
         std::cout << "Typer took "
-                  << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                           start)
+                  << std::chrono::duration_cast<std::chrono::milliseconds>(end_typer -
+                                                                           start_typer)
                           .count()
-                  << " milliseconds to process "
+                  << " milliseconds,"
                   << (long)nrTuples - (long)processedTuples.load()
-                  << " tuples." << std::endl;
+                  << " tuples,";
     }
 
 
+    auto end_hybrid = std::chrono::steady_clock::now();
+    std::cout << "hybrid time, "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(end_hybrid -
+                                                                       start_hybrid)
+                      .count()
+              <<std::endl;
 //     close shared library
     delete typerLib;
+    q3_hyper(db,nrThreads);
+    q3_vectorwise(db,nrThreads,vectorSize);
 //    printResultQ3(result.get());
     return result;
 
 }
 
+
+
+//Bala:added hybrid execution for Q3
+std::unique_ptr<runtime::Query> q3_hybrid_1(Database& db,
+                                          size_t nrThreads,
+                                          size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
+                                          bool verbose){
+    std::cout<<"Q3-another Pipeline,";
+    using namespace vectorwise;
+    using namespace std::chrono_literals;
+
+    auto start_hybrid = std::chrono::steady_clock::now();
+
+    //START COMPILING Q3 IN HYPER
+    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
+    std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
+                                          &verbose] {
+        try {
+            auto start_compile = std::chrono::steady_clock::now();
+            // link library
+            const std::string& path_to_lib =
+                    hybrid::CompilationEngine::instance().linkQueryLib(path_to_lib_src,
+                                                                       fromLLVM);
+            // open library
+            typerLib = hybrid::SharedLibrary::load(path_to_lib + ".so");
+            auto end_compile = std::chrono::steady_clock::now();
+            if (verbose) {
+                std::cout << "Compilation took "
+                          << std::chrono::duration_cast<std::chrono::milliseconds>(
+                                  end_compile - start_compile)
+                                  .count()
+                          << " milliseconds,";
+            }
+        } catch (hybrid::HybridException& exc) {
+            std::cout<<"error in compilation"<<std::endl;
+            std::cerr << exc.what() << std::endl;
+        }
+    });
+
+    //STARTING EXECUTION USING TECTORWISE
+    auto start = std::chrono::steady_clock::now();
+    WorkerGroup workers(nrThreads);
+    vectorwise::SharedStateManager shared;
+    std::atomic<size_t> processedTuples(0);
+
+    size_t nrTuples;
+    nrTuples = db["orders"].nrTuples;
+    std::unique_ptr<runtime::Query> result; //the result data type
+    runtime::Hashmap *partial_res, *order_partial_res;
+    /*
+     * Starting TectorWise execution
+     * build hash table for customer and order relation
+     */
+    workers.run([&]() {
+        {
+            using runtime::Hashmap;
+            Q3Builder builder(db, shared, vectorSize);
+            auto query = builder.getQuery();
+            std::unique_ptr<ResultWriter> printOp(
+                    static_cast<ResultWriter*>(query->rootOp.release()));
+            std::unique_ptr<vectorwise::HashGroup> finalAggregates(
+                    static_cast<vectorwise::HashGroup*>(printOp->child.release()));
+            std::unique_ptr<Project> projectExpression(
+                    static_cast<Project*>(finalAggregates->child.release()));
+            std::unique_ptr<Hashjoin> CustOrdHashJoin(
+                    static_cast<Hashjoin*>(projectExpression->child.release()));
+//            std::unique_ptr<Hashjoin> CustOrdHashJoin1(
+//                    static_cast<Hashjoin*>(CustOrdHashJoin->left.release())); //Is the customer_ord hash join in left or in the right?
+
+            size_t found = 0;
+            // --- build phase 1: materialize ht entries
+            for (auto n = CustOrdHashJoin->left->next();
+                 n != EndOfStream && !typerLib; n = CustOrdHashJoin->left->next()) {
+                found += n;
+
+                // build hashes
+                CustOrdHashJoin->buildHash.evaluate(n);
+
+                // scatter hash, keys and values into ht entries
+                auto alloc = runtime::this_worker->allocator.allocate(
+                        n * CustOrdHashJoin->ht_entry_size);
+                if (!alloc) throw std::runtime_error("malloc failed");
+
+                CustOrdHashJoin->allocations.push_back(std::make_pair(alloc, n));
+                CustOrdHashJoin->scatterStart =
+                        reinterpret_cast<decltype(CustOrdHashJoin->scatterStart)>(alloc);
+                CustOrdHashJoin->buildScatter.evaluate(n);
+
+            }
+
+            // --- build phase 2: insert ht entries
+            CustOrdHashJoin->shared.found.fetch_add(found);
+            barrier([&]() {
+                auto globalFound = CustOrdHashJoin->shared.found.load();
+                processedTuples.fetch_add(globalFound);
+                if (globalFound) CustOrdHashJoin->shared.ht.setSize(globalFound);
+
+                order_partial_res = &CustOrdHashJoin->shared.ht;
+                std::unique_ptr<Hashjoin> CustOrdHashJoin1(
+                        static_cast<Hashjoin*>(CustOrdHashJoin->left.release())); //Is the customer_ord hash join in left or in the right?
+                partial_res = &CustOrdHashJoin1->shared.ht;
+
+            });
+            auto globalFound = CustOrdHashJoin->shared.found.load();
+            if (globalFound != 0) {
+                insertAllEntries(CustOrdHashJoin->allocations, CustOrdHashJoin->shared.ht,
+                                 CustOrdHashJoin->ht_entry_size);
+            }
+            barrier(); // wait for all threads to finish build phase
+        }
+    });
+
+
+    auto end = std::chrono::steady_clock::now();
+    if(verbose){
+
+        std::cout   << "partial TW took, "
+                    <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+                    <<" milliseconds, "<< processedTuples.load()
+                    << " tuples,";
+    }
+
+    //Start typer execution here
+    compilationThread.join();
+    auto start_typer = std::chrono::steady_clock::now();
+
+    // load library
+    if (!typerLib) {
+        throw hybrid::HybridException("Could not load shared Typer library!");
+    }
+
+    //Debugging Q3
+
+//    Loading function into the runtime
+    const std::string& funcName =
+            "_Z23hybrid_typer_another_q3RN7runtime8DatabaseEmRNS_7HashmapES3_m";
+
+    hybrid::CompiledAnotherTyperQ3 typer_q3 = //here-> the compiled typer function definition has to be given properly
+            typerLib.load()->getFunction<hybrid::CompiledAnotherTyperQ3>(funcName);
+    if (!typer_q3) {
+        throw hybrid::HybridException(
+                "Could not find function for running Q3 in Typer!");
+    }
+
+    // compute typer result
+    result = std::move(typer_q3(
+            db,
+            nrThreads,
+            *partial_res,
+            *order_partial_res, //CustOrdHashJoin->shared.ht,
+            processedTuples.load()
+    ));
+
+    auto end_typer = std::chrono::steady_clock::now();
+
+
+    if (verbose) {
+        std::cout << "Typer took "
+                  << std::chrono::duration_cast<std::chrono::milliseconds>(end_typer -
+                                                                           start_typer)
+                          .count()
+                  << " milliseconds,"
+                  << (long)nrTuples - (long)processedTuples.load()
+                  << " tuples,";
+    }
+
+
+    auto end_hybrid = std::chrono::steady_clock::now();
+    std::cout << "hybrid time, "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(end_hybrid -
+                                                                       start_hybrid)
+                      .count()
+              <<",";
+//     close shared library
+    delete typerLib;
+    q3_hyper(db,nrThreads);
+    q3_vectorwise(db,nrThreads,vectorSize);
+//    printResultQ3(result.get());
+    return result;
+
+}
+
+
+
+//Bala:added hybrid execution for Q3
+std::unique_ptr<runtime::Query> q3_hybrid_2(Database& db,
+                                          size_t nrThreads,
+                                          size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
+                                          bool verbose){
+    using namespace vectorwise;
+    using namespace std::chrono_literals;
+
+    auto start_hybrid = std::chrono::steady_clock::now();
+
+    //START COMPILING Q3 IN HYPER
+    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
+    std::thread compilationThread([&typerLib, &path_to_lib_src, &fromLLVM,
+                                          &verbose] {
+        try {
+            auto start_compile = std::chrono::steady_clock::now();
+            // link library
+            const std::string& path_to_lib =
+                    hybrid::CompilationEngine::instance().linkQueryLib(path_to_lib_src,
+                                                                       fromLLVM);
+            // open library
+            typerLib = hybrid::SharedLibrary::load(path_to_lib + ".so");
+            auto end_compile = std::chrono::steady_clock::now();
+            if (verbose) {
+                std::cout << "Compilation took "
+                          << std::chrono::duration_cast<std::chrono::milliseconds>(
+                                  end_compile - start_compile)
+                                  .count()
+                          << " milliseconds,";
+            }
+        } catch (hybrid::HybridException& exc) {
+            std::cout<<"error in compilation"<<std::endl;
+            std::cerr << exc.what() << std::endl;
+        }
+    });
+
+    //STARTING EXECUTION USING TECTORWISE
+    auto start = std::chrono::steady_clock::now();
+    WorkerGroup workers(nrThreads);
+    vectorwise::SharedStateManager shared;
+    std::atomic<size_t> processedTuples(0);
+
+    size_t nrTuples;
+    nrTuples = db["orders"].nrTuples;
+    std::unique_ptr<runtime::Query> result; //the result data type
+    runtime::Hashmap *partial_res;
+    std::unordered_map<std::thread::id, runtime::PartitionedDeque<1024>> *partialAgg;
+    /*
+     * Starting TectorWise execution
+     * build hash table for customer and order relation
+     */
+    std::cout<<"Q3-yet another Pipeline,";
+    workers.run([&]() {
+        {
+            using runtime::Hashmap;
+            Q3Builder builder(db, shared, vectorSize);
+            auto query = builder.getQuery();
+            std::unique_ptr<ResultWriter> printOp(
+                    static_cast<ResultWriter*>(query->rootOp.release()));
+            std::unique_ptr<vectorwise::HashGroup> groupOp(
+                    static_cast<vectorwise::HashGroup*>(printOp->child.release()));
+
+
+            /**
+             * Adding code for hash aggregates
+             */
+            runtime::Hashmap& ht = groupOp->getHashTable();
+            size_t maxFill = groupOp->getMaxFill();
+            using header_t = runtime::Hashmap::EntryHeader;
+            size_t groups = 0;
+            auto& spill = groupOp->shared.spillStorage.local();
+            auto entry_size = groupOp->preAggregation.ht_entry_size;
+
+            // stores thread-local aggregation results in shared store (i.e.
+            // SharedStateManager from above)
+            auto flushAndClear = [&]() INTERPRET_SEPARATE {
+                assert(offsetof(header_t, next) + sizeof(header_t::next) ==
+                       offsetof(header_t, hash));
+                // flush ht entries into spillStorage
+                for (auto& alloc : groupOp->preAggregation.allocations) {
+                    for (auto entry = reinterpret_cast<header_t*>(alloc.first),
+                                 end = addBytes(entry, alloc.second * entry_size);
+                         entry < end; entry = addBytes(entry, entry_size)) {
+                        spill.push_back(&entry->hash, entry->hash);
+                    }
+                }
+                groupOp->preAggregation.allocations.clear();
+                groupOp->preAggregation.clearHashtable(ht);
+            };
+//            std::this_thread::sleep_for(1s);
+            // process relation data in chunks
+            for (pos_t n = groupOp->child->next(); n != EndOfStream && !typerLib;
+                 n = groupOp->child->next()) {
+                groupOp->groupHash.evaluate(n);
+                groupOp->preAggregation.findGroups(n, ht);
+                auto groupsCreated =
+                        groupOp->preAggregation.createMissingGroups(ht, false);
+                groupOp->updateGroups.evaluate(n);
+                groups += groupsCreated;
+                if (groups >= maxFill) flushAndClear();
+                processedTuples.fetch_add(vectorSize);
+                //  DEBUG: delay for debugging purposes
+                //   std::this_thread::sleep_for(1ms);
+            }
+            flushAndClear(); // flush remaining entries into spillStorage
+            barrier(); // wait for all threads to finish build phase
+            partialAgg = &groupOp->shared.spillStorage.threadData;
+
+            std::unique_ptr<Project> projectExpression(
+                    static_cast<Project*>(groupOp->child.release()));
+            std::unique_ptr<Hashjoin> CustOrdHashJoin(
+                    static_cast<Hashjoin*>(projectExpression->child.release()));
+            std::unique_ptr<Hashjoin> CustOrdHashJoin1(
+                    static_cast<Hashjoin*>(CustOrdHashJoin->left.release())); //Is the customer_ord hash join in left or in the right?
+            partial_res = &CustOrdHashJoin->shared.ht;
+            //Fetch the forwarding results
+
+        }
+    });
+
+    auto end = std::chrono::steady_clock::now();
+    if(verbose){
+
+        std::cout   << "partial TW took, "
+                    <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+                    <<" milliseconds, "<< processedTuples.load()
+                    << " tuples,";
+    }
+
+    //Start typer execution here
+    compilationThread.join();
+    auto start_typer = std::chrono::steady_clock::now();
+
+    // load library
+    if (!typerLib) {
+        throw hybrid::HybridException("Could not load shared Typer library!");
+    }
+
+    //Debugging Q3
+
+//    Loading function into the runtime
+    const std::string& funcName =
+            "_Z15hybrid_typer_q3RN7runtime8DatabaseEmRNS_7HashmapERSt13unordered_mapINSt6thread2idENS_16PartitionedDequeILm1024EEESt4hashIS6_ESt8equal_toIS6_ESaISt4pairIKS6_S8_EEEm";
+
+    hybrid::CompiledYetAnotherTyperQ3 typer_q3 = //here-> the compiled typer function definition has to be given properly
+            typerLib.load()->getFunction<hybrid::CompiledYetAnotherTyperQ3>(funcName);
+    if (!typer_q3) {
+        throw hybrid::HybridException(
+                "Could not find function for running Q3 in Typer!");
+    }
+
+    // compute typer result
+    result = std::move(typer_q3(
+            db,
+            nrThreads,
+            *partial_res, //CustOrdHashJoin->shared.ht,
+            *partialAgg,
+            processedTuples.load()
+    ));
+
+    auto end_typer = std::chrono::steady_clock::now();
+
+
+    if (verbose) {
+        std::cout << "Typer took "
+                  << std::chrono::duration_cast<std::chrono::milliseconds>(end_typer -
+                                                                           start_typer)
+                          .count()
+                  << " milliseconds,"
+                  //                  << (long)nrTuples - (long)processedTuples.load()
+                  << " tuples,";
+    }
+
+
+    auto end_hybrid = std::chrono::steady_clock::now();
+    std::cout << "hybrid time, "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(end_hybrid -
+                                                                       start_hybrid)
+                      .count()
+              <<",";
+//     close shared library
+    delete typerLib;
+    q3_hyper(db,nrThreads);
+    q3_vectorwise(db,nrThreads,vectorSize);
+    return result;
+
+}
+
+
 NOVECTORIZE std::unique_ptr<runtime::Query> q3_hyper(Database& db,
                                                      size_t nrThreads) {
-
-   // --- aggregates
-//    cout<<"Executing hyper model"<<endl;
+   auto q3_hyper_start = std::chrono::steady_clock::now();
    auto resources = initQuery(nrThreads);
 
    // --- constants
@@ -392,8 +783,49 @@ NOVECTORIZE std::unique_ptr<runtime::Query> q3_hyper(Database& db,
 
 
    leaveQuery(nrThreads);
+    auto q3_hyper_stop = std::chrono::steady_clock::now();
+    std::cout << "hyper time: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(q3_hyper_stop -
+                                                                       q3_hyper_start)
+                      .count()<<",";
+
 //    printResultQ3(resources.query.get());
    return move(resources.query);
+}
+
+
+std::unique_ptr<runtime::Query> q3_hyper_LLVM(Database& db, const std::string& path_to_lib_src,
+                                                     size_t nrThreads) {
+
+    auto q1_hyper_start = std::chrono::steady_clock::now();
+
+    std::atomic<hybrid::SharedLibrary*> typerLib(nullptr);
+    typerLib = hybrid::SharedLibrary::load(path_to_lib_src + ".so");
+
+
+    const std::string& funcName =
+            "_Z8q3_hyperRN7runtime8DatabaseEm";
+    hybrid::PureTyperQ3 typer_q3 =
+            typerLib.load()->getFunction<hybrid::PureTyperQ3>(funcName);
+
+    if (!typer_q3) {
+        throw hybrid::HybridException(
+                "Could not find function for running Q6 in Typer!");
+    }
+
+    // compute typer result
+    std::unique_ptr<runtime::Query> result = std::move(
+            typer_q3(db,nrThreads));
+
+    auto q1_hyper_stop = std::chrono::steady_clock::now();
+
+    std::cout << "hyper LLVM time: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(q1_hyper_stop -
+                                                                       q1_hyper_start)
+                      .count()<<",";
+
+//    printResultQ3(result.get());
+    return result;
 }
 
 std::unique_ptr<Q3Builder::Q3> Q3Builder::getQuery() {
@@ -445,7 +877,6 @@ std::unique_ptr<Q3Builder::Q3> Q3Builder::getQuery() {
                     Buffer(sel_lineitem),           //
                     conf.hash_sel_int32_t_col(),    //
                     primitives::keys_equal_int32_t_col);
-   // build value o_orderdate, o_shippriority
    Project().addExpression(
        Expression() //
            .addOp(primitives::proj_sel_minus_int64_t_val_int64_t_col,
@@ -507,8 +938,8 @@ std::unique_ptr<Q3Builder::Q3> Q3Builder::getQuery() {
 
 std::unique_ptr<runtime::Query> q3_vectorwise(Database& db, size_t nrThreads,
                                               size_t vectorSize) {
-//    cout<<"Executing vectorwise model"<<endl;
    using namespace vectorwise;
+    auto start_typer = std::chrono::steady_clock::now();
    WorkerGroup workers(nrThreads);
    vectorwise::SharedStateManager shared;
    std::unique_ptr<runtime::Query> result;
@@ -521,6 +952,12 @@ std::unique_ptr<runtime::Query> q3_vectorwise(Database& db, size_t nrThreads,
          result = move(
              dynamic_cast<ResultWriter*>(query->rootOp.get())->shared.result);
    });
+
+    auto end_typer = std::chrono::steady_clock::now();
+    std::cout << "vectorized time: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(end_typer -
+                                                                       start_typer)
+                      .count()<<std::endl;
 
 //    printResultQ3(result.get());
    return result;

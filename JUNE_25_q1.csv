@@ -1,0 +1,55 @@
+SF 100
+Running with 1 parallel threads
+q1,Compilation took 1826.55 milliseconds.
+P2: 7271,Total time 15952 milliseconds.
+hyper LLVM time: 15955,
+SF 110
+Running with 1 parallel threads
+q1,Compilation took 1818.25 milliseconds.
+P2: 7985,Total time 17286 milliseconds.
+hyper LLVM time: 17288,
+SF 120
+Running with 1 parallel threads
+q1,Compilation took 1805.25 milliseconds.
+P2: 8967,Total time 19329 milliseconds.
+hyper LLVM time: 19331,
+SF 130
+Running with 1 parallel threads
+q1,Compilation took 1798.56 milliseconds.
+P2: 9144,Total time 20180 milliseconds.
+hyper LLVM time: 20183,
+SF 140
+Running with 1 parallel threads
+q1,Compilation took 1814.13 milliseconds.
+P2: 9694,Total time 21666 milliseconds.
+hyper LLVM time: 21669,
+SF 150
+Running with 1 parallel threads
+q1,Compilation took 1821.64 milliseconds.
+P2: 10230,Total time 22916 milliseconds.
+hyper LLVM time: 22919,
+SF 160
+Running with 1 parallel threads
+q1,Compilation took 1816.67 milliseconds.
+P2: 10859,Total time 24683 milliseconds.
+hyper LLVM time: 24686,
+SF 170
+Running with 1 parallel threads
+q1,Compilation took 1810.51 milliseconds.
+P2: 11480,Total time 26126 milliseconds.
+hyper LLVM time: 26129,
+SF 180
+Running with 1 parallel threads
+q1,Compilation took 1820.58 milliseconds.
+P2: 12031,Total time 27143 milliseconds.
+hyper LLVM time: 27146,
+SF 190
+Running with 1 parallel threads
+q1,Compilation took 1802.53 milliseconds.
+P2: 12678,Total time 28504 milliseconds.
+hyper LLVM time: 28507,
+SF 200
+Running with 1 parallel threads
+q1,Compilation took 1809.53 milliseconds.
+P2: 13615,Total time 30557 milliseconds.
+hyper LLVM time: 30561,

@@ -52,11 +52,17 @@ int main(int argc, char* argv[]) {
    auto repetitions = atoi(argv[1]);
    size_t nrThreads = std::thread::hardware_concurrency();
    size_t vectorSize = 1024;
-   bool clearCaches = false;
-   if (argc > 3) nrThreads = atoi(argv[3]);
-
-   std::unordered_set<std::string> q = {"1h", "1v", "3h", "3v", "5h",  "5v",
-                                        "6h", "6v", "9h", "9v", "18h", "18v"};
+   bool clearCaches = true;
+//   if (argc > 3) nrThreads = atoi(argv[3]);
+	std::cout<<"number of threads"<<nrThreads<<std::endl;
+   std::unordered_set<std::string> q = {
+					"1h", "1v"
+					,"3h", "3v"
+					,"5h",  "5v"
+                                        "6h", "6v"
+					,"9h", "9v"
+					,"18h", "18v"
+};
 
    if (auto v = std::getenv("vectorSize")) vectorSize = atoi(v);
    if (auto v = std::getenv("SIMDhash")) conf.useSimdHash = atoi(v);
@@ -71,6 +77,11 @@ int main(int argc, char* argv[]) {
       copy(istream_iterator<string>(iss), istream_iterator<string>(),
            insert_iterator<decltype(q)>(q, q.begin()));
    }
+
+conf.useSimdHash = 1;
+conf.useSimdJoin = 1;
+conf.useSimdSel = 1;
+conf.useSimdProj = 1;
 
    tbb::task_scheduler_init scheduler(nrThreads);
    if (q.count("1h"))

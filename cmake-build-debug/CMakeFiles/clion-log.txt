@@ -41,21 +41,9 @@ This warning is for project developers.  Use -Wno-dev to suppress it.
 
 -- setting datadir to proj dir 
 -- /home/gurumurt/Student-Files/hiwi/db-engine-paradigms/data
--- Boost version: 1.58.0
--- Found the following Boost libraries:
---   filesystem
---   system
---   thread
---   program_options
---   serialization
---   chrono
---   random
---   date_time
---   iostreams
---   regex
---   log
---   atomic
---   log_setup
+-- Boost 1.47.0 found.
+-- Found Boost components:
+   filesystem;system;thread;program_options;serialization;chrono;random;date_time;iostreams;regex;log
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/gurumurt/Student-Files/hiwi/db-engine-paradigms

@@ -38,6 +38,13 @@ struct Q1Builder : public Query, private vectorwise::QueryBuilder {
    std::unique_ptr<Q1> getQuery();
 };
 
+
+
+std::unique_ptr<runtime::Query> q1_hybridPartial(runtime::Database& db,
+                                          size_t nrThreads, size_t vectorSize,
+                                          const std::string& path_to_lib_src,
+                                          bool fromLLVM, bool verbose = false);
+
 std::unique_ptr<runtime::Query> q1_hybrid(runtime::Database& db,
                                           size_t nrThreads, size_t vectorSize,
                                           const std::string& path_to_lib_src,
@@ -45,6 +52,11 @@ std::unique_ptr<runtime::Query> q1_hybrid(runtime::Database& db,
 std::unique_ptr<runtime::Query>
 q1_hyper(runtime::Database& db,
          size_t nrThreads = std::thread::hardware_concurrency());
+
+std::unique_ptr<runtime::Query>
+q1_hyper_LLVM(runtime::Database& db, const std::string& path_to_lib_src,
+         size_t nrThreads = std::thread::hardware_concurrency());
+
 std::unique_ptr<runtime::Query>
 q1_vectorwise(runtime::Database& db,
               size_t nrThreads = std::thread::hardware_concurrency(),
@@ -87,9 +99,25 @@ std::unique_ptr<runtime::Query> q3_hybrid(runtime::Database& db,
                                           size_t nrThreads,
                                           size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
                                           bool verbose);
+
+std::unique_ptr<runtime::Query> q3_hybrid_1(runtime::Database& db,
+                                          size_t nrThreads,
+                                          size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
+                                          bool verbose);
+
+std::unique_ptr<runtime::Query> q3_hybrid_2(runtime::Database& db,
+                                          size_t nrThreads,
+                                          size_t vectorSize,const std::string& path_to_lib_src, bool fromLLVM,
+                                          bool verbose);
 std::unique_ptr<runtime::Query>
 q3_hyper(runtime::Database& db,
          size_t nrThreads = std::thread::hardware_concurrency());
+
+
+std::unique_ptr<runtime::Query>
+q3_hyper_LLVM(runtime::Database& db, const std::string& path_to_lib_src,
+              size_t nrThreads = std::thread::hardware_concurrency());
+
 std::unique_ptr<runtime::Query>
 q3_vectorwise(runtime::Database& db,
               size_t nrThreads = std::thread::hardware_concurrency(),
@@ -166,6 +194,10 @@ class Q6Builder : public vectorwise::QueryBuilder {
 
 runtime::Relation
 q6_hyper(runtime::Database& db,
+         size_t nrThreads = std::thread::hardware_concurrency());
+
+runtime::Relation
+q6_hyper_LLVM(runtime::Database& db, const std::string& path_to_lib_src,
          size_t nrThreads = std::thread::hardware_concurrency());
 runtime::Relation
 q6_vectorwise(runtime::Database& db,
@@ -256,9 +288,18 @@ std::unique_ptr<runtime::Query> q18_hybrid(runtime::Database& db,
                                            size_t nrThreads, size_t vectorSize,
                                            const std::string& path_to_lib_src,
                                            bool fromLLVM, bool verbose = false);
+
+std::unique_ptr<runtime::Query> q18_another_hybrid(runtime::Database& db,
+                                                   size_t nrThreads, size_t vectorSize,
+                                                   const std::string& path_to_lib_src,
+                                                   bool fromLLVM, bool verbose=false);
+
 std::unique_ptr<runtime::Query>
 q18_hyper(runtime::Database& db,
           size_t nrThreads = std::thread::hardware_concurrency());
+std::unique_ptr<runtime::Query>
+q18_hyper_LLVM(runtime::Database& db,const std::string& path_to_lib_src,
+               size_t nrThreads = std::thread::hardware_concurrency());
 std::unique_ptr<runtime::Query>
 q18_vectorwise(runtime::Database& db,
                size_t nrThreads = std::thread::hardware_concurrency(),
